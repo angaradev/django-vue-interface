@@ -22,19 +22,22 @@
                     <table class="table table-sm">
                         <thead>
                             <tr>
-                                <th class="w-10"><a href="{% url 'delete-brand' object.id %}" class="brand-search-trash" onclick="return confirm('Удалить Бренд из Словря Ангара?');"><i class="far fa-trash-alt"></i></a></th>
-                                <th class="bdarkblue w-40"><a
-                                        href="{% url 'detailfunc-view' pk=object.id page=page_obj.number %}">{{ object.brand | trim | upper }}</a>
+                                <th style="width: 10%;"><a href="{% url 'delete-brand' object.id %}" class="brand-search-trash"
+                                        onclick="return confirm('Удалить Бренд из Словря Ангара?');"><i
+                                            class="far fa-trash-alt"></i></a></th>
+                                <th style="width: 40%;" class="bdarkblue"><a
+                                        href="{% url 'detailfunc-view' pk=object.id page=page_obj.number %}"
+                                        >{{ object.brand | trim | upper }}</a>
                                 </th>
-                                <th class="w-50"></th>
+                                <th style="width: 50%;"></th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for sup_brand in object.brand_supplier.all %}
                             <tr>
                                 <td></td>
-                                <td class="w-40"></td>
-                                <td class="w-50">{{ sup_brand.ang_brand.strip | upper }}</td>
+                                <td></td>
+                                <td>{{ sup_brand.ang_brand.strip | upper }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -57,7 +60,10 @@
                     </dd>
                     <dt class="col-sm-3">Удаление</dt>
                     <dd class="col-sm-9">
-                        <p>Для удаления бренда перейдите на страницу работы с брендами по поставщикам. Выбирете любого поставщика. Вставте название бренда в верхнее поле. Если бренд есть в словаре, то появится окно для редактирования и удаления бренда. Если нужно, то можно сделать удаление на этой странице.</p>
+                        <p>Для удаления бренда перейдите на страницу работы с брендами по поставщикам. Выбирете любого
+                            поставщика. Вставте название бренда в верхнее поле. Если бренд есть в словаре, то появится
+                            окно для редактирования и удаления бренда. Если нужно, то можно сделать удаление на этой
+                            странице.</p>
                     </dd>
                 </dl>
             </div>
