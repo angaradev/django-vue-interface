@@ -40,13 +40,13 @@
                                 <td
                                     @click="sendBrandToInput(brand.ang_brand, i)"
                                     class="dup-brand"
-                                >{{ brand.ang_brand }}</td>
+                                >{{ brand.ang_brand | trim }}</td>
                                 <td>{{ brand.count }}</td>
                                 <td>
                                     <div class="custom-control custom-checkbox">
                                         <input
                                             :value="{'ang_brand': brand.ang_brand}"
-                                            v-model="nbnList"
+                                            v-model.trim="nbnList"
                                             type="checkbox"
                                             class="custom-control-input"
                                             :id="i"
@@ -163,14 +163,14 @@
                             <div>
                                 <form @submit.prevent="updateExistingBrand">
                                     <div class="input-group input-group-sm mb-3">
-                                        <input v-model="existFormData.brand" class="form-control" />
+                                        <input v-model.trim="existFormData.brand" class="form-control" />
                                     </div>
                                     <div
                                         :key="val.pk"
                                         v-for="(val) in existFormData.brand_supplier"
                                         class="input-group input-group-sm mb-3"
                                     >
-                                        <input v-model="val.ang_brand" class="form-control" />
+                                        <input v-model.trim="val.ang_brand" class="form-control" />
                                         <span
                                             @click="deleteBrandRow(val.pk)"
                                             class="input-group-addon"
