@@ -11,5 +11,6 @@ urlpatterns = [
     path('suppliers/', v.SuppliersList.as_view(), name='suppliers-view'),
     path('supplier/<int:pk>/', v.SupplierDetail.as_view(), name='supplier-detail'),
     path('create/<int:pk>/', v.ParentCreateView.as_view(), name='create-brand'),
+    path('delete/<int:pk>/', v.deleteBrand, name='delete-brand'),
     path('class/upload/', v.UploadBrandList.as_view(), name='class-upload-file'),
     ]

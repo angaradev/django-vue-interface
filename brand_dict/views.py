@@ -5,8 +5,8 @@ from brand_dict.forms import UploadFileForm
 from django.core.files.storage import FileSystemStorage
 import os  # Need to be move to top later on
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.views.generic import ListView, DetailView, CreateView
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, DeleteView
 from django.views.generic.edit import ModelFormMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -30,6 +30,30 @@ class DictionaryList(ListView):
     model = BrandsDict
     paginate_by = 20
 
+@method_decorator(login_required, name='dispatch')
+class DeleteBrand(DeleteView):
+    model = BrandsDict
+    template_name = 'brand/confirm_delete.html'
+    def get_success_url(self):
+        q = self.request.GET.get('q')
+        if q:
+            return reverse_lazy('search-view', kwargs={'q': q})
+        else:
+            return reverse_lazy('main-view')
+
+@login_required
+def deleteBrand(request, pk):
+    obj = get_object_or_404(BrandsDict, id=pk)
+    if request.method == 'GET':
+        obj.delete()
+        print('in here delete')
+        return redirect(request.META['HTTP_REFERER'])
+
+    return redirect(reverse('main-view'))
+    
+
+
+
 
 # Implementing serach logic
 @method_decorator(login_required, name='dispatch')
@@ -39,9 +63,10 @@ class DictionarySearchList(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        q = self.request.GET['q']
+        q = self.request.GET['q'].strip()
         brand_sup = BrandDictSup.objects.filter(ang_brand=q)
-        return BrandsDict.objects.filter(Q(brand__startswith=q)).order_by('brand')
+        query = BrandsDict.objects.filter(Q(brand__icontains=q)).order_by('brand')
+        return query
 
 
 @method_decorator(login_required, name='dispatch')

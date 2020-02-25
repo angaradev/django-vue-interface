@@ -36,3 +36,7 @@ input.search-form,
 input.search-form::-webkit-input-placeholder {
     font-size: 0.8rem;
 }
+.brand-search-trash {
+    font-size: 0.9rem;
+    color: #e84393;
+}

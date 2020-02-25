@@ -1,6 +1,7 @@
 {% extends 'base_brand.html' %}
 {% load static %}
 {% load bootstrap_pagination %}
+{% load my_extras %}
 {% block content %}
 <div class="container">
     <div class="row">
@@ -21,8 +22,9 @@
                     <table class="table table-sm">
                         <thead>
                             <tr>
-                                <th class="bdarkblue w-50"><a
-                                        href="{% url 'detailfunc-view' pk=object.id page=page_obj.number %}">{{ object.brand | upper }}</a>
+                                <th class="w-10"><a href="{% url 'delete-brand' object.id %}" class="brand-search-trash" onclick="return confirm('Удалить Бренд из Словря Ангара?');"><i class="far fa-trash-alt"></i></a></th>
+                                <th class="bdarkblue w-40"><a
+                                        href="{% url 'detailfunc-view' pk=object.id page=page_obj.number %}">{{ object.brand | trim | upper }}</a>
                                 </th>
                                 <th class="w-50"></th>
                             </tr>
@@ -30,8 +32,9 @@
                         <tbody>
                             {% for sup_brand in object.brand_supplier.all %}
                             <tr>
-                                <td class="w-50"></td>
-                                <td class="w-50">{{ sup_brand }}</td>
+                                <td></td>
+                                <td class="w-40"></td>
+                                <td class="w-50">{{ sup_brand.ang_brand.strip | upper }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
