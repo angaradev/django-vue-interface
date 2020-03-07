@@ -11,6 +11,7 @@ class Units(models.Model):
 # Main table product
 class Product(models.Model):
     brand = models.OneToOneField(BrandsDict, on_delete=models.DO_NOTHING)
+    cat_number = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     related = models.ManyToManyField('self') # Field for the cross selling products many many
     created_date = models.DateTimeField(auto_now_add=True)
@@ -66,11 +67,12 @@ class Tags(models.Model):
 # Product images
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    url = models.URLField(max_length=255, null=True, blank=True)
+    url = models.ImageField(max_length=255, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     
-
+    def img_path(self):
+        path = os.path.join(settings.MEDIA_ROOT, self.product.cat_number, self.product.brand )
 
 # Thumbnails for images
 class ProductThumb(models.Model):
