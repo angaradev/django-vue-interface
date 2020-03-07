@@ -46,11 +46,9 @@ INSTALLED_APPS = [
     'bootstrap_pagination',
 
     'users',
-    #'questions',
     'brands',
-    #'programmers',
-    #'music',
     'brand_dict',
+    'product',
 
 ]
 
