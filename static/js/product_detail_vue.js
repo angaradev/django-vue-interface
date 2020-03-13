@@ -57,13 +57,19 @@ const app = new Vue({
     },
     methods: {
         basesubmit() {
-            console.log(this.part);
-            apiService('http://localhost:8000/api/list/');
+            //console.log(this.part);
+
             // Отправляем основные данные на сервер
             // Needs to make API and Login in Vue -- Here 
+        },
+        async getPart() {
+            const data = await apiService('http://localhost:8000/api/product/detail/');
+            console.log(data);
         }
-    }
-  });
-  //#####################################
+    },
 
- 
+    created() {
+        this.getPart();
+    }
+});
+

@@ -75,7 +75,7 @@ class ProductImage(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
-        'Product', on_delete=models.CASCADE, blank=True, null=True)
+        'Product', on_delete=models.CASCADE, blank=True, null=True, related_name='product_image')
 
     def __str__(self):
         return str(self.product.slug) + '_' + str(self.id)
@@ -123,7 +123,7 @@ class ProductDescription(models.Model):
 
 class Product(models.Model):  # Main table product
     name = models.CharField(max_length=255)
-    brand = models.OneToOneField(BrandsDict, on_delete=models.DO_NOTHING)
+    brand = models.ForeignKey(BrandsDict, on_delete=models.DO_NOTHING, null=True, blank=True)
     car_model = models.ForeignKey(
         CarModel, on_delete=models.DO_NOTHING, blank=True, null=True)
     cat_number = models.CharField(max_length=255)
