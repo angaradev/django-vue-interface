@@ -40,3 +40,12 @@ input.search-form::-webkit-input-placeholder {
     font-size: 0.9rem;
     color: #e84393;
 }
+.product-main-thumbs img {
+    margin-bottom: 2px;
+}
+.card-title {
+    font-size: 0.9rem;
+}
+.big-part-name {
+    font-weight: 600;
+}

@@ -12,15 +12,15 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fab fa-jedi-order"></i>
-                                Orders
+                            <a class="nav-link" :href="'/product/'">
+                                <i class="fas fa-gifts"></i>
+                                Products
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <i class="fas fa-gifts"></i>
-                                Products
+                                <i class="fab fa-jedi-order"></i>
+                                Orders
                             </a>
                         </li>
                         <li class="nav-item">

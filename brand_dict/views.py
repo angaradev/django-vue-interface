@@ -30,16 +30,19 @@ class DictionaryList(ListView):
     model = BrandsDict
     paginate_by = 20
 
+
 @method_decorator(login_required, name='dispatch')
 class DeleteBrand(DeleteView):
     model = BrandsDict
     template_name = 'brand/confirm_delete.html'
+
     def get_success_url(self):
         q = self.request.GET.get('q')
         if q:
             return reverse_lazy('search-view', kwargs={'q': q})
         else:
             return reverse_lazy('main-view')
+
 
 @login_required
 def deleteBrand(request, pk):
@@ -50,9 +53,6 @@ def deleteBrand(request, pk):
         return redirect(request.META['HTTP_REFERER'])
 
     return redirect(reverse('main-view'))
-    
-
-
 
 
 # Implementing serach logic
@@ -65,7 +65,8 @@ class DictionarySearchList(ListView):
     def get_queryset(self):
         q = self.request.GET['q'].strip()
         brand_sup = BrandDictSup.objects.filter(ang_brand=q)
-        query = BrandsDict.objects.filter(Q(brand__icontains=q)).order_by('brand')
+        query = BrandsDict.objects.filter(
+            Q(brand__icontains=q)).order_by('brand')
         return query
 
 
@@ -171,6 +172,7 @@ ChildFormset = inlineformset_factory(
 # Trying set formset for parent and child together
 # Seems to working variant
 
+
 @method_decorator(login_required, name='dispatch')
 class ParentCreateView(CreateView):
     model = BrandsDict
@@ -231,6 +233,7 @@ class UploadBrandList(View):
 
 
 # Function for inserting csv file to Brnads for checking angara
+
     def insert_data(self, request):
         path = os.path.join(settings.MEDIA_ROOT, 'brands')
         f = os.path.join(path, os.listdir(path)[0])

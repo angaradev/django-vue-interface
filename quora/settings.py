@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'corsheaders',
 
     'rest_auth',
     'rest_auth.registration',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'bootstrap_pagination',
 
     'users',
+    'home',
     'brands',
     'brand_dict',
     'product',
@@ -53,6 +55,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+#        'corsheaders.middleware.CorsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -61,6 +66,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'quora.urls'
 
@@ -137,7 +144,7 @@ USE_L10N = True
 USE_TZ = True
 
 
-LOGIN_URL = 'accounts/login/'
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
