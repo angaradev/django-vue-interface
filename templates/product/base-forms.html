@@ -14,6 +14,11 @@
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- summernote -->
   <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.css' %}">
+  <!-- CSS FOR Search Select Plugin -->
+  <!-- <link href="{% static 'css/select2.min.css' %}" rel="stylesheet" /> -->
+  <!-- use the latest vue-select release -->
+
+  <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
   <!-- Google Font: Source Sans Pro -->
@@ -470,9 +475,12 @@
   <script src="{% static 'dist/js/demo.js' %}"></script>
   <!-- VUE JS -->
   <script src="{% static 'js/vue.js' %}"></script>
-  
+  <!--SELECT PLUGIN FOR SELECTION SEARCH-->
+  <script src="https://unpkg.com/vue-select@latest"></script>
+  <!-- <script src="{% static 'js/select2.min.js' %}"></script> -->
+
   {% block js %}
-  
+
   {% endblock js %}
   <script type="text/javascript">
     $(document).ready(function () {

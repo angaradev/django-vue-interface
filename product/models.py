@@ -6,8 +6,8 @@ from django.conf import settings
 
 # Units for parts
 class Units(models.Model):
-    unit = models.CharField(max_length=10, default='шт')
-
+    unit_name = models.CharField(max_length=10, default='шт')
+    
     def __str__(self):
         return self.unit
 
@@ -40,8 +40,8 @@ class CarEngine(models.Model):
 
 class CarModel(models.Model):
     name = models.CharField(max_length=45)
-    engine = models.ForeignKey(
-        CarEngine, on_delete=models.CASCADE, null=True, blank=True)
+    engine = models.ManyToManyField(
+        CarEngine, blank=True)
     carmake = models.ForeignKey(CarMake, on_delete=models.DO_NOTHING)
 
     def __str__(self):
@@ -123,7 +123,7 @@ class ProductDescription(models.Model):
 
 class Product(models.Model):  # Main table product
     name = models.CharField(max_length=255)
-    brand = models.ForeignKey(BrandsDict, on_delete=models.DO_NOTHING, null=True, blank=True)
+    brand = models.ForeignKey(BrandsDict, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='product_brand')
     car_model = models.ForeignKey(
         CarModel, on_delete=models.DO_NOTHING, blank=True, null=True)
     cat_number = models.CharField(max_length=255)
@@ -133,9 +133,11 @@ class Product(models.Model):  # Main table product
     related = models.ManyToManyField('self', blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    unit = models.ForeignKey(
-        Units, on_delete=models.DO_NOTHING, blank=True, null=True)
     slug = models.SlugField(max_length=50, blank=True)
+    one_c_id = models.IntegerField(unique=True, blank=True, null=True)
+    unit = models.ForeignKey('Units', on_delete=models.DO_NOTHING, related_name='product_unit')
+    active = models.BooleanField(default=True)
+    engine = models.ForeignKey('CarEngine', on_delete=models.DO_NOTHING, blank=True)
     
     def __str__(self):
         return self.name

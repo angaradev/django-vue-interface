@@ -14,9 +14,9 @@
                         <span class="info-box-icon bg-fuchsia
                         elevation-1"><i class="fas fa-cog"></i></span>
                         <div class="info-box-content">
-                            <h5 class="big-part-name mt-3"><span v-if="part.partName">{ part.partName }</span>
+                            <h5 class="big-part-name mt-3"><span v-if="part.name">{ part.name }</span>
                                 <span v-else>
-                                    Название Запчасти Большое Будет Здесь
+                                    {{ object.name }}
                                 </span></h5>
                         </div>
                         <!-- /.info-box-content -->
@@ -30,7 +30,7 @@
                     <div class="info-box mb-3">
                         <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Цена</span>
+                            <span class="info-box-text">Цена {{ object.id }}</span>
                             <span class="info-box-number">760</span>
                         </div>
                         <!-- /.info-box-content -->
@@ -60,49 +60,75 @@
                                 <h3 class="card-title">Основные параметры</h3>
                             </div>
                             <div class="card-body">
-                                <label for="productName">Название запчасти</label>
-                                <input v-model="part.partName" class="form-control form-control-sm" type="text"
-                                    id="productName" placeholder="Наименование">
-                                <br>
-                                <label for="productGroup">Группа запчасти</label>
-                                <input v-model="part.partGroup" class="form-control form-control-sm" type="text"
-                                    id="productGroup" placeholder="Группа">
+                                <label for="productName">Название Зачасти</label>
+                                <input v-model="part.name" class="form-control form-control-sm" type="text"
+                                    id="productName" placeholder="Наименование" value="{{ object.name }}">
                                 <br>
                                 <div class="row">
                                     <div class="col-6">
-                                        <label for="productCatNumber">Каталожный номер</label>
-                                        <input v-model="part.partNumber" class="form-control form-control-sm"
-                                            type="text" id="productCatNumber" placeholder="Каталожный номер">
+                                        <label for="productId">ID запчасти
+                                            #<span id="mainId" token="{{ object.id }}">{{ part.id }}</span></label>
+                                        <input v-model="part.id" class="form-control form-control-sm" type="text"
+                                            id="productId" placeholder="ID" value={{ object.id }} disabled>
                                     </div>
                                     <div class="col-6">
-                                        <label for="productName">Бренд</label>
-                                        <input v-model="part.partBrand" class="form-control form-control-sm" type="text"
-                                            id="productBrand" placeholder="Бренд">
+                                        <label for="productUnit">Ед Изм</label>
+                                        <v-select label="unit_name"  :options="selectUnitList" v-model="selectedUnit">
+                                        </v-select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="productGroup">Страна</label>
+                                        <input v-model="part.car_model.carmake.country.country"
+                                            class="form-control form-control-sm" type="text" id="productCountry"
+                                            placeholder="Страна" disabled>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="productCatNumber">Каталожный номер</label>
+                                        <input v-model="part.cat_number" class="form-control form-control-sm"
+                                            type="text" id="productCatNumber" placeholder="Каталожный номер">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="productGroup">Группа запчасти</label>
+                                        <input v-model="part.category" class="form-control form-control-sm" type="text"
+                                            id="productGroup" placeholder="Группа" disabled>
+                                    </div>
+                                    
+                                    <div class="col-6">
+                                        <label for="productBrand">Бренд</label>
+                                        <v-select label="brand" :options="selectBrandList" v-model="selectedBrand">
+                                        </v-select>
                                     </div>
                                 </div>
                                 <br>
                                 <div class="row">
                                     <div class="col-6">
                                         <label for="make">Марка Машины</label>
-                                        <input v-model="part.partMake" class="form-control form-control-sm" type="text"
-                                            id="make" placeholder="Марка">
+                                        <input v-model="part.car_model.carmake.name"
+                                            class="form-control form-control-sm" type="text" id="make"
+                                            placeholder="Марка" disabled>
                                     </div>
                                     <div class="col-6">
                                         <label for="model">Модель Машины</label>
-                                        <input v-model="part.partModel" class="form-control form-control-sm" type="text"
-                                            id="model" placeholder="Модель">
+                                        <input v-model="part.car_model.name" class="form-control form-control-sm"
+                                            type="text" id="model" placeholder="Модель">
                                     </div>
                                 </div>
                                 <br>
                                 <div class="row">
                                     <div class="col-6">
                                         <label for="engine">Двигатель</label>
-                                        <input v-model="part.partEngine" class="form-control form-control-sm"
+                                        <input v-model="part.engine.name" class="form-control form-control-sm"
                                             type="text" id="engine" placeholder="Двигатель">
                                     </div>
                                     <div class="col-6">
                                         <label for="1cid">1C id</label>
-                                        <input v-model="part.part1CId" class="form-control form-control-sm" type="text"
+                                        <input v-model="part.one_c_id" class="form-control form-control-sm" type="text"
                                             id="1cid" placeholder="1C ID">
                                     </div>
                                 </div>
@@ -110,12 +136,14 @@
                                 <div class="row mt-2">
                                     <div class="col-6">
                                         <div class="custom-control custom-switch">
-                                            <input v-model="part.partActive" type="checkbox" class="custom-control-input" id="isActive" checked>
+                                            <input v-model="part.active" type="checkbox" class="custom-control-input"
+                                                id="isActive" checked>
                                             <label class="custom-control-label" for="isActive">Активный</label>
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        <button @click.prevent="basesubmit" class="btn btn-success btn-xs float-right">Сохранить</button>
+                                        <button @click.prevent="editPart"
+                                            class="btn btn-success btn-xs float-right">Сохранить</button>
                                     </div>
                                 </div>
                             </div>
@@ -137,7 +165,6 @@
                                         href="#custom-tabs-one-settings" role="tab"
                                         aria-controls="custom-tabs-one-settings" aria-selected="false">Настойки</a>
                                 </li>
-
                             </ul>
                         </div>
                         <div class="card-body">
@@ -156,7 +183,7 @@
                                         <div class="col-6">
                                             <div class="embed-responsive embed-responsive-16by9">
                                                 <iframe class="embed-responsive-item"
-                                                    src="https://www.youtube.com/embed/tMWkeBIohBs" frameborder="0"
+                                                    src="https://www.youtube.com/embed/jJR2r7w3l5o" frameborder="0"
                                                     allowfullscreen=""></iframe>
                                             </div>
                                         </div>
@@ -226,12 +253,10 @@
                                         </form>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <!-- /.card -->
                     </div>
-
                 </div>
             </div>
             <div class="row">
@@ -387,7 +412,6 @@
         </div>
     </section>
     <!-- /.Custom elements ends here -->
-
 </div>
 <!-- /.content-wrapper -->
 {% endblock content %}
@@ -398,7 +422,13 @@
     $(function () {
         // Summernote
         $('.textarea').summernote()
-    })
+    });
+    // In your Javascript (external .js resource or <script> tag)
+    // $(document).ready(function () {
+    //     $('.js-example-basic-single').select2({
+    //         tags: true
+    //     });
+    // });
 </script>
 <script src="{% static 'js/product_detail_jquery.js' %}"></script>
 <script src="{% static 'js/product_detail_vue.js' %}"></script>
