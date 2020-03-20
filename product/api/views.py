@@ -1,13 +1,35 @@
-from product.models import Product, Units, CarModel, CarEngine
+from product.models import Product, Units, CarModel, CarEngine, ProductImage
 from brands.models import BrandsDict
-from product.api.serializers import ProductSerializer, UnitsSerializer, BrandsDictSerializer, CarModelSerializer
+from product.api.serializers import (ProductSerializer,
+                                     UnitsSerializer,
+                                     BrandsDictSerializer,
+                                     CarModelSerializer,
+                                     CarEngineSerializer,
+                                     SessionSerializer,
+                                     ImageSerializer)
 from django.http import Http404
+from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.renderers import JSONRenderer
 
 # Class to work with detailed product all methods exept
 # POST post is right below there
+
+
+class ImageViewSet(viewsets.ModelViewSet):
+
+    serializer_class = ImageSerializer
+    queryset = ProductImage.objects.all()
+    def get_queryset(self):
+        if self.request.query_params.get('product_id'):
+            product_id = self.request.query_params.get('product_id', None)
+            queryset = ProductImage.objects.filter(product=product_id)
+        else:
+            queryset = ProductImage.objects.all()
+
+        return queryset
 
 
 class DetailGet(APIView):
@@ -30,7 +52,7 @@ class DetailGet(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class DetailPost(APIView):
+class CreateNewProduct(APIView):
     def post(self, request, format=None):
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
@@ -53,9 +75,64 @@ class SelectFieldsBrandsView(APIView):
         serializer = BrandsDictSerializer(units_list, many=True)
         return Response(serializer.data)
 
+
 class SelectFieldsModelsView(APIView):
 
-    def get(self, request):
-        units_list = CarModel.objects.all()
-        serializer = CarModelSerializer(units_list, many=True)
+    def get(self, request, pk):
+        models_list = CarModel.objects.filter(carmake=pk)
+        serializer = CarModelSerializer(models_list, many=True)
         return Response(serializer.data)
+
+
+class SelectNewProductModelsView(APIView):
+
+    def get(self, request, pk):
+        models_list = CarModel.objects.filter(id=pk)
+        serializer = CarModelSerializer(models_list, many=True)
+        return Response(serializer.data)
+
+
+class SelectFieldsEnginesView(APIView):
+
+    def get(self, request, pk):
+        engine_list = CarEngine.objects.filter(car_engine=pk)
+        serializer = CarEngineSerializer(engine_list, many=True)
+        return Response(serializer.data)
+
+# Gettin session for set settings to user for create new product card
+
+
+class SetSession(APIView):
+
+    def get(self, request, *args, **kwargs):
+
+        qs = CarModel.objects.get(id=request.session.get('car_model'))
+        e_qs = CarEngine.objects.get(id=request.session.get('car_engine'))
+        data = {
+            'car_model': qs,
+            'car_engine': e_qs,
+        }
+
+        serializer = SessionSerializer(data)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+
+        serializer = SessionSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # print()
+            qs = CarModel.objects.get(
+                id=serializer.validated_data.get('car_model')['id'])
+            e_qs = CarEngine.objects.get(
+                id=serializer.validated_data.get('car_engine')['id'])
+            print(qs.id)
+            request.session['car_model'] = qs.id
+            request.session['car_engine'] = e_qs.id
+            data = {
+                'car_model': qs,
+                'car_engine': e_qs,
+            }
+            next_serializer = SessionSerializer(data)
+            return Response(next_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

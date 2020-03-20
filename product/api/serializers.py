@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from product.models import (Product, ProductImage,
-                            Category, Units, CarModel, CarMake, CarEngine)
-from brands.models import BrandsDict
+                            Category, Units, CarModel, CarMake, CarEngine,
+                            Country, BrandsDict)
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -18,25 +18,60 @@ class UnitsSerializer(serializers.ModelSerializer):
         fields = ('id', 'unit_name')
 
 
+class CountrySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Country
+        fields = '__all__'
+
+
 class CarMakeSerializer(serializers.ModelSerializer):
+    country = CountrySerializer()
+
     class Meta:
         model = CarMake
         fields = '__all__'
 
 
 class CarModelSerializer(serializers.ModelSerializer):
+    id = serializers.ModelField(model_field=CarModel()._meta.get_field('id'))
     carmake = CarMakeSerializer(
         instance=CarMake, required=False, read_only=True)
 
     class Meta:
         model = CarModel
-        fields = '__all__'
+        fields = ['id', 'carmake', 'name']
 
 
 class CarEngineSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CarEngine
+        fields = '__all__'
+
+
+class CarEngineSerializerSession(serializers.ModelSerializer):
+    id = serializers.ModelField(model_field=CarEngine()._meta.get_field('id'))
+
+    class Meta:
+        model = CarEngine
+        fields = ['id', 'name']
+
+
+class CarModelSerializerSession(serializers.ModelSerializer):
+    id = serializers.ModelField(model_field=CarModel()._meta.get_field('id'))
+
+    class Meta:
+        model = CarModel
+        fields = ['id', 'name']
+
+
+class SessionSerializer(serializers.Serializer):
+    car_model = CarModelSerializerSession(
+        instance=CarModel)  # serializers.IntegerField()
+    car_engine = CarEngineSerializerSession(
+        instance=CarEngine)  # serializers.IntegerField()
+
+    class Meta:
         fields = '__all__'
 
 
@@ -51,7 +86,7 @@ class BrandsDictSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     #unit = UnitsSerializer(instance=Units)
     car_model = CarModelSerializer(instance=CarModel, required=False)
-    engine = CarEngineSerializer()
+    #engine = CarEngineSerializer(instance=CarEngine)
 
     class Meta:
         model = Product
@@ -75,24 +110,38 @@ class ProductSerializer(serializers.ModelSerializer):
 
     # Create method
     def create(self, validated_data):
-        category_data = validated_data.pop('category')
-        related_data = validated_data.pop('related')
+        print(validated_data.get('brand').id)
+        car_model_data = validated_data.pop('car_model')
+        car_model_qs = CarModel.objects.get(id=car_model_data['id'])
+        brand_qs = BrandsDict.objects.get(id=validated_data.get('brand').id)
+        unit_qs = Units.objects.get(id=validated_data['unit'].id)
+        engine_qs = CarEngine.objects.get(id=validated_data['engine'].id)
 
-        related_ids = [x.id for x in related_data]
-        product = Product.objects.create(**validated_data)
+        product = Product.objects.create(
+            name=validated_data['name'],
+            cat_number=validated_data['cat_number'],
+            brand=brand_qs,
+            car_model=car_model_qs,
+            unit=unit_qs,
+            one_c_id=validated_data['one_c_id'],
+            active=validated_data['active'],
+            engine=engine_qs
+        )
 
-        # Here we are creating Many To Many Fields for Category and ProductRelated
-        categories = Category.objects.filter(name__in=category_data)
-        for category in categories:
-            product.category.add(category)
-        related_porducts = Product.objects.filter(id__in=related_ids)
-        for prod in related_porducts:
-            product.related.add(prod)
+        product.save()
+
         return product
 
     def update(self, instance, validated_data):
 
         # Менее Адский гемор по вложенной сериализации
+        engine_data = validated_data.get('engine')
+        try:
+            engine_qs = CarEngine.objects.get(id=engine_data.id)
+            instance.engine = engine_qs
+        except:
+            pass
+
         unit_data = validated_data.pop('unit')
         try:
             unit_qs = Units.objects.get(id=unit_data.id)
@@ -101,13 +150,18 @@ class ProductSerializer(serializers.ModelSerializer):
             pass
 
         # Brand updating logic
-        # print(validated_data.get('brand').id)
-        # brand_data = validated_data.pop('brand')
-
         try:
             brand_qs = BrandsDict.objects.get(
                 id=validated_data.get('brand').id)
             instance.brand = brand_qs
+        except:
+            pass
+
+        # Car model update logic
+        carmodel_data = validated_data.pop('car_model')
+        try:
+            car_model_qs = CarModel.objects.get(id=carmodel_data['id'])
+            instance.car_model = car_model_qs
         except:
             pass
 
