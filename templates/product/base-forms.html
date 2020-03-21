@@ -12,15 +12,16 @@
   <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
   <!-- summernote -->
   <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.css' %}">
   <!-- CSS FOR Search Select Plugin -->
   <!-- <link href="{% static 'css/select2.min.css' %}" rel="stylesheet" /> -->
   <!-- use the latest vue-select release -->
-
   <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/aaa.css' %}">
@@ -29,7 +30,7 @@
 <body class="hold-transition sidebar-mini">
   <div class="wrapper">
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <nav id="show-session" class="main-header navbar navbar-expand navbar-white navbar-light">
       <!-- Left navbar links -->
       <ul class="navbar-nav">
         <li class="nav-item">
@@ -39,20 +40,20 @@
           <a href="{% url 'home' %}" class="nav-link">Главная</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-          <a href="#" class="nav-link">Dummy</a>
+          <span data-toggle="dummy-tooltip" data-placement="right"
+            title="Задать начальные значения Модели, Двигателя, чтобы не подставлять каждый раз при создании товара">
+            <a href="#" class="nav-link" data-toggle="modal" data-target="#modal-default">
+              <span class="color-success">{ sharedState.selectedSession }</span>
+            </a>
+          </span>
+        <li class="nav-item d-none d-sm-inline-block"><a href="#" class="nav-link">Dummy</a></li>
+
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
+          <a href="{% url 'product-new' %}" class="nav-link" data-toggle="tooltip" data-placement="right" title="Добавить Продукт"><i
+              class="far fa-plus-square add-product-icon"></i></a>
         </li>
       </ul>
-      <!-- SEARCH FORM -->
-      <form class="form-inline ml-3">
-        <div class="input-group input-group-sm">
-          <input class="form-control form-control-navbar" type="search" placeholder="Искать" aria-label="Search">
-          <div class="input-group-append">
-            <button class="btn btn-navbar" type="submit">
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-        </div>
-      </form>
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
         <!-- Messages Dropdown Menu -->
@@ -154,7 +155,7 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
-      <a href="index3.html" class="brand-link">
+      <a href="/" class="brand-link">
         <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo"
           class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light">AdminLTE 3</span>
@@ -175,6 +176,16 @@
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
+
+            <li class="nav-item">
+              <a href="{% url 'product-list' %}" class="nav-link">
+                <i class="nav-icon fas fa-th"></i>
+                <p>
+                  Товары
+                  <span class="right badge badge-danger">New</span>
+                </p>
+              </a>
+            </li>
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -203,15 +214,6 @@
                   </a>
                 </li>
               </ul>
-            </li>
-            <li class="nav-item">
-              <a href="../widgets.html" class="nav-link">
-                <i class="nav-icon fas fa-th"></i>
-                <p>
-                  Widgets
-                  <span class="right badge badge-danger">New</span>
-                </p>
-              </a>
             </li>
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
@@ -419,7 +421,6 @@
                 </li>
               </ul>
             </li>
-
           </ul>
         </nav>
         <!-- /.sidebar-menu -->
@@ -428,6 +429,49 @@
     </aside>
     {% block content %}
     {% endblock content %}
+    {% block modal %}
+    <div class="modal fade" id="modal-default">
+      <div class="modal-dialog">
+        <form action="">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Задать Начальные Данные</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-6">
+                  <select v-model="car_model" class="form-control">
+                    {% for car_model in car_models %}
+                    <option :value="{ id: '{{ car_model.id }}', name: '{{ car_model.name }}'}">{{ car_model.name }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-6">
+                  <select v-model="car_engine" class="form-control">
+                    {% for car_engine in car_engines %}
+                    <option :value="{ id: '{{ car_engine.id }}', name: '{{ car_engine.name }}'}">{{ car_engine.name }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+              <button @click.prevent="sendSession" type="button" class="btn btn-primary">Сохранить</button>
+            </div>
+          </div>
+        </form>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    {% endblock modal %}
     <footer class="main-footer">
       <div class="float-right d-none d-sm-block">
         <b>Version</b> 3.0.2
@@ -469,23 +513,25 @@
   <script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
   <!-- AdminLTE App -->
   <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
-  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-  <script src="{% static 'dist/js/pages/dashboard.js' %}"></script>
-  <!-- AdminLTE for demo purposes -->
-  <script src="{% static 'dist/js/demo.js' %}"></script>
   <!-- VUE JS -->
   <script src="{% static 'js/vue.js' %}"></script>
   <!--SELECT PLUGIN FOR SELECTION SEARCH-->
   <script src="https://unpkg.com/vue-select@latest"></script>
+  <!--SELECT PLUGIN FOR SELECTION SEARCH-->
+  <script src="{% static 'js/service_api.js' %}"></script>
+  <script src="{% static 'js/session.js' %}"></script>
   <!-- <script src="{% static 'js/select2.min.js' %}"></script> -->
 
   {% block js %}
-
   {% endblock js %}
   <script type="text/javascript">
     $(document).ready(function () {
       bsCustomFileInput.init();
     });
+    // Tooltip additon everywhere
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
   </script>
 </body>
 

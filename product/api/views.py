@@ -1,4 +1,4 @@
-from product.models import Product, Units, CarModel, CarEngine, ProductImage
+from product.models import Product, Units, CarModel, CarEngine, ProductImage, ProductVideos
 from brands.models import BrandsDict
 from product.api.serializers import (ProductSerializer,
                                      UnitsSerializer,
@@ -6,22 +6,39 @@ from product.api.serializers import (ProductSerializer,
                                      CarModelSerializer,
                                      CarEngineSerializer,
                                      SessionSerializer,
-                                     ImageSerializer)
+                                     ImageSerializer,
+                                     VideoSerializer)
 from django.http import Http404
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
+from .helpers import modify_input_for_multiple_files
 
 # Class to work with detailed product all methods exept
 # POST post is right below there
 
 
-class ImageViewSet(viewsets.ModelViewSet):
+class VideoViewSet(viewsets.ModelViewSet):
+    serializer_class = VideoSerializer
+    queryset = ProductVideos.objects.all()
+    model = ProductVideos
+    def get_queryset(self):
+        if self.request.query_params.get('product_id'):
+            product_id = self.request.query_params.get('product_id', None)
+            queryset = self.model.objects.filter(product=product_id)
+        else:
+            queryset = self.model.objects.all()
 
+        return queryset
+
+
+class ImageViewSet(viewsets.ModelViewSet):
+    # Here impemented very cool feature uploadeng multiple image trough serializer
     serializer_class = ImageSerializer
     queryset = ProductImage.objects.all()
+
     def get_queryset(self):
         if self.request.query_params.get('product_id'):
             product_id = self.request.query_params.get('product_id', None)
@@ -30,6 +47,28 @@ class ImageViewSet(viewsets.ModelViewSet):
             queryset = ProductImage.objects.all()
 
         return queryset
+
+    def create(self, request, *args, **kwargs):
+        product = request.data['product']
+
+        # converts querydict to original dict
+        images = dict((request.data).lists())['image']
+        flag = 1
+        arr = []
+        for img_name in images:
+            print(img_name)
+            modified_data = modify_input_for_multiple_files(product, img_name)
+            file_serializer = ImageSerializer(data=modified_data)
+            if file_serializer.is_valid():
+                file_serializer.save()
+                arr.append(file_serializer.data)
+            else:
+                flag = 0
+
+        if flag == 1:
+            return Response(arr, status=status.HTTP_201_CREATED)
+        else:
+            return Response(arr, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DetailGet(APIView):

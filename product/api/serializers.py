@@ -1,13 +1,21 @@
 from rest_framework import serializers
 from product.models import (Product, ProductImage,
                             Category, Units, CarModel, CarMake, CarEngine,
-                            Country, BrandsDict)
+                            Country, BrandsDict,
+                            ProductVideos)
 
 
 class ImageSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = ProductImage
-        fields = '__all__'
+        fields = ['id', 'image', 'product']
+
+class VideoSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = ProductVideos
+        fields = ['id', 'url', 'product']  
 
 
 class UnitsSerializer(serializers.ModelSerializer):

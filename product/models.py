@@ -1,5 +1,7 @@
 import os
 from brands.models import BrandsDict
+from product.utils import unique_slug_generator
+from django.db.models.signals import pre_save
 from django.db import models
 from django.conf import settings
 
@@ -9,7 +11,7 @@ class Units(models.Model):
     unit_name = models.CharField(max_length=10, default='шт')
     
     def __str__(self):
-        return self.unit
+        return self.unit_name
 
 
 # Class Country
@@ -23,14 +25,14 @@ class Country(models.Model):
 # Car Make class
 class CarMake(models.Model):
     name = models.CharField(max_length=45)
-    country = models.ForeignKey(Country, on_delete=models.DO_NOTHING)
+    country = models.ForeignKey(Country, on_delete=models.DO_NOTHING, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class CarEngine(models.Model):
-    name = models.CharField(max_length=45)
+    name = models.CharField(max_length=45, blank=True)
 
     def __str__(self):
         return self.name
@@ -39,9 +41,9 @@ class CarEngine(models.Model):
 
 
 class CarModel(models.Model):
-    name = models.CharField(max_length=45)
+    name = models.CharField(max_length=45, blank=True)
     engine = models.ManyToManyField(
-        CarEngine, blank=True)
+        CarEngine, blank=True, related_name='car_engine')
     carmake = models.ForeignKey(CarMake, on_delete=models.DO_NOTHING)
 
     def __str__(self):
@@ -102,7 +104,7 @@ class ProductThumb(models.Model):
 
 # Product Videos
 class ProductVideos(models.Model):
-    title = models.CharField(max_length=255, null=True, blank=True)
+    youtube_id = models.CharField(max_length=255, null=True, blank=True)
     url = models.URLField(max_length=255, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -161,3 +163,15 @@ class ProductAttribute(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True)
+
+
+def slug_save(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
+
+pre_save.connect(slug_save, Product)
+
+
+
+
+

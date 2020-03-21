@@ -1,0 +1,63 @@
+{% extends 'product/base-forms.html' %}
+{% load static %}
+{% block page_title %}Список Товаров{% endblock %}
+{% block content %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Custom elements start here -->
+    <section class="content" id="app">
+        <div class="container-fluid">
+            <div class="row pt-2">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body  p-2" style="height: 100%;">
+                            <table id="product-list" class="table table-head-fixed text-nowrap" data-toggle="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th data-sortable="true">Название</th>
+                                        <th>Кат Номер</th>
+                                        <th>Бренд</th>
+                                        <th>Двигатель</th>
+                                        <th>Двигатель</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for object in object_list %}
+
+                                    <tr>
+                                        <td>{{ object.pk }}</td>
+                                        <td>
+                                            <a href="{% url 'product-detail' object.pk %}"><b>{{ object.name }}</b></a>
+                                        </td>
+                                        <td>{{ object.cat_number }}</td>
+                                        <td>{{ object.brand|upper }}</td>
+                                        <td>{{ object.engine.name }}</td>
+                                        <td>{{ object.engine.name }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.Custom elements ends here -->
+</div>
+<!-- /.content-wrapper -->
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'js/product_list_vue.js' %}"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $('#product-list').DataTable();
+    });
+</script>
+{% endblock %}

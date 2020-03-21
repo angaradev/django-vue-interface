@@ -2,9 +2,10 @@ from django.urls import path, include, re_path
 from product.api import views as productApiViews
 from rest_framework.routers import DefaultRouter
 
-from .views import ImageViewSet
+from .views import ImageViewSet, VideoViewSet
 router = DefaultRouter()
 router.register(r'images', ImageViewSet)
+router.register(r'videos', VideoViewSet)
 
 urlpatterns = [
     #path('', TemplateView.as_view(template_name='index1.html')),
@@ -20,4 +21,4 @@ urlpatterns = [
     path('session/', productApiViews.SetSession.as_view(), name='set-session'),
     ]
 
-    
+   
