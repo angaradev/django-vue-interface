@@ -6,16 +6,24 @@ from product.models import (Product, ProductImage,
 
 
 class ImageSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = ProductImage
-        fields = ['id', 'image', 'product']
+        fields = ['id',
+                  'image',
+                  'product',
+                  'img150',
+                  'img245',
+                  'img500',
+                  'img800'
+                  ]
+
 
 class VideoSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
         model = ProductVideos
-        fields = ['id', 'url', 'product']  
+        fields = ['id', 'url', 'product', 'youtube_id']
 
 
 class UnitsSerializer(serializers.ModelSerializer):

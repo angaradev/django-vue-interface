@@ -1,38 +1,151 @@
 body {
     font-size: 0.8rem;
 }
+
 ul {
     list-style: none;
 }
+
 .pagination {
     justify-content: center;
- }
+}
+
 .bdarkgreen {
     font-weight: bold;
     color: #00b894;
 }
+
 .bdarkblue {
     font-weight: bold;
     color: #6c5ce7!important;
 }
+
 .breadcrumb {
     margin-top: 10px;
     background-color: #f8f9fa;
 }
+
 .hoverable-tr:hover {
-cursor: pointer;
+    cursor: pointer;
 }
+
 .dropdown-item {
     font-size: 0.7rem;
 }
-dl > dt {
-    color:#2d3436;
+
+dl>dt {
+    color: #2d3436;
 }
-dl > dd {
+
+dl>dd {
     color: #636e72;
 }
 
-input.search-form,
-input.search-form::-webkit-input-placeholder {
+input.search-form, input.search-form::-webkit-input-placeholder {
     font-size: 0.8rem;
+}
+
+.brand-search-trash {
+    font-size: 0.9rem;
+    color: #e84393;
+}
+
+.product-main-thumbs img {
+    margin-bottom: 2px;
+}
+
+.card-title {
+    font-size: 0.9rem;
+}
+
+.big-part-name {
+    font-weight: 600;
+}
+
+.add-product-icon {
+    color: #007bff;
+    cursor: pointer;
+}
+
+.color-success {
+    color: #28a745;
+}
+
+/* flex for product small images */
+
+.product-image-container {
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: center; */
+}
+
+.product-image-item {
+    padding: 0.5rem;
+    flex: auto;
+    justify-content: center;
+    border: 1px solid #e8439322;
+    border-radius: 1px;
+    margin: 2px;
+    flex-grow: 0;
+}
+
+.product-image-image {
+    width: 150px;
+    height: 150px;
+    display: block;
+    margin: auto;
+}
+
+.product-image-footer {
+    padding: 0.5rem 1rem 0 1rem;
+}
+
+.product-video-container {
+    display: flex;
+    justify-content: center;
+}
+
+.product-video-item {
+    flex: auto;
+}
+
+.bottom-border {
+    padding-bottom: 0.5rem!important;
+    border-bottom: 1px solid rgba(60, 60, 60, .26);
+    ;
+}
+
+.product-videos-ul li {
+    padding: 0.5rem 0 0.5rem 0;
+}
+
+.product-video-icon {
+    color: #e84393;
+    padding-right: 1rem;
+    cursor: pointer;
+}
+
+.product-video-thumbnails {
+    margin-right: 0.5rem;
+}
+
+.product-video-thumbnails img {
+    height: 60px;
+    width: 90px;
+}
+.product-vieo-input:focus {
+    color: #007bff;
+}
+.product-main-name {
+    color: #6610f2;
+    font-weight: bold;
+}
+.product-main-name:focus {
+    color: #001f3f;
+    font-weight: bold;
+}
+.load-spiner {
+    display: flex;
+    justify-content: center;
+    padding: 1rem 0 1rem 0;
 }

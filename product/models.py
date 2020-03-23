@@ -1,15 +1,61 @@
 import os
 from brands.models import BrandsDict
-from product.utils import unique_slug_generator
+from product.utils import unique_slug_generator, get_youtube_id
 from django.db.models.signals import pre_save
 from django.db import models
 from django.conf import settings
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image as Img
+import io
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
+from PIL import Image, ImageOps
+from .utils import delete_file
+from mptt.models import MPTTModel, TreeForeignKey
 
 
-# Units for parts
-class Units(models.Model):
+class Category(MPTTModel):
+    name = models.CharField(max_length=50, unique=True)
+    parent = TreeForeignKey('self', null=True, blank=True,
+                            related_name='children', db_index=True, on_delete=models.CASCADE)
+    slug = models.SlugField()
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
+    class Meta:
+        unique_together = (('parent', 'slug',))
+        verbose_name_plural = 'categories'
+
+    def get_slug_list(self):
+        try:
+            ancestors = self.get_ancestors(include_self=True)
+        except:
+            ancestors = []
+        else:
+            ancestors = [i.slug for i in ancestors]
+        slugs = []
+        for i in range(len(ancestors)):
+            slugs.append('/'.join(ancestors[:i+1]))
+        return slugs
+
+    def __str__(self):
+        return self.name
+
+
+# class Category(models.Model):  # Categories of products class
+#     name = models.CharField(max_length=100)
+#     parent = models.ForeignKey(
+#         'self', on_delete=models.CASCADE, blank=True, null=True)
+#     slug = models.SlugField(max_length=50)
+
+#     def __str__(self):
+#         return self.name
+
+
+class Units(models.Model):  # Units for parts
     unit_name = models.CharField(max_length=10, default='шт')
-    
+
     def __str__(self):
         return self.unit_name
 
@@ -25,7 +71,8 @@ class Country(models.Model):
 # Car Make class
 class CarMake(models.Model):
     name = models.CharField(max_length=45)
-    country = models.ForeignKey(Country, on_delete=models.DO_NOTHING, blank=True)
+    country = models.ForeignKey(
+        Country, on_delete=models.DO_NOTHING, blank=True)
 
     def __str__(self):
         return self.name
@@ -50,61 +97,104 @@ class CarModel(models.Model):
         return self.name
 
 
-# Categories of products class
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=100)
-    parent = models.ForeignKey(
-        'self', on_delete=models.CASCADE, blank=True, null=True)
-    slug = models.SlugField(max_length=50)
-
-    def __str__(self):
-        return self.name
-
-
 # Custom path to upload images
-def img_path(instance, filename):
+def img_path(instance, filename, *args, **kwargs):
     path = os.path.join(
         str(instance.product.cat_number), str(instance.product.brand).replace(' ', '_'), filename)
     return path
 
 
+def img_path_tmb(instance, filename, *args, **kwargs):
+    path = os.path.join(
+        str(instance.product.cat_number), str(instance.product.brand).replace(' ', '_'), 'tmb', filename)
+    return path
+
+
+###############################################################################
 # Product images
 class ProductImage(models.Model):
     image = models.ImageField(
         max_length=255, upload_to=img_path, null=True, blank=True)
+    img150 = models.ImageField(
+        max_length=255, upload_to=img_path_tmb, null=True, blank=True
+    )
+    img245 = models.ImageField(
+        max_length=255, upload_to=img_path_tmb, null=True, blank=True
+    )
+    img500 = models.ImageField(
+        max_length=255, upload_to=img_path_tmb, null=True, blank=True
+    )
+    img800 = models.ImageField(
+        max_length=255, upload_to=img_path_tmb, null=True, blank=True
+    )
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True, related_name='product_image')
 
+    def save(self, *args, **kwargs):
+
+        size = (150, 245, 500, 800, 1200)
+        method = Image.ANTIALIAS
+
+        im = Image.open(io.BytesIO(self.image.read()))
+        #im = Image.open(self.image)
+        imw, imh = im.size
+        if imw > size[4]:
+            img_big = ImageOps.fit(im, (size[4], size[4]), method=method,
+                                   bleed=0.0, centering=(0.5, 0.5))
+            output = io.BytesIO()
+            img_big.save(output, format='JPEG', quality=90)
+            output.seek(0)
+            self.image = InMemoryUploadedFile(
+                output, 'ImageField', f'{self.image.name}', 'image/jpeg', output.getbuffer().nbytes, 'utf-8', None)
+
+        img150 = ImageOps.fit(im, (size[0], size[0]), method=method,
+                              bleed=0.0, centering=(0.5, 0.5))
+        output = io.BytesIO()
+        img150.save(output, format='JPEG', quality=90)
+        output.seek(0)
+
+        self.img150 = InMemoryUploadedFile(
+            output, 'ImageField', f'{self.image.name}', 'image/jpeg', output.getbuffer().nbytes, 'utf-8', None)
+
+        img245 = ImageOps.fit(im, (size[1], size[1]), method=method,
+                              bleed=0.0, centering=(0.5, 0.5))
+        output = io.BytesIO()
+        img245.save(output, format='JPEG', quality=90)
+        output.seek(0)
+
+        self.img245 = InMemoryUploadedFile(
+            output, 'ImageField', f'{self.image.name}', 'image/jpeg', output.getbuffer().nbytes, 'utf-8', None)
+
+        img500 = ImageOps.fit(im, (size[2], size[2]), method=method,
+                              bleed=0.0, centering=(0.5, 0.5))
+        output = io.BytesIO()
+        img500.save(output, format='JPEG', quality=90)
+        output.seek(0)
+
+        self.img500 = InMemoryUploadedFile(
+            output, 'ImageField', f'{self.image.name}', 'image/jpeg', output.getbuffer().nbytes, 'utf-8', None)
+
+        img800 = ImageOps.fit(im, (size[3], size[3]), method=method,
+                              bleed=0.0, centering=(0.5, 0.5))
+        output = io.BytesIO()
+        img800.save(output, format='JPEG', quality=90)
+        output.seek(0)
+
+        self.img800 = InMemoryUploadedFile(
+            output, 'ImageField', f'{self.image.name}', 'image/jpeg', output.getbuffer().nbytes, 'utf-8', None)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return str(self.product.slug) + '_' + str(self.id)
 
-
-# Thumbnails for images
-#Need to create function for resizing images and save it for different
-#sizes
-class ProductThumb(models.Model):
-    img150 = models.ImageField(
-        max_length=255, upload_to='dummy', null=True, blank=True
-    )
-    img245 = models.ImageField(
-        max_length=255, upload_to='dummy', null=True, blank=True
-    )
-    img500 = models.ImageField(
-        max_length=255, upload_to='dummy', null=True, blank=True
-    )
-    img800 = models.ImageField(
-        max_length=255, upload_to='dummy', null=True, blank=True
-    )
-    image = models.OneToOneField('ProductImage',on_delete=models.CASCADE)
+###############################################################################
 
 
 # Product Videos
 class ProductVideos(models.Model):
-    youtube_id = models.CharField(max_length=255, null=True, blank=True)
+    youtube_id = models.CharField(max_length=45, null=True, blank=True)
     url = models.URLField(max_length=255, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
@@ -125,7 +215,8 @@ class ProductDescription(models.Model):
 
 class Product(models.Model):  # Main table product
     name = models.CharField(max_length=255)
-    brand = models.ForeignKey(BrandsDict, on_delete=models.DO_NOTHING, null=True, blank=True, related_name='product_brand')
+    brand = models.ForeignKey(BrandsDict, on_delete=models.DO_NOTHING,
+                              null=True, blank=True, related_name='product_brand')
     car_model = models.ForeignKey(
         CarModel, on_delete=models.DO_NOTHING, blank=True, null=True)
     cat_number = models.CharField(max_length=255)
@@ -137,10 +228,12 @@ class Product(models.Model):  # Main table product
     updated_date = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=50, blank=True)
     one_c_id = models.IntegerField(unique=True, blank=True, null=True)
-    unit = models.ForeignKey('Units', on_delete=models.DO_NOTHING, related_name='product_unit')
+    unit = models.ForeignKey(
+        'Units', on_delete=models.DO_NOTHING, related_name='product_unit')
     active = models.BooleanField(default=True)
-    engine = models.ForeignKey('CarEngine', on_delete=models.DO_NOTHING, blank=True)
-    
+    engine = models.ForeignKey(
+        'CarEngine', on_delete=models.DO_NOTHING, blank=True)
+
     def __str__(self):
         return self.name
 
@@ -164,14 +257,40 @@ class ProductAttribute(models.Model):
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True)
 
+################### Slug pre save receiver ####################################
 
-def slug_save(sender, instance, *args, **kwargs):
+
+def slug_save(sender, instance, *args, **kwargs):  # Slug saver
     if not instance.slug:
-        instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
+        instance.slug = unique_slug_generator(
+            instance, instance.name, instance.slug)
+
 
 pre_save.connect(slug_save, Product)
 
+#################### Youtube ID Pre Save Receiver #############################
 
 
+def youtube_id_save(sender, instance, *args, **kwargs):  # youtube id saver
+    instance.youtube_id = get_youtube_id(instance.url)
 
 
+pre_save.connect(youtube_id_save, ProductVideos)
+
+#################### File Delete Post Delete Receiver #########################
+
+
+def delete_files(sender, instance, *args, **kwargs):
+    if instance.image:
+        delete_file(instance.image.path)
+    if instance.img150:
+        delete_file(instance.img150.path)
+    if instance.img245:
+        delete_file(instance.img245.path)
+    if instance.img500:
+        delete_file(instance.img500.path)
+    if instance.img800:
+        delete_file(instance.img800.path)
+
+
+post_delete.connect(delete_files, ProductImage)
