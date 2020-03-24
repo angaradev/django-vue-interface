@@ -10,5 +10,6 @@ urlpatterns = [
     path('create/', productviews.CreateView.as_view(), name='product-new'),
     path('category/<str:hierarchy>/', productviews.show_category, name='categories'),
     #re_path(r'^category/(?P<hierarchy>.+)/$', productviews.show_category, name='categories'),
+    path('locale/', productviews.view_locale,),
 ]
 

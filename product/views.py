@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.views.generic.base import TemplateView
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
@@ -56,7 +56,7 @@ class Detail(TemplateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class Caregorizer(TemplateView):
+class Categorizer(TemplateView):
     pass
     #     for drow in dic:
     #     plus = drow.plus.split('\n')
@@ -78,3 +78,15 @@ class Caregorizer(TemplateView):
     # cat_count = final_qs.filter(~Q(group_id=0)).count()
     # not_cat_count = final_qs.filter(group_id=0).count()
     # request.session['categorized'] = True
+
+
+import locale
+import sys
+ 
+def view_locale(request):
+    loc_info = "getlocale: " + str(locale.getlocale()) + \
+        "<br/>getdefaultlocale(): " + str(locale.getdefaultlocale()) + \
+        "<br/>fs_encoding: " + str(sys.getfilesystemencoding()) + \
+        "<br/>sys default encoding: " + str(sys.getdefaultencoding()) + \
+        "<br/>sys default encoding: " + str(sys.getdefaultencoding())
+    return HttpResponse(loc_info)
