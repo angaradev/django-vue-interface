@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from product.models import Product, Units, CarModel, CarEngine, ProductImage, ProductVideos
 from brands.models import BrandsDict
 from product.api.serializers import (ProductSerializer,

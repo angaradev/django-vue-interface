@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 from brands.models import BrandsDict
 from product.utils import unique_slug_generator, get_youtube_id

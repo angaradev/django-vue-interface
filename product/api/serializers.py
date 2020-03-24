@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from rest_framework import serializers
 from product.models import (Product, ProductImage,
                             Category, Units, CarModel, CarMake, CarEngine,
