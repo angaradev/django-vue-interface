@@ -12,6 +12,10 @@ from django.views.generic import TemplateView
 from home.views import Home
 
 
+admin.site.site_header = 'Мега Интерфейс'
+admin.site.site_title = 'Интерфейс'
+
+
 urlpatterns = [
     #path('', TemplateView.as_view(template_name='index1.html')),
     path('', Home.as_view(), name='home'),
