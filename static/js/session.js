@@ -36,8 +36,9 @@ let v = new Vue({
                 }
             }
             store.setSelectedSession(this.car_model.name + ' ' + this.car_engine.name);
-            endpoint = `http://localhost:8000/api/product/session/`;
+            endpoint = `${ApplicationMainHost}/api/product/session/`;
             const data = await apiService(endpoint, 'POST', send_data);
+            
         }
     }
 });
@@ -60,7 +61,7 @@ let showVue = new Vue({
     },
     methods: {
         async getData() {
-            endpoint = `http://localhost:8000/api/product/session/`;
+            endpoint = `${ApplicationMainHost}/api/product/session/`;
             const data = await apiService(endpoint, 'GET');
             this.car_model = data.car_model;
             this.car_engine = data.car_engine;

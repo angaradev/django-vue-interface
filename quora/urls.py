@@ -11,6 +11,7 @@ from core.views import IndexTemplateView
 from django.views.generic import TemplateView
 from home.views import Home
 
+
 urlpatterns = [
     #path('', TemplateView.as_view(template_name='index1.html')),
     path('', Home.as_view(), name='home'),

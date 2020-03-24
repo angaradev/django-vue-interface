@@ -108,7 +108,7 @@ const app = new Vue({
         async createPart() {
             // Отправляем основные данные на сервер
             // Needs to make API and Login in Vue -- Here
-            endpoint = `http://localhost:8000/api/product/detailcreate/`;
+            endpoint = `${ApplicationMainHost}/api/product/detailcreate/`;
 
             //Логика: Если есть выбранный бренд или ед изм то отправляем их
             //или дефолтовые значения
@@ -153,30 +153,30 @@ const app = new Vue({
             console.log(response)
         },
         async getPart(id) {
-            const endpoint = `http://localhost:8000/api/product/detail/${id}/`;
+            const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
             const data = await apiService(endpoint);
             this.part = data;
 
         },
         async getSelectCarModelList(id) {
-            const endpoint = `http://localhost:8000/api/product/selectlistcarmodelnew/${id}/`;
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodelnew/${id}/`;
             const data = await apiService(endpoint);
             this.selectCarModelList = data;
             this.sessionCountry = this.selectCarModelList[0].carmake.country.country;
             this.sessionCarMake = this.selectCarModelList[0].carmake.name;
         },
         async getSelectCarEnginelList(id) {
-            const endpoint = `http://localhost:8000/api/product/selectlistcarengine/${id}/`; // Do not forget change api
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarengine/${id}/`; // Do not forget change api
             const data = await apiService(endpoint);
             this.selectCarEngineList = data;
         },
         async getSelectUnitList() {
-            const endpoint = `http://localhost:8000/api/product/selectlistunits/`;
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistunits/`;
             const data = await apiService(endpoint);
             this.selectUnitList = data;
         },
         async getSelectBrandsList() {
-            const endpoint = `http://localhost:8000/api/product/selectlistbrands/`;
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistbrands/`;
             const data = await apiService(endpoint);
             this.selectBrandList = data;
         }

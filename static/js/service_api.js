@@ -1,3 +1,5 @@
+
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -25,7 +27,7 @@ function apiService(endpoint, method, data, type = 'json') {
 
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFTOKEN': CSRF_TOKEN
+            'X-CSRFTOKEN': CSRF_TOKEN,
         },
             body = data;
 

@@ -17,7 +17,7 @@ let il = {
     // },
     // methods: {
     //     async getImage(id) {
-    //         endpoint = `http://localhost:8000/api/product/images/?product_id=${id}`;
+    //         endpoint = `${ApplicationMainHost}/api/product/images/?product_id=${id}`;
     //         let response = await apiService(endpoint);
     //         this.productImages = response.results;
 
@@ -138,7 +138,7 @@ const app = new Vue({
         },
         //Video part of code
         async getVideo(product_id) {
-            const endpoint = `http://localhost:8000/api/product/videos/?product_id=${product_id}`;
+            const endpoint = `${ApplicationMainHost}/api/product/videos/?product_id=${product_id}`;
             let response = await apiService(endpoint);
             this.productVideos = response.results;
 
@@ -146,7 +146,7 @@ const app = new Vue({
         },
         async saveVideo(id) {
             if (id) {
-                const endpoint = `http://localhost:8000/api/product/videos/${id}/`;
+                const endpoint = `${ApplicationMainHost}/api/product/videos/${id}/`;
                 let getIndex = this.productVideos.map(function (item) { return item.id; }).indexOf(id);
                 const data = {
                     url: this.productVideos[getIndex].url,
@@ -159,13 +159,13 @@ const app = new Vue({
 
         },
         async deleteVideo(id) {
-            const endpoint = `http://localhost:8000/api/product/videos/${id}/`;
+            const endpoint = `${ApplicationMainHost}/api/product/videos/${id}/`;
             await apiService(endpoint, 'DELETE');
             this.popFromArrayById(this.productVideos, id);
 
         },
         async addVideo() {
-            const endpoint = `http://localhost:8000/api/product/videos/`;
+            const endpoint = `${ApplicationMainHost}/api/product/videos/`;
             data = {
                 url: this.productVideoUrl,
                 product: this.part.id
@@ -181,14 +181,14 @@ const app = new Vue({
             this.selectedFiles = event.target.files;
         },
         async getImage(id) {
-            const endpoint = `http://localhost:8000/api/product/images/?product_id=${id}`;
+            const endpoint = `${ApplicationMainHost}/api/product/images/?product_id=${id}`;
             let response = await apiService(endpoint);
             this.productImages = response.results;
 
         },
         async uploadImage() {
             this.imageLoading = true;
-            const endpoint = `http://localhost:8000/api/product/images/`;
+            const endpoint = `${ApplicationMainHost}/api/product/images/`;
             let fd = new FormData();
             for (const element of this.selectedFiles) {
                 fd.append('image', element, element.name);
@@ -209,7 +209,7 @@ const app = new Vue({
 
         },
         async deleteImage(id) {
-            const endpoint = `http://localhost:8000/api/product/images/${id}/`;
+            const endpoint = `${ApplicationMainHost}/api/product/images/${id}/`;
             await apiService(endpoint, 'DELETE');
             let removeIndex = this.productImages.map(function (item) { return item.id; }).indexOf(id);
             this.productImages.splice(removeIndex, 1);
@@ -218,7 +218,7 @@ const app = new Vue({
         async editPart() {
             // Отправляем основные данные на сервер
             // Needs to make API and Login in Vue -- Here
-            const endpoint = `http://localhost:8000/api/product/detail/${this.part.id}/`;
+            const endpoint = `${ApplicationMainHost}/api/product/detail/${this.part.id}/`;
 
             //Логика: Если есть выбранный бренд или ед изм то отправляем их
             //или дефолтовые значения
@@ -263,7 +263,7 @@ const app = new Vue({
             //console.log(response)
         },
         async getPart(id) {
-            const endpoint = `http://localhost:8000/api/product/detail/${id}/`;
+            const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
             const data = await apiService(endpoint);
             this.part = data;
             await this.getSelectCarModelList(this.part.car_model.carmake.id);
@@ -271,22 +271,22 @@ const app = new Vue({
             await this.getImage(this.part.id);
         },
         async getSelectCarModelList(id) {
-            const endpoint = `http://localhost:8000/api/product/selectlistcarmodel/${id}/`;
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodel/${id}/`;
             const data = await apiService(endpoint);
             this.selectCarModelList = data;
         },
         async getSelectCarEnginelList(id) {
-            const endpoint = `http://localhost:8000/api/product/selectlistcarengine/${id}/`; // Do not forget change api
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarengine/${id}/`; // Do not forget change api
             const data = await apiService(endpoint);
             this.selectCarEngineList = data;
         },
         async getSelectUnitList() {
-            const endpoint = `http://localhost:8000/api/product/selectlistunits/`;
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistunits/`;
             const data = await apiService(endpoint);
             this.selectUnitList = data;
         },
         async getSelectBrandsList() {
-            const endpoint = `http://localhost:8000/api/product/selectlistbrands/`;
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistbrands/`;
             const data = await apiService(endpoint);
             this.selectBrandList = data;
         }

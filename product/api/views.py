@@ -144,6 +144,9 @@ class SelectFieldsEnginesView(APIView):
 class SetSession(APIView):
 
     def get(self, request, *args, **kwargs):
+        if request.session.get('car_model') is None:
+            request.session['car_model'] = 1
+            request.session['car_engine'] = 1
 
         qs = CarModel.objects.get(id=request.session.get('car_model'))
         e_qs = CarEngine.objects.get(id=request.session.get('car_engine'))
