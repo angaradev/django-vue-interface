@@ -54,7 +54,7 @@ const app = new Vue({
                     let result = this.selectUnitList.filter(a => {
                         return a.id == settings.defaultUnitId;
                     });
-                    return result
+                    return result;
                 }
             },
             set(val) {
@@ -72,7 +72,7 @@ const app = new Vue({
                 let result = this.selectBrandList.filter(a => {
                     return a.id == this.part.brand
                 });
-                return result
+                return result;
             }
         },
         selectedCarModel: {
@@ -86,7 +86,7 @@ const app = new Vue({
                 let result = this.selectCarModelList.filter(a => {
                     return a.id == selectedSession.car_engine;
                 });
-                return result;
+                return '';
             }
         },
         selectedCarEngine: {
@@ -100,7 +100,7 @@ const app = new Vue({
                 let result = this.selectCarEngineList.filter(a => {
                     return a.id == selectedSession.car_engine;
                 });
-                return result;
+                return '';
             }
         }
     },
