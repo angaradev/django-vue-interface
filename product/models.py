@@ -27,7 +27,7 @@ class Category(MPTTModel):
 
     class Meta:
         unique_together = (('parent', 'slug',))
-        verbose_name_plural = 'categories'
+        verbose_name_plural = 'Категории'
 
     def get_slug_list(self):
         try:
@@ -57,6 +57,10 @@ class Category(MPTTModel):
 
 class Units(models.Model):  # Units for parts
     unit_name = models.CharField(max_length=10, default='шт')
+    
+    class Meta:
+        verbose_name = ("Еденица измерения")
+        verbose_name_plural = ("Еденицы измерения")
 
     def __str__(self):
         return self.unit_name
@@ -65,6 +69,10 @@ class Units(models.Model):  # Units for parts
 # Class Country
 class Country(models.Model):
     country = models.CharField(max_length=45)
+
+    class Meta:
+        verbose_name = ("Страна")
+        verbose_name_plural = ("Страны")
 
     def __str__(self):
         return self.country
@@ -76,12 +84,20 @@ class CarMake(models.Model):
     country = models.ForeignKey(
         Country, on_delete=models.DO_NOTHING, blank=True)
 
+    class Meta:
+        verbose_name = ("Марка Машины")
+        verbose_name_plural = ("Марки Машин")
+
     def __str__(self):
         return self.name
 
 
 class CarEngine(models.Model):
     name = models.CharField(max_length=45, blank=True)
+
+    class Meta:
+        verbose_name = ("Двигатель")
+        verbose_name_plural = ("Двигатели")
 
     def __str__(self):
         return self.name
@@ -94,6 +110,9 @@ class CarModel(models.Model):
     engine = models.ManyToManyField(
         CarEngine, blank=True, related_name='car_engine')
     carmake = models.ForeignKey(CarMake, on_delete=models.DO_NOTHING)
+    class Meta:
+        verbose_name = ("Модель Машины")
+        verbose_name_plural = ("Модели Машины")
 
     def __str__(self):
         return self.name
@@ -133,6 +152,9 @@ class ProductImage(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True, related_name='product_image')
+    class Meta:
+        verbose_name = ("Фото")
+        verbose_name_plural = ("Фото")
 
     def save(self, *args, **kwargs):
 
@@ -202,6 +224,9 @@ class ProductVideos(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True)
+    class Meta:
+        verbose_name = ("Видео")
+        verbose_name_plural = ("Видео")
 
 # Product Description
 
@@ -213,6 +238,9 @@ class ProductDescription(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True)
+    class Meta:
+        verbose_name = ("Описание товара")
+        verbose_name_plural = ("Описания товара")
 
 
 class Product(models.Model):  # Main table product
@@ -235,6 +263,9 @@ class Product(models.Model):  # Main table product
     active = models.BooleanField(default=True)
     engine = models.ForeignKey(
         'CarEngine', on_delete=models.DO_NOTHING, blank=True)
+    class Meta:
+        verbose_name = ("Товар")
+        verbose_name_plural = ("Товары")
 
     def __str__(self):
         return self.name
@@ -245,6 +276,10 @@ class Product(models.Model):  # Main table product
 class Cross(models.Model):
     cross = models.CharField(max_length=50)
     product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+
+    class Meta:
+        verbose_name = ("Кросс")
+        verbose_name_plural = ("Кроссы")
 
     def __str__(self):
         return self.product
@@ -258,6 +293,9 @@ class ProductAttribute(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True)
+    class Meta:
+        verbose_name = ("Атрибут")
+        verbose_name_plural = ("Атрибуты")
 
 ################### Slug pre save receiver ####################################
 
