@@ -52,6 +52,7 @@ class CarMakeSerializer(serializers.ModelSerializer):
 
 class CarModelSerializer(serializers.ModelSerializer):
     id = serializers.ModelField(model_field=CarModel()._meta.get_field('id'))
+    name = serializers.ModelField(model_field=CarModel()._meta.get_field('name'), required=True)
     carmake = CarMakeSerializer(
         instance=CarMake, required=False, read_only=True)
 
@@ -103,7 +104,7 @@ class BrandsDictSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     #unit = UnitsSerializer(instance=Units)
-    car_model = CarModelSerializer(instance=CarModel, required=False)
+    car_model = CarModelSerializer(instance=CarModel, required=True)
     #engine = CarEngineSerializer(instance=CarEngine)
 
     class Meta:

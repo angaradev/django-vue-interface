@@ -127,16 +127,16 @@ class SelectFieldsModelsView(APIView):
 
 class SelectNewProductModelsView(APIView):
 
-    def get(self, request, pk):
-        models_list = CarModel.objects.filter(id=pk)
+    def get(self, request):
+        models_list = CarModel.objects.all()
         serializer = CarModelSerializer(models_list, many=True)
         return Response(serializer.data)
 
 
 class SelectFieldsEnginesView(APIView):
 
-    def get(self, request, pk):
-        engine_list = CarEngine.objects.filter(car_engine=pk)
+    def get(self, request):
+        engine_list = CarEngine.objects.all()
         serializer = CarEngineSerializer(engine_list, many=True)
         return Response(serializer.data)
 

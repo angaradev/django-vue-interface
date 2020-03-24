@@ -93,7 +93,7 @@ class CarMake(models.Model):
 
 
 class CarEngine(models.Model):
-    name = models.CharField(max_length=45, blank=True)
+    name = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:
         verbose_name = ("Двигатель")
@@ -262,7 +262,7 @@ class Product(models.Model):  # Main table product
         'Units', on_delete=models.DO_NOTHING, related_name='product_unit')
     active = models.BooleanField(default=True)
     engine = models.ForeignKey(
-        'CarEngine', on_delete=models.DO_NOTHING, blank=True)
+        'CarEngine', on_delete=models.DO_NOTHING, blank=True, null=True)
     class Meta:
         verbose_name = ("Товар")
         verbose_name_plural = ("Товары")

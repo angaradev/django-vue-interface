@@ -86,7 +86,7 @@ const app = new Vue({
                 let result = this.selectCarModelList.filter(a => {
                     return a.id == selectedSession.car_engine;
                 });
-                return result
+                return result;
             }
         },
         selectedCarEngine: {
@@ -100,7 +100,7 @@ const app = new Vue({
                 let result = this.selectCarEngineList.filter(a => {
                     return a.id == selectedSession.car_engine;
                 });
-                return result
+                return result;
             }
         }
     },
@@ -158,15 +158,15 @@ const app = new Vue({
             this.part = data;
 
         },
-        async getSelectCarModelList(id) {
-            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodelnew/${id}/`;
+        async getSelectCarModelList() {
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodelnew/`;
             const data = await apiService(endpoint);
             this.selectCarModelList = data;
-            this.sessionCountry = this.selectCarModelList[0].carmake.country.country;
-            this.sessionCarMake = this.selectCarModelList[0].carmake.name;
+            // this.sessionCountry = this.selectCarModelList[0].carmake.country.country;
+            // this.sessionCarMake = this.selectCarModelList[0].carmake.name;
         },
-        async getSelectCarEnginelList(id) {
-            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarengine/${id}/`; // Do not forget change api
+        async getSelectCarEnginelList() {
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarengine/`; // Do not forget change api
             const data = await apiService(endpoint);
             this.selectCarEngineList = data;
         },
@@ -185,8 +185,8 @@ const app = new Vue({
     created() {
         this.getSelectUnitList();
         this.getSelectBrandsList();
-        this.getSelectCarModelList(selectedSession.car_model);
-        this.getSelectCarEnginelList(selectedSession.car_engine);
+        this.getSelectCarModelList();
+        this.getSelectCarEnginelList();
     },
     mounted() {
     }
