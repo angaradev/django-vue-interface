@@ -164,13 +164,27 @@
                                     </div>
                                     <div class="row pt-2">
                                         <div class="col-12">
-                                            <div class="product-video-container">
+                                            <!-- <div class="product-video-container">
                                                 <div class="embed-responsive embed-responsive-16by9 product-video-item">
                                                     <iframe class="embed-responsive-item"
                                                         src="https://www.youtube.com/embed/jJR2r7w3l5o" frameborder="0"
                                                         allowfullscreen=""></iframe>
                                                 </div>
-                                            </div>
+                                            </div> -->
+                                            <ul class="product-videos-ul">
+                                                <li v-for="(video, j) in productVideos">
+                                                    <span @click="deleteVideo(video.id)" class="product-video-icon">
+                                                        <i class="far fa-trash-alt"></i>
+                                                    </span>
+                                                    <span class="product-video-thumbnails">
+                                                        <a :href="video.url" class="product-video-a" target="_blank"><img
+                                                                :src="'https://img.youtube.com/vi/' + video.youtube_id + '/default.jpg'"></a>
+                                                    </span>
+                                                    <span class="product-video-url">
+                                                        <a :href="video.url"> { video.url }</a>
+                                                    </span>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
