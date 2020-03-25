@@ -52,7 +52,7 @@ class CarMakeSerializer(serializers.ModelSerializer):
 
 class CarModelSerializer(serializers.ModelSerializer):
     id = serializers.ModelField(model_field=CarModel()._meta.get_field('id'))
-    name = serializers.ModelField(model_field=CarModel()._meta.get_field('name'), required=True)
+    
     carmake = CarMakeSerializer(
         instance=CarMake, required=False, read_only=True)
 
