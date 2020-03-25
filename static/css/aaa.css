@@ -154,3 +154,6 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     justify-content: center;
     padding: 1rem 0 1rem 0;
 }
+.product-upload-button {
+    cursor: pointer;
+}
