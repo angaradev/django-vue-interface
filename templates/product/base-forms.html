@@ -42,9 +42,12 @@
         <li class="nav-item d-none d-sm-inline-block">
           <span data-toggle="dummy-tooltip" data-placement="right"
             title="Задать начальные значения Модели, Двигателя, чтобы не подставлять каждый раз при создании товара">
-            <a href="#" class="nav-link" >
-              <span class="color-success">DUMMY</span>
+            {% if request.session.car %}
+            <a href="{% url 'product-list' request.session.car.car_model_id %}" class="nav-link" >
+              
+              <span class="color-success">{{ request.session.car.car_name }}</span>
             </a>
+            {% endif %}
           </span>
         <li class="nav-item d-none d-sm-inline-block"><a href="#" class="nav-link">Dummy</a></li>
 
@@ -177,7 +180,12 @@
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 
-            
+               <li class="nav-item">
+                <a href="{% url 'product-main' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Товары</p>
+                </a>
+              </li>
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>

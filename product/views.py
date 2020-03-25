@@ -36,17 +36,41 @@ class Main(ListView):
 
     def get_queryset(self):
         if self.kwargs.get('pk', None):
+            
             qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(model_count=Count('car_model'))
-        else:
-            qs = self.model.objects.all()
+            car_model = CarModel.objects.get(id=self.kwargs['pk'])
+            self.request.session['car'] = {
+                # 'car_make': '',
+                'car_name': car_model.name,
+                'car_model_id': self.kwargs['pk'],
+                # 'car_engine': ''
+            }
+        elif self.request.session['car']['car_model_id']:
+            qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id'])
         return qs
 
 @method_decorator(login_required, name='dispatch')
-class MainMain(TemplateView):
+class MainMain(ListView):
     template_name = 'product/product_list.html'
-    #model = Product
-    
+    model = Product
 
+    def get_queryset(self):
+        car_session = self.request.session.get('car', None)
+        if self.kwargs.get('pk', None):
+            
+            qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(model_count=Count('car_model'))
+            self.request.session['car'] = {
+                # 'car_make': '',
+                'car_model_id': self.kwargs['pk'],
+                # 'car_engine': ''
+            }
+            
+        elif car_session:
+            qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id'])
+
+        else:
+            qs = self.model.objects.all()[:200]
+        return qs
     
 
     
