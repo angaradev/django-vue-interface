@@ -199,7 +199,7 @@
                     </p>
                   </a>
                   <ul class="nav nav-treeview">
-                    {% for car in car_models %}
+                    {% for car in make.car_model.all %}
                     <li class="nav-item">
                       <a href="{% url 'product-list' car.id %}" class="nav-link">
                         <i class="far fa-circle nav-icon"></i>
@@ -519,7 +519,7 @@
   <!--SELECT PLUGIN FOR SELECTION SEARCH-->
   <script src="{% static 'js/config.js' %}"></script>
   <script src="{% static 'js/service_api.js' %}"></script>
-  <!-- <script src="{% static 'js/session.js' %}"></script> -->
+  <script src="{% static 'js/product-list.js' %}"></script>
   <!-- <script src="{% static 'js/select2.min.js' %}"></script> -->
  
   {% block js %}

@@ -109,7 +109,7 @@ class CarModel(models.Model):
     name = models.CharField(max_length=45, blank=True)
     engine = models.ManyToManyField(
         CarEngine, blank=True, related_name='car_engine')
-    carmake = models.ForeignKey(CarMake, on_delete=models.DO_NOTHING)
+    carmake = models.ForeignKey(CarMake, on_delete=models.DO_NOTHING, related_name='car_model')
     class Meta:
         verbose_name = ("Модель Машины")
         verbose_name_plural = ("Модели Машины")
