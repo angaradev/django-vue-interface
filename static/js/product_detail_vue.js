@@ -122,10 +122,16 @@ const app = new Vue({
                 if (this.selectedCarEnginelId) {
                     return this.selectedCarEnginelId;
                 }
-                let result = this.selectCarEngineList.filter(a => {
-                    return a.id == this.part.engine;
-                });
-                return result
+                else if(this.selectCarEngineList){
+                    let result = this.selectCarEngineList.filter(a => {
+                        return a.id == this.part.engine;
+                    });
+                    return result
+                }
+                else {
+                    return '';
+                }
+                
             }
         }
     },
@@ -276,7 +282,7 @@ const app = new Vue({
             this.selectCarModelList = data;
         },
         async getSelectCarEnginelList(id) {
-            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarengine/${id}/`; // Do not forget change api
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarengine/`; // Do not forget change api
             const data = await apiService(endpoint);
             this.selectCarEngineList = data;
         },
