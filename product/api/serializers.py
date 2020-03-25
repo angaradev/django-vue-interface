@@ -129,12 +129,14 @@ class ProductSerializer(serializers.ModelSerializer):
 
     # Create method
     def create(self, validated_data):
-        print(validated_data.get('brand').id)
         car_model_data = validated_data.pop('car_model')
         car_model_qs = CarModel.objects.get(id=car_model_data['id'])
         brand_qs = BrandsDict.objects.get(id=validated_data.get('brand').id)
         unit_qs = Units.objects.get(id=validated_data['unit'].id)
-        engine_qs = CarEngine.objects.get(id=validated_data['engine'].id)
+        try:
+            engine_qs = CarEngine.objects.get(id=validated_data['engine'].id)
+        except:
+            engine_qs = None
 
         product = Product.objects.create(
             name=validated_data['name'],
