@@ -256,7 +256,7 @@ class Product(models.Model):  # Main table product
     related = models.ManyToManyField('self', blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    slug = models.SlugField(max_length=50, blank=True)
+    slug = models.SlugField(max_length=255, blank=True)
     one_c_id = models.IntegerField(unique=True, blank=True, null=True)
     unit = models.ForeignKey(
         'Units', on_delete=models.DO_NOTHING, related_name='product_unit')
@@ -276,6 +276,7 @@ class AngaraOld(models.Model):
     brand = models.CharField(max_length=255)
     car_model = models.IntegerField()
     one_c_id = models.IntegerField()
+    cat_number = models.CharField(max_length=45)
 
     def __str__(self):
         return self.name

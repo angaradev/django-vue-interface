@@ -2,13 +2,40 @@
 
 import sys
 import locale
-from django.shortcuts import render, get_object_or_404, HttpResponse
+from django.shortcuts import render, get_object_or_404, HttpResponse, redirect
 from django.views.generic.base import TemplateView
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .models import Product, Units, Category, CarModel
+from .models import Product, Units, Category, CarModel, AngaraOld, BrandsDict
 from django.db.models import Count
+
+
+
+def insert_from_old(request):
+    qs_from = AngaraOld.objects.all()
+    i = 0
+    for qa in qs_from:
+        try:
+            brand = BrandsDict.objects.get(id=qa.brand)
+        except:
+            brand = None
+        try:   
+            new = Product.objects.create(
+                name = qa.name,
+                brand = brand,
+                cat_number = qa.cat_number,
+                car_model = CarModel.objects.get(id=qa.car_model),
+                one_c_id = qa.one_c_id,
+                unit = Units.objects.get(id=1)
+            )
+        except Exception as e:
+            print(e)
+            i += 1
+            print(i)
+    return redirect('product-main')
+
+
 
 
 def show_category(request, hierarchy=None):
@@ -36,8 +63,7 @@ class Main(ListView):
 
     def get_queryset(self):
         if self.kwargs.get('pk', None):
-            
-            qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(model_count=Count('car_model'))
+            qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(model_count=Count('car_model')).order_by('name')
             car_model = CarModel.objects.get(id=self.kwargs['pk'])
             self.request.session['car'] = {
                 # 'car_make': '',
@@ -46,7 +72,7 @@ class Main(ListView):
                 # 'car_engine': ''
             }
         elif self.request.session['car']['car_model_id']:
-            qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id'])
+            qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id']).order_by('name')
         return qs
 
 @method_decorator(login_required, name='dispatch')
@@ -58,7 +84,7 @@ class MainMain(ListView):
         car_session = self.request.session.get('car', None)
         if self.kwargs.get('pk', None):
             
-            qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(model_count=Count('car_model'))
+            qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(model_count=Count('car_model')).order_by('name')
             self.request.session['car'] = {
                 # 'car_make': '',
                 'car_model_id': self.kwargs['pk'],
@@ -66,7 +92,7 @@ class MainMain(ListView):
             }
             
         elif car_session:
-            qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id'])
+            qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id']).order_by('name')
 
         else:
             qs = self.model.objects.all()[:200]

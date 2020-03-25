@@ -150,7 +150,8 @@ const app = new Vue({
             }
             //console.log(JSON.stringify(data));
             const response = await apiService(endpoint, 'POST', data);
-            window.location.href = `${ApplicationMainHost}/product/`
+            console.log(response)
+            //window.location.href = `${ApplicationMainHost}/product/`
             // if(response.car_model.name == "Это поле обязательно.") {
             //     console.log('Works');
             // }
