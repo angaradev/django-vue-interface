@@ -8,6 +8,7 @@ from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from .models import Product, Units, Category, CarModel
+from django.db.models import Count
 
 
 def show_category(request, hierarchy=None):
@@ -34,20 +35,24 @@ class Main(ListView):
     model = Product
 
     def get_queryset(self):
-        qs = self.model.objects.filter(car_model=self.kwargs['pk'])
+        if self.kwargs.get('pk', None):
+            qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(model_count=Count('car_model'))
+        else:
+            qs = self.model.objects.all()
         return qs
+
+@method_decorator(login_required, name='dispatch')
+class MainMain(TemplateView):
+    template_name = 'product/product_list.html'
+    #model = Product
+    
+
+    
 
     
 
 
-@method_decorator(login_required, name='dispatch')
-class CarModelList(ListView):
-    template_name = 'product/pr_list.html'
-    model = Product
 
-    def get_queryset(self):
-        qs = self.model.objects.filter(car_model=self.kwargs['pk'])
-        return qs
 
 
 @method_decorator(login_required, name='dispatch')

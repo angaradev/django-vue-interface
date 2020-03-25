@@ -270,6 +270,16 @@ class Product(models.Model):  # Main table product
     def __str__(self):
         return self.name
 
+
+class AngaraOld(models.Model):
+    name = models.CharField(max_length=255)
+    brand = models.CharField(max_length=255)
+    car_model = models.IntegerField()
+    one_c_id = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
 # Crosses parts
 
 
