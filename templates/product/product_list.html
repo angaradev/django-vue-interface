@@ -19,6 +19,7 @@
                                         <th data-sortable="true">Название</th>
                                         <th>Кат Номер</th>
                                         <th>Бренд</th>
+                                        <th>1C ID</th>
                                         <th>Двигатель</th>
                                     </tr>
                                 </thead>
@@ -33,6 +34,7 @@
                                         </td>
                                         <td>{{ object.cat_number }}</td>
                                         <td>{{ object.brand|upper }}</td>
+                                        <td>{{ object.one_c_id }}</td>
                                         <td>{{ object.engine.name }}</td>
                                     </tr>
                                     {% endfor %}
