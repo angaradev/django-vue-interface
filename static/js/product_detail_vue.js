@@ -147,8 +147,6 @@ const app = new Vue({
             const endpoint = `${ApplicationMainHost}/api/product/videos/?product_id=${product_id}`;
             let response = await apiService(endpoint);
             this.productVideos = response.results;
-
-            //console.log(this.productVideos);
         },
         async saveVideo(id) {
             if (id) {
@@ -177,7 +175,6 @@ const app = new Vue({
                 product: this.part.id
             }
             const response = await apiService(endpoint, 'POST', data);
-            console.log(response);
             this.productVideos.push(response);
             this.productVideoUrl = null;
         },

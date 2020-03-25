@@ -248,7 +248,7 @@ class Product(models.Model):  # Main table product
     brand = models.ForeignKey(BrandsDict, on_delete=models.DO_NOTHING,
                               null=True, blank=True, related_name='product_brand')
     car_model = models.ForeignKey(
-        CarModel, on_delete=models.DO_NOTHING)
+        CarModel, on_delete=models.DO_NOTHING, related_name='model_product')
     cat_number = models.CharField(max_length=255)
     category = models.ManyToManyField(
         Category, related_name='category_reverse')

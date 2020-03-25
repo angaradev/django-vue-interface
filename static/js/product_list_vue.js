@@ -11,7 +11,6 @@ let vi = new Vue({
         async deleteProduct(id) {
             const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`
             let result = await apiService(endpoint, 'DELETE');
-            console.log(result);
             location.reload();
         }
     }

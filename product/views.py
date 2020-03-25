@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+import sys
+import locale
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.views.generic.base import TemplateView
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .models import Product, Units, Category
+from .models import Product, Units, Category, CarModel
 
 
 def show_category(request, hierarchy=None):
@@ -19,7 +21,8 @@ def show_category(request, hierarchy=None):
     try:
         instance = Category.objects.get(parent=parent, slug=category_slug[-1])
     except:
-        instance = get_object_or_404(Product, slug='kolenval-ogromnyj-i-ochen-dorogoj')
+        instance = get_object_or_404(
+            Product, slug='kolenval-ogromnyj-i-ochen-dorogoj')
         return render(request, "postDetail.html", {'instance': instance})
     else:
         return render(request, 'product/category/categories.html', {'instance': instance})
@@ -29,6 +32,22 @@ def show_category(request, hierarchy=None):
 class Main(ListView):
     template_name = 'product/product_list.html'
     model = Product
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(car_model=self.kwargs['pk'])
+        return qs
+
+    
+
+
+@method_decorator(login_required, name='dispatch')
+class CarModelList(ListView):
+    template_name = 'product/pr_list.html'
+    model = Product
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(car_model=self.kwargs['pk'])
+        return qs
 
 
 @method_decorator(login_required, name='dispatch')
@@ -80,9 +99,6 @@ class Categorizer(TemplateView):
     # request.session['categorized'] = True
 
 
-import locale
-import sys
- 
 def view_locale(request):
     loc_info = "getlocale: " + str(locale.getlocale()) + \
         "<br/>getdefaultlocale(): " + str(locale.getdefaultlocale()) + \
