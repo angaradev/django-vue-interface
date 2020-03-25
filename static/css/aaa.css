@@ -49,6 +49,11 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     font-size: 0.9rem;
     color: #e84393;
 }
+.product-trash {
+    font-size: 0.7rem;
+    color: #e84393;
+    cursor: pointer;
+}
 
 .product-main-thumbs img {
     margin-bottom: 2px;

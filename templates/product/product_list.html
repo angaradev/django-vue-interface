@@ -15,10 +15,10 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
+                                        <th>Del</th>
                                         <th data-sortable="true">Название</th>
                                         <th>Кат Номер</th>
                                         <th>Бренд</th>
-                                        <th>Двигатель</th>
                                         <th>Двигатель</th>
                                     </tr>
                                 </thead>
@@ -27,12 +27,12 @@
 
                                     <tr>
                                         <td>{{ object.pk }}</td>
+                                        <td><i @click="deleteProduct('{{ object.id }}')" class="far fa-trash-alt product-trash"></i></td>
                                         <td>
                                             <a href="{% url 'product-detail' object.pk %}"><b>{{ object.name }}</b></a>
                                         </td>
                                         <td>{{ object.cat_number }}</td>
                                         <td>{{ object.brand|upper }}</td>
-                                        <td>{{ object.engine.name }}</td>
                                         <td>{{ object.engine.name }}</td>
                                     </tr>
                                     {% endfor %}
@@ -57,7 +57,10 @@
 <script>
 
     $(document).ready(function () {
-        $('#product-list').DataTable();
+        $('#product-list').DataTable({
+            "pageLength": 100,
+            //paging: false
+        });
     });
 </script>
 {% endblock %}
