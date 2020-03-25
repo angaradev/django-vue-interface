@@ -3,7 +3,7 @@
 
 let vi = new Vue({
     delimiters: ['{', '}'],
-    el: '#app',
+    el: '#app-list',
     data: {
         modelsList: []
     },

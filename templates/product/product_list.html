@@ -5,7 +5,7 @@
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Custom elements start here -->
-    <section class="content" id="app">
+    <section class="content" id="app-list">
         <div class="container-fluid">
             <div class="row pt-2">
                 <div class="col-12">
@@ -51,7 +51,7 @@
 {% endblock content %}
 
 {% block js %}
-
+<script src="{% static 'js/product_list_vue.js' %}"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 <script>
