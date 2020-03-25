@@ -14,12 +14,12 @@ let vi = new Vue({
             location.reload();
         }
     },
-    async getModelsForMenu(id) {
-        const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodel/${id}/`
-        let result = await apiService(endpoint, 'DELETE');
-        result = this.modelsList;
-        console.log(this.modelsList);
-    }
+    // async getModelsForMenu(id) {
+    //     const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodel/${id}/`
+    //     let result = await apiService(endpoint, 'DELETE');
+    //     result = this.modelsList;
+    //     console.log(this.modelsList);
+    // }
 });
 
 
