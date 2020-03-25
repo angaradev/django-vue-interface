@@ -267,6 +267,7 @@ const app = new Vue({
             //console.log(JSON.stringify(data));
             let response = await apiService(endpoint, 'PUT', data);
             //console.log(response)
+            window.location.href = `${ApplicationMainHost}/product/`
         },
         async getPart(id) {
             const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;

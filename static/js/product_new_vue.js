@@ -150,10 +150,10 @@ const app = new Vue({
             }
             //console.log(JSON.stringify(data));
             const response = await apiService(endpoint, 'POST', data);
-            console.log(response)
-            if(response.car_model.name == "Это поле обязательно.") {
-                console.log('Works');
-            }
+            window.location.href = `${ApplicationMainHost}/product/`
+            // if(response.car_model.name == "Это поле обязательно.") {
+            //     console.log('Works');
+            // }
         },
         async getPart(id) {
             const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
