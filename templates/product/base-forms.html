@@ -43,8 +43,8 @@
           <span data-toggle="dummy-tooltip" data-placement="right"
             title="Задать начальные значения Модели, Двигателя, чтобы не подставлять каждый раз при создании товара">
             {% if request.session.car %}
-            <a href="{% url 'product-list' request.session.car.car_model_id %}" class="nav-link" >
-              
+            <a href="{% url 'product-list' request.session.car.car_model_id %}" class="nav-link">
+
               <span class="color-success">{{ request.session.car.car_name }}</span>
             </a>
             {% endif %}
@@ -53,8 +53,8 @@
 
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-          <a href="{% url 'product-new' %}" class="nav-link" data-toggle="tooltip" data-placement="right" title="Добавить Продукт"><i
-              class="far fa-plus-square add-product-icon"></i></a>
+          <a href="{% url 'product-new' %}" class="nav-link" data-toggle="tooltip" data-placement="right"
+            title="Добавить Продукт"><i class="far fa-plus-square add-product-icon"></i></a>
         </li>
       </ul>
       <!-- Right navbar links -->
@@ -180,12 +180,12 @@
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 
-               <li class="nav-item">
-                <a href="{% url 'product-main' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Товары</p>
-                </a>
-              </li>
+            <li class="nav-item">
+              <a href="{% url 'product-main' %}" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Товары</p>
+              </a>
+            </li>
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -196,7 +196,7 @@
               </a>
               <ul class="nav nav-treeview">
                 {% for make in car_makes %}
-                
+
                 <li class="nav-item has-treeview">
                   <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-copy"></i>
@@ -219,7 +219,7 @@
                   </ul>
                 </li>
                 {% endfor %}
-                
+
               </ul>
             </li>
             <!-- <li class="nav-item has-treeview">
@@ -464,8 +464,14 @@
   <script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
   <!-- bs-custom-file-input -->
   <script src="{% static 'plugins/bs-custom-file-input/bs-custom-file-input.min.js' %}"></script>
+
   <!-- AdminLTE App -->
   <script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+  <!-- <script src="{% static 'plugins/sweetalert2/sweetalert2.min.js' %}"></script> -->
+  <!-- Toastr -->
+  <!-- <script src="{% static 'plugins/toastr/toastr.min.js' %}"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-toasted/1.1.28/toasted.min.js"
+    integrity="sha256-oteQyh0zjcfaBW+M1IYW05W0FDk2++tfv6D/WP0g6m4=" crossorigin="anonymous"></script>
   <!-- VUE JS -->
   <script src="{% static 'js/vue.js' %}"></script>
   <!--SELECT PLUGIN FOR SELECTION SEARCH-->
@@ -474,7 +480,24 @@
   <script src="{% static 'js/config.js' %}"></script>
   <script src="{% static 'js/service_api.js' %}"></script>
   <!-- <script src="{% static 'js/select2.min.js' %}"></script> -->
- 
+  <!-- Lastly add this package -->
+  <script src="https://cdn.jsdelivr.net/npm/vue-toast-notification"></script>
+  <link href="https://cdn.jsdelivr.net/npm/vue-toast-notification/dist/theme-default.css" rel="stylesheet">
+  <!-- Init the plugin -->
+  <script>
+    // Vue.use(VueToast);
+
+    // //Vue.$toast.open('message string');
+
+    // // Can accept an Object of options
+    // Vue.$toast.open({
+    //   message: 'message string',
+    //   type: 'error',
+    //   position: 'top-right'
+    //   // all other options
+    // });
+  </script>
+
   {% block js %}
   {% endblock js %}
   <script type="text/javascript">
@@ -486,6 +509,7 @@
       $('[data-toggle="tooltip"]').tooltip()
     })
   </script>
+
 </body>
 
 </html>

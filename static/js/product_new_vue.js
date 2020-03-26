@@ -9,6 +9,17 @@ settings = {
 //##########################################################//
 //############### VUE PART STARTS HERE #####################//
 //##########################################################//
+Vue.use(VueToast);
+
+//Vue.$toast.open('message string');
+
+// Can accept an Object of options
+// Vue.$toast.open({
+//     message: 'message string',
+//     type: 'error',
+//     position: 'top-right'
+//     // all other options
+// });
 const vsel = Vue.component('v-select', VueSelect.VueSelect);
 const app = new Vue({
     delimiters: ['{', '}'],
@@ -148,13 +159,21 @@ const app = new Vue({
                 active: this.part.active,
                 engine: engineId
             }
-            //console.log(JSON.stringify(data));
-            const response = await apiService(endpoint, 'POST', data);
-            console.log(response)
-            //window.location.href = `${ApplicationMainHost}/product/`
-            // if(response.car_model.name == "Это поле обязательно.") {
-            //     console.log('Works');
-            // }
+            
+            try {
+                const response = await apiService(endpoint, 'POST', data);
+                if (response){
+                    console.log(response)
+                    this.successToast("Товар сохранен");
+                    //window.location.href = `${ApplicationMainHost}/product/`;
+                }
+                else{
+                    this.errorToast('Товар не сохранился!');
+                }
+                    
+            } catch (e) {
+                console.log(e);
+            }
         },
         async getPart(id) {
             const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
@@ -168,6 +187,25 @@ const app = new Vue({
             this.selectCarModelList = data;
             // this.sessionCountry = this.selectCarModelList[0].carmake.country.country;
             // this.sessionCarMake = this.selectCarModelList[0].carmake.name;
+            // setTimeout(() => {
+            //     this.successToast('Товар сохранен успешно!');
+            // }, 3000)
+            // this.errorToast('Товар не сохранился!');
+
+        },
+        errorToast(message) {
+            this.$toast.open({
+                message: message,
+                type: 'error',
+                position: 'top-right'
+            })
+        },
+        successToast(message) {
+            this.$toast.open({
+                message: message,
+                type: 'success',
+                position: 'top-right'
+            })
         },
         async getSelectCarEnginelList() {
             const endpoint = `${ApplicationMainHost}/api/product/selectlistcarengine/`; // Do not forget change api
@@ -185,7 +223,7 @@ const app = new Vue({
             this.selectBrandList = data;
         }
     },
-    
+
     created() {
         this.getSelectUnitList();
         this.getSelectBrandsList();
