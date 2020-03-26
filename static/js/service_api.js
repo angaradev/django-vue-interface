@@ -88,5 +88,6 @@ function axiosUploadImageApi(endpoint, form_data) {
         }
     }).catch(err => {
         console.log(err);
+        return false;
     })
 }

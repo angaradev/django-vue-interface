@@ -2,6 +2,7 @@
 //##########################################################//
 //############### VUE PART STARTS HERE #####################//
 //##########################################################//
+Vue.use(VueToast);
 const vsel = Vue.component('v-select', VueSelect.VueSelect);
 let il = {
 
@@ -122,7 +123,7 @@ const app = new Vue({
                 if (this.selectedCarEnginelId) {
                     return this.selectedCarEnginelId;
                 }
-                else if(this.selectCarEngineList){
+                else if (this.selectCarEngineList) {
                     let result = this.selectCarEngineList.filter(a => {
                         return a.id == this.part.engine;
                     });
@@ -131,12 +132,26 @@ const app = new Vue({
                 else {
                     return '';
                 }
-                
+
             }
         }
     },
 
     methods: {
+        errorToast(message) {
+            this.$toast.open({
+                message: message,
+                type: 'error',
+                position: 'top-right'
+            })
+        },
+        successToast(message) {
+            this.$toast.open({
+                message: message,
+                type: 'success',
+                position: 'top-right'
+            })
+        },
         popFromArrayById(array, id) {
             let removeIndex = array.map(function (item) { return item.id; }).indexOf(id);
             array.splice(removeIndex, 1);
@@ -175,8 +190,14 @@ const app = new Vue({
                 product: this.part.id
             }
             const response = await apiService(endpoint, 'POST', data);
-            this.productVideos.push(response);
-            this.productVideoUrl = null;
+            if (response) {
+                this.productVideos.push(response);
+                this.productVideoUrl = null;
+                this.successToast('Видео сохранено успешно');
+            } else {
+                this.errorToast('Видео не сохранено!');
+            }
+
         },
 
         //Image Part Of Code
@@ -201,9 +222,15 @@ const app = new Vue({
             this.imageLoading = true;
             await axiosUploadImageApi(endpoint, fd)
                 .then(response => {
-                    this.imageLoading = false;
-                    this.selectedFiles = [];
-                    this.resetUploadForm();
+                    if (response) {
+                        this.successToast('Фото сохранено успешно');
+                        this.imageLoading = false;
+                        this.selectedFiles = [];
+                    }
+                    else {
+                        this.errorToast('Фото не сохранилось!');
+                        this.imageLoading = false;
+                    }
                 })
                 .catch(error => {
                     this.imageLoading = false;
@@ -213,7 +240,12 @@ const app = new Vue({
         },
         async deleteImage(id) {
             const endpoint = `${ApplicationMainHost}/api/product/images/${id}/`;
-            await apiService(endpoint, 'DELETE');
+            const res = await apiService(endpoint, 'DELETE');
+            if(!res) {
+                this.successToast('Фото удалено успешно');
+            } else {
+                this.errorToast('Фото не удалилось!');
+            }
             let removeIndex = this.productImages.map(function (item) { return item.id; }).indexOf(id);
             this.productImages.splice(removeIndex, 1);
         },
@@ -263,8 +295,14 @@ const app = new Vue({
             }
             //console.log(JSON.stringify(data));
             let response = await apiService(endpoint, 'PUT', data);
-            //console.log(response)
-            window.location.href = `${ApplicationMainHost}/product/`
+            console.log(response)
+            if (response) {
+                this.successToast('Товар сохранен!');
+            }
+            else {
+                this.errorToast('Ошибка сохранения товара!');
+            }
+            //window.location.href = `${ApplicationMainHost}/product/`
         },
         async getPart(id) {
             const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
