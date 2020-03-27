@@ -11,7 +11,7 @@ from .models import Product, Units, Category, CarModel, AngaraOld, BrandsDict
 from django.db.models import Count
 
 
-
+#For working bulk upload parts from 1c Porter,Porter2 only
 def insert_from_old(request):
     qs_from = AngaraOld.objects.all()
     i = 0
@@ -37,7 +37,7 @@ def insert_from_old(request):
 
 
 
-
+#For working with categories and not tested yet
 def show_category(request, hierarchy=None):
     category_slug = hierarchy.split('/')
     parent = None
@@ -91,8 +91,8 @@ class MainMain(ListView):
                 # 'car_engine': ''
             }
             
-        elif car_session:
-            qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id']).order_by('name')
+        # elif car_session:
+        #     qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id']).order_by('name')
 
         else:
             qs = self.model.objects.all()[:200]
