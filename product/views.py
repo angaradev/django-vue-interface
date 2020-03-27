@@ -95,7 +95,7 @@ class MainMain(ListView):
         #     qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id']).order_by('name')
 
         else:
-            qs = self.model.objects.all()[:200]
+            qs = self.model.objects.all().order_by('name')[:200]
         return qs
     
 
