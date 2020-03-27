@@ -169,7 +169,7 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     border-radius: 2px;
     display: inline-block;
     font-size: 0.6rem;
-    font-weight: 500;
+    font-weight: 600;
     padding: 1px;
     background-color: #28a745;
 }
