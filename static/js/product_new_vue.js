@@ -10,6 +10,7 @@ settings = {
 //############### VUE PART STARTS HERE #####################//
 //##########################################################//
 Vue.use(VueToast);
+Vue.component('vue-multiselect', window.VueMultiselect.default);
 
 //Vue.$toast.open('message string');
 
@@ -43,6 +44,8 @@ const app = new Vue({
             active: true,
             engine: {}
         },
+        value: [],
+        valueEngine: [],
         selectCarModelList: [],
         selectUnitList: [],
         selectBrandList: [],
@@ -146,18 +149,27 @@ const app = new Vue({
             } else {
                 engineId = this.selectedCarEnginelId.id;
             }
+            let car_mod = this.value.map(obj => {
+                return obj.id;
+            });
+            //Lgic of car engine values comprihansion list
+            let engine = [];
+            if (this.valueEngine.lenght == 0) {
+                engine = [];
+            }
+            engine = this.valueEngine.map(obj => {
+                return obj.id;
+            });
 
             const data = {
                 name: this.part.name,
                 cat_number: this.part.cat_number,
                 brand: brandId,
-                car_model: {
-                    id: carId
-                },
+                car_model: car_mod,
                 unit: unitId,
                 one_c_id: this.part.one_c_id,
                 active: this.part.active,
-                engine: engineId
+                engine: engine
             }
             
             try {

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 from product.models import Product, Units, CarModel, CarEngine, ProductImage, ProductVideos
 from brands.models import BrandsDict
 from product.api.serializers import (ProductSerializer,
@@ -9,7 +10,10 @@ from product.api.serializers import (ProductSerializer,
                                      CarEngineSerializer,
                                      SessionSerializer,
                                      ImageSerializer,
-                                     VideoSerializer)
+                                     VideoSerializer,
+                                     CarEngineSerializerSession,
+                                     CarModelSerializerSession
+                                     )
 from django.http import Http404
 from rest_framework import viewsets
 from rest_framework.views import APIView
@@ -26,6 +30,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     serializer_class = VideoSerializer
     queryset = ProductVideos.objects.all()
     model = ProductVideos
+
     def get_queryset(self):
         if self.request.query_params.get('product_id'):
             product_id = self.request.query_params.get('product_id', None)
@@ -180,3 +185,25 @@ class SetSession(APIView):
             next_serializer = SessionSerializer(data)
             return Response(next_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class getPartCarModel(APIView):
+
+    def get(self, request, *args, **kwargs):
+        id_list = request.GET.get('pk').split(',')
+        qs = CarModel.objects.filter(id__in=id_list)
+        serializer = CarModelSerializerSession(qs, many=True)
+        return Response(serializer.data)
+
+
+class getPartCarEngine(APIView):
+
+    def get(self, request, *args, **kwargs):
+        qs = None
+        if request.GET.get('pk') == 0:
+            qs = CarEngine.objects.none()
+        else:
+            id_list = request.GET.get('pk').split(',')
+            qs = CarEngine.objects.filter(id__in=id_list)
+        serializer = CarEngineSerializerSession(qs, many=True)
+        return Response(serializer.data)

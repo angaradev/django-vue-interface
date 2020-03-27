@@ -69,19 +69,19 @@ class CarEngineSerializer(serializers.ModelSerializer):
 
 
 class CarEngineSerializerSession(serializers.ModelSerializer):
-    id = serializers.ModelField(model_field=CarEngine()._meta.get_field('id'))
+    #id = serializers.ModelField(model_field=CarEngine()._meta.get_field('id'))
 
     class Meta:
         model = CarEngine
-        fields = ['id', 'name']
+        fields = '__all__'
 
 
 class CarModelSerializerSession(serializers.ModelSerializer):
-    id = serializers.ModelField(model_field=CarModel()._meta.get_field('id'))
+    #id = serializers.ModelField(model_field=CarModel()._meta.get_field('id'))
 
     class Meta:
         model = CarModel
-        fields = ['id', 'name']
+        fields = '__all__' #['id', 'name']
 
 
 class SessionSerializer(serializers.Serializer):
@@ -104,8 +104,8 @@ class BrandsDictSerializer(serializers.ModelSerializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     #unit = UnitsSerializer(instance=Units)
-    car_model = CarModelSerializer(instance=CarModel, required=True)
-    #engine = CarEngineSerializer(instance=CarEngine)
+    #car_model = CarModelSerializer(instance=CarModel, required=True)
+    # engine = CarEngineSerializer(instance=CarEngine, required=False)
 
     class Meta:
         model = Product
@@ -127,29 +127,38 @@ class ProductSerializer(serializers.ModelSerializer):
         # represent full fields of serializer nested objects
         depth = 0
 
-    # Create method
+    #Create method
     def create(self, validated_data):
+        #car models array
         car_model_data = validated_data.pop('car_model')
-        car_model_qs = CarModel.objects.get(id=car_model_data['id'])
+        car_model_list = [x.id for x in car_model_data]
+        car_model_qs = CarModel.objects.filter(id__in=car_model_list)
+        # engines array
+        car_engine_data = validated_data.pop('engine')
+        car_engine_list = [x.id for x in car_engine_data]
+        car_engine_qs = CarEngine.objects.filter(id__in=car_engine_list)
+
+        
         brand_qs = BrandsDict.objects.get(id=validated_data.get('brand').id)
         unit_qs = Units.objects.get(id=validated_data['unit'].id)
-        try:
-            engine_qs = CarEngine.objects.get(id=validated_data['engine'].id)
-        except:
-            engine_qs = None
+       
 
         product = Product.objects.create(
             name=validated_data['name'],
             cat_number=validated_data['cat_number'],
             brand=brand_qs,
-            car_model=car_model_qs,
+            #car_model=car_model_qs,
             unit=unit_qs,
             one_c_id=validated_data['one_c_id'],
-            active=validated_data['active'],
-            engine=engine_qs
+            active=validated_data['active']
         )
 
         product.save()
+        for engine in car_engine_list:
+            product.engine.add(CarEngine.objects.get(id=engine))
+
+        for car in car_model_list:
+            product.car_model.add(CarModel.objects.get(id=car))
 
         return product
 
@@ -180,21 +189,33 @@ class ProductSerializer(serializers.ModelSerializer):
 
         # Car model update logic
         carmodel_data = validated_data.pop('car_model')
-        try:
-            car_model_qs = CarModel.objects.get(id=carmodel_data['id'])
-            instance.car_model = car_model_qs
-        except:
-            pass
+        car_model_list = [x.id for x in carmodel_data]
+        car_model_qs = CarModel.objects.filter(model_product=instance.id)
+
+        # Car Engine update logic
+        car_engine_data = validated_data.pop('engine')
+        car_engine_list = [_.id for _ in car_engine_data]
+        car_engine_qs = CarEngine.objects.filter(car_related_engine=instance.id)
 
         instance.brand = validated_data.get('brand', instance.brand)
         instance.name = validated_data.get('name', instance.name)
         instance.cat_number = validated_data.get(
             'cat_number', instance.cat_number)
         instance.slug = validated_data.get('slug', instance.slug)
-        # instance.car_model = validated_data.get(
-        #    'car_model', instance.car_model)
         instance.one_c_id = validated_data.get('one_c_id', instance.one_c_id)
         instance.active = validated_data.get('active', instance.active)
         instance.save()
+        
+        
+        for car in car_model_qs:
+            instance.car_model.remove(car)
+        for car_l in car_model_list:
+            instance.car_model.add(CarModel.objects.get(id=car_l))
+
+        #Car engine making references
+        for engine in car_engine_qs:
+            instance.engine.remove(engine)
+        for eng in car_engine_list:
+            instance.engine.add(CarEngine.objects.get(id=eng))
 
         return instance

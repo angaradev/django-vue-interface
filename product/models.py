@@ -247,11 +247,11 @@ class Product(models.Model):  # Main table product
     name = models.CharField(max_length=255)
     brand = models.ForeignKey(BrandsDict, on_delete=models.DO_NOTHING,
                               null=True, blank=True, related_name='product_brand')
-    car_model = models.ForeignKey(
-        CarModel, on_delete=models.DO_NOTHING, related_name='model_product')
+    car_model = models.ManyToManyField(
+        CarModel, related_name='model_product')
     cat_number = models.CharField(max_length=255)
     category = models.ManyToManyField(
-        Category, related_name='category_reverse')
+        Category, related_name='category_reverse', blank=True)
     # Field for the cross selling products many many
     related = models.ManyToManyField('self', blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -261,8 +261,8 @@ class Product(models.Model):  # Main table product
     unit = models.ForeignKey(
         'Units', on_delete=models.DO_NOTHING, related_name='product_unit')
     active = models.BooleanField(default=True)
-    engine = models.ForeignKey(
-        'CarEngine', on_delete=models.DO_NOTHING, blank=True, null=True)
+    engine = models.ManyToManyField(
+        'CarEngine', related_name='car_related_engine', blank=True)
     class Meta:
         verbose_name = ("Товар")
         verbose_name_plural = ("Товары")

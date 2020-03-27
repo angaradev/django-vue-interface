@@ -133,9 +133,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/3.0/topics/i18n/
+#MAX UPLOAD DATA
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 
 LANGUAGE_CODE = 'ru'
 

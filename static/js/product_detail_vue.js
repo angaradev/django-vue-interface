@@ -3,6 +3,7 @@
 //############### VUE PART STARTS HERE #####################//
 //##########################################################//
 Vue.use(VueToast);
+Vue.component('vue-multiselect', window.VueMultiselect.default);
 const vsel = Vue.component('v-select', VueSelect.VueSelect);
 let il = {
 
@@ -35,6 +36,17 @@ const app = new Vue({
         'image-loader': il
     },
     data: {
+        value: [],
+        valueEngine: [],
+        options: [
+            { name: 'Vue.js', language: 'JavaScript' },
+            { name: 'Adonis', language: 'JavaScript' },
+            { name: 'Rails', language: 'Ruby' },
+            { name: 'Sinatra', language: 'Ruby' },
+            { name: 'Laravel', language: 'PHP' },
+            { name: 'Phoenix', language: 'Elixir' }
+        ]
+        ,
         part: {
             id: null,
             one_c_id: 0,
@@ -241,7 +253,7 @@ const app = new Vue({
         async deleteImage(id) {
             const endpoint = `${ApplicationMainHost}/api/product/images/${id}/`;
             const res = await apiService(endpoint, 'DELETE');
-            if(!res) {
+            if (!res) {
                 this.successToast('Фото удалено успешно');
             } else {
                 this.errorToast('Фото не удалилось!');
@@ -280,18 +292,27 @@ const app = new Vue({
             } else {
                 engineId = this.selectedCarEnginelId.id;
             }
+            let car_mod = this.value.map(obj => {
+                return obj.id;
+            });
+            //Lgic of car engine values comprihansion list
+            let engine = [];
+            if (this.valueEngine.lenght == 0) {
+                engine = [];
+            }
+            engine = this.valueEngine.map(obj => {
+                return obj.id;
+            });
 
             const data = {
                 one_c_id: Number(this.part.one_c_id),
                 name: this.part.name,
                 cat_number: this.part.cat_number,
                 brand: brandId,
-                car_model: {
-                    id: carId
-                },
+                car_model: car_mod,
                 unit: unitId,
                 active: this.part.active,
-                engine: engineId
+                engine: engine
             }
             //console.log(JSON.stringify(data));
             let response = await apiService(endpoint, 'PUT', data);
@@ -304,13 +325,31 @@ const app = new Vue({
             }
             //window.location.href = `${ApplicationMainHost}/product/`
         },
+        async getPartCarModel(id_list) { //Gettin car model list for specific car part
+            const endpoint = `${ApplicationMainHost}/api/product/selectpartcarmodel/?pk=${id_list}`;
+            const data = await apiService(endpoint);
+            this.value = data;
+        },
+        async getPartCarEngine(id_list) {
+            let endpoint;
+            if (id_list.lenght == 0) {
+                endpoint = `${ApplicationMainHost}/api/product/selectpartcarengine/?pk=0`;
+            }
+            endpoint = `${ApplicationMainHost}/api/product/selectpartcarengine/?pk=${id_list}`;
+            const data = await apiService(endpoint);
+            this.valueEngine = data;
+            return data;
+        },
         async getPart(id) {
             const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
             const data = await apiService(endpoint);
             this.part = data;
-            await this.getSelectCarModelList(this.part.car_model.carmake.id);
-            await this.getSelectCarEnginelList(this.part.car_model.id);
+            this.getPartCarModel(this.part.car_model);
+            this.getPartCarEngine(this.part.engine);
+            await this.getSelectCarModelList(1); // Here need to implement selecting models by carmake
+            // await this.getSelectCarEnginelList(this.part.car_model.id);
             await this.getImage(this.part.id);
+            console.log(data)
         },
         async getSelectCarModelList(id) {
             const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodel/${id}/`;
@@ -340,6 +379,7 @@ const app = new Vue({
         this.getSelectUnitList();
         this.getSelectBrandsList();
         const id = document.getElementById('mainId').getAttribute('token') || '';
+        this.getSelectCarEnginelList();
         this.getPart(id);
 
         this.getVideo(id);
