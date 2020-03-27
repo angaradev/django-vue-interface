@@ -164,3 +164,12 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     line-height: 1.5;
     border-radius: .2rem;
 }
+.model-bage-green {
+    color: #f8f9fa;
+    border-radius: 2px;
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 500;
+    padding: 1px;
+    background-color: #28a745;
+}

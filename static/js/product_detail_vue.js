@@ -347,7 +347,6 @@ const app = new Vue({
             this.part = data;
             this.getPartCarModel(this.part.car_model);
             this.getPartCarEngine(this.part.engine);
-            console.log(car_make_id)
             await this.getSelectCarModelList(car_make_id); // Here need to implement selecting models by carmake
             // await this.getSelectCarEnginelList(this.part.car_model.id);
             await this.getImage(this.part.id);

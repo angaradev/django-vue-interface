@@ -20,7 +20,7 @@
                                         <th>Кат Номер</th>
                                         <th>Бренд</th>
                                         <th>1C ID</th>
-                                        <th>Двигатель</th>
+                                        <th>Модель</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -35,7 +35,10 @@
                                         <td>{{ object.cat_number }}</td>
                                         <td>{{ object.brand|upper }}</td>
                                         <td>{{ object.one_c_id }}</td>
-                                        <td>{{ object.engine.name }}</td>
+                                        <td>{% for mod in object.car_model.all %}
+                                            <span class="model-bage-green">{{ mod.name }}</span>
+                                            {% endfor %}
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
