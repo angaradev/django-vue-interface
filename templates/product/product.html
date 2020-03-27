@@ -14,7 +14,7 @@
                     <form action="." id="basic">
                         <div class="card card-primary">
                             <div class="card-header">
-                                <h3 class="card-title">Основные параметры</h3>
+                                <h3 class="card-title">Основные параметры { part.car_make_id }</h3>
                             </div>
                             <div class="card-body">
                                 <label for="productName">Название Зачасти</label>
@@ -38,8 +38,9 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <label for="make">Марка Машины</label>
-                                        <input class="form-control form-control-sm" type="text" id="make"
-                                            placeholder="Марка" disabled>
+                                        <input class="form-control form-control-sm" type="text" id="car_make_id"
+                                        token="{{ object.car_model.name }}"
+                                            placeholder="{{ object.name.model_product }}" disabled>
                                     </div>
                                     <div class="col-6">
                                         <label for="productCatNumber">Каталожный номер</label>
@@ -66,7 +67,7 @@
                                     <div class="col-6">
                                         <label for="engine">DUMMY</label>
                                         <input v-model="part.category" class="form-control form-control-sm" type="text"
-                                            id="productGroup" placeholder="Dummy" disabled>
+                                            id="productDummy" placeholder="Dummy" disabled>
                                     </div>
                                     <div class="col-6">
                                         <label for="1cid">1C id</label>
@@ -430,6 +431,9 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'dist/js/demo.js' %}"></script>
 <script>
+
+    let car_make_id = 'hyundai'//"{{ request.session.car_make_id }}";
+   
     $(function () {
         // Summernote
         $('.textarea').summernote()

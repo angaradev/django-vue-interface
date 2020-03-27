@@ -44,7 +44,7 @@ class VideoViewSet(viewsets.ModelViewSet):
 class ImageViewSet(viewsets.ModelViewSet):
     # Here impemented very cool feature uploadeng multiple image trough serializer
     serializer_class = ImageSerializer
-    queryset = ProductImage.objects.all()
+    queryset = ProductImage.objects.all().order_by('-created_date')
 
     def get_queryset(self):
         if self.request.query_params.get('product_id'):
@@ -125,7 +125,7 @@ class SelectFieldsBrandsView(APIView):
 class SelectFieldsModelsView(APIView):
 
     def get(self, request, pk):
-        models_list = CarModel.objects.all() #filter(carmake=pk) 
+        models_list = CarModel.objects.filter(carmake=pk) 
         serializer = CarModelSerializer(models_list, many=True)
         return Response(serializer.data)
 

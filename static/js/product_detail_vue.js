@@ -48,6 +48,7 @@ const app = new Vue({
         ]
         ,
         part: {
+            car_make_id: null,
             id: null,
             one_c_id: 0,
             name: 'Part Name From Vue',
@@ -340,15 +341,17 @@ const app = new Vue({
             this.valueEngine = data;
             return data;
         },
-        async getPart(id) {
+        async getPart(id, car_make_id) {
             const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
             const data = await apiService(endpoint);
             this.part = data;
             this.getPartCarModel(this.part.car_model);
             this.getPartCarEngine(this.part.engine);
-            await this.getSelectCarModelList(1); // Here need to implement selecting models by carmake
+            console.log(car_make_id)
+            await this.getSelectCarModelList(car_make_id); // Here need to implement selecting models by carmake
             // await this.getSelectCarEnginelList(this.part.car_model.id);
             await this.getImage(this.part.id);
+            
             console.log(data)
         },
         async getSelectCarModelList(id) {
@@ -357,7 +360,7 @@ const app = new Vue({
             this.selectCarModelList = data;
         },
         async getSelectCarEnginelList(id) {
-            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarengine/`; // Do not forget change api
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarengine/`; 
             const data = await apiService(endpoint);
             this.selectCarEngineList = data;
         },
@@ -379,10 +382,11 @@ const app = new Vue({
         this.getSelectUnitList();
         this.getSelectBrandsList();
         const id = document.getElementById('mainId').getAttribute('token') || '';
+        const car_make_id = document.getElementById('car_m_id').getAttribute('token') || '';
         this.getSelectCarEnginelList();
-        this.getPart(id);
-
+        this.getPart(id, car_make_id);
         this.getVideo(id);
+        
 
 
     },

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from .models import CarMake
 import sys
 import locale
 from django.shortcuts import render, get_object_or_404, HttpResponse, redirect
@@ -11,7 +12,7 @@ from .models import Product, Units, Category, CarModel, AngaraOld, BrandsDict
 from django.db.models import Count
 
 
-#For working bulk upload parts from 1c Porter,Porter2 only
+# For working bulk upload parts from 1c Porter,Porter2 only
 def insert_from_old(request):
     qs_from = AngaraOld.objects.all()
     i = 0
@@ -20,14 +21,14 @@ def insert_from_old(request):
             brand = BrandsDict.objects.get(id=qa.brand)
         except:
             brand = None
-        try:   
+        try:
             new = Product.objects.create(
-                name = qa.name,
-                brand = brand,
-                cat_number = qa.cat_number,
-                car_model = CarModel.objects.get(id=qa.car_model),
-                one_c_id = qa.one_c_id,
-                unit = Units.objects.get(id=1)
+                name=qa.name,
+                brand=brand,
+                cat_number=qa.cat_number,
+                car_model=CarModel.objects.get(id=qa.car_model),
+                one_c_id=qa.one_c_id,
+                unit=Units.objects.get(id=1)
             )
         except Exception as e:
             print(e)
@@ -35,9 +36,7 @@ def insert_from_old(request):
             print(i)
     return redirect('product-main')
 
-
-
-#For working with categories and not tested yet
+# For working with categories and not tested yet
 def show_category(request, hierarchy=None):
     category_slug = hierarchy.split('/')
     parent = None
@@ -63,17 +62,25 @@ class Main(ListView):
 
     def get_queryset(self):
         if self.kwargs.get('pk', None):
-            qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(model_count=Count('car_model')).order_by('name')
+            qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(
+                model_count=Count('car_model')).order_by('name')
             car_model = CarModel.objects.get(id=self.kwargs['pk'])
+            car_make = CarMake.objects.get(car_model=car_model)
+            print(car_make.name)
             self.request.session['car'] = {
-                # 'car_make': '',
+                'car_make': car_make.name,
+                'car_make_id': car_make.id,
                 'car_name': car_model.name,
                 'car_model_id': self.kwargs['pk'],
                 # 'car_engine': ''
             }
         elif self.request.session['car']['car_model_id']:
-            qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id']).order_by('name')
+            qs = self.model.objects.filter(
+                car_model=self.request.session['car']['car_model_id']).order_by('name')
+        else:
+            qs = self.model.objects.all().order_by('name')[:200]
         return qs
+
 
 @method_decorator(login_required, name='dispatch')
 class MainMain(ListView):
@@ -83,25 +90,21 @@ class MainMain(ListView):
     def get_queryset(self):
         car_session = self.request.session.get('car', None)
         if self.kwargs.get('pk', None):
-            
-            qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(model_count=Count('car_model')).order_by('name')
+
+            qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(
+                model_count=Count('car_model')).order_by('name')
             self.request.session['car'] = {
                 # 'car_make': '',
                 'car_model_id': self.kwargs['pk'],
                 # 'car_engine': ''
             }
-            
+
         # elif car_session:
         #     qs = self.model.objects.filter(car_model=self.request.session['car']['car_model_id']).order_by('name')
 
         else:
             qs = self.model.objects.all().order_by('name')[:200]
         return qs
-    
-
-    
-
-
 
 
 

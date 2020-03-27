@@ -106,6 +106,7 @@ class ProductSerializer(serializers.ModelSerializer):
     #unit = UnitsSerializer(instance=Units)
     #car_model = CarModelSerializer(instance=CarModel, required=True)
     # engine = CarEngineSerializer(instance=CarEngine, required=False)
+    #car_make = CarMakeSerializer(instance=CarMake, required=True)
 
     class Meta:
         model = Product
