@@ -38,8 +38,9 @@ class ProductList(APIView):
 
     
     def get(self, request, format=None):
-        category = request.GET.get('category', None)
-        snippets = Product.objects.all()[:50]
+        category_list = request.GET.get('category', None).split(',')
+        print(category_list)
+        snippets = Product.objects.filter(category__in=category_list).order_by('name')
         serializer = ProductSerializer(snippets, many=True)
         return Response(serializer.data)
 
