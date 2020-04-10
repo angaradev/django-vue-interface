@@ -4,7 +4,15 @@ from rest_framework import serializers
 from product.models import (Product, ProductImage,
                             Category, Units, CarModel, CarMake, CarEngine,
                             Country, BrandsDict,
-                            ProductVideos)
+                            ProductVideos,
+                            Category)
+
+
+
+class CategorySerializer(serializers.Serializer):
+    
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=100)
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -113,9 +121,11 @@ class ProductSerializer(serializers.ModelSerializer):
         #fields = '__all__'
         fields = ['id',
                   'name',
+                  'name2',
                   'cat_number',
                   # 'created_date',
                   # 'updated_date',
+                  'category',
                   'slug',
                   'brand',
                   'car_model',
@@ -146,6 +156,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
         product = Product.objects.create(
             name=validated_data['name'],
+            name2=validated_data['name2'],
             cat_number=validated_data['cat_number'],
             brand=brand_qs,
             #car_model=car_model_qs,
@@ -200,6 +211,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
         instance.brand = validated_data.get('brand', instance.brand)
         instance.name = validated_data.get('name', instance.name)
+        instance.name2 = validated_data.get('name2', instance.name2)
         instance.cat_number = validated_data.get(
             'cat_number', instance.cat_number)
         instance.slug = validated_data.get('slug', instance.slug)

@@ -12,6 +12,7 @@ urlpatterns = [
     # Prefix in browser api/product/
     path('', include(router.urls)),
     path('detail/<int:pk>/', productApiViews.DetailGet.as_view(), name='api-product-detail'),
+    path('list/', productApiViews.ProductList.as_view(), name='api-product-list'),
     path('detailcreate/', productApiViews.CreateNewProduct.as_view(), name='create-new-product'),
     path('selectlistunits/', productApiViews.SelectFieldsUnitsView.as_view(), name='api-select-unit-list'),
     path('selectlistbrands/', productApiViews.SelectFieldsBrandsView.as_view(), name='api-select-brand-list'),
@@ -21,6 +22,7 @@ urlpatterns = [
     path('selectlistcarmodelnew/', productApiViews.SelectNewProductModelsView.as_view(), name='api-select-carmodel-new-list'),
     path('selectlistcarengine/', productApiViews.SelectFieldsEnginesView.as_view(), name='api-select-carengine-list'),
     path('session/', productApiViews.SetSession.as_view(), name='set-session'),
+    path('categorize/<str:product_name>/', productApiViews.CategorizerSingleProduct.as_view(), name='categorize'),
     ]
 
    

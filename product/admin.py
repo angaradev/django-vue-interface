@@ -17,4 +17,15 @@ admin.site.register(ProductVideos)
 
 
 
-admin.site.register(Category, MPTTModelAdmin)
+#admin.site.register(Category, MPTTModelAdmin)
+
+from django.contrib import admin
+from django_mptt_admin.admin import DjangoMpttAdmin
+    
+
+class CategoryAdmin(DjangoMpttAdmin):
+    tree_auto_open = 0
+    tree_load_on_demand = 0
+    use_context_menu = True
+
+admin.site.register(Category, CategoryAdmin)

@@ -11,12 +11,14 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body  p-2" style="height: 100%;">
-                            <table id="product-list" class="table table-head-fixed text-nowrap" data-toggle="table">
+                            <table id="product-list" class="table table-head-fixed" data-toggle="table">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
                                         <th>Del</th>
                                         <th data-sortable="true">Название</th>
+                                        <th data-sortable="true">Параметры</th>
+                                        <th data-sortable="true">Категория</th>
                                         <th>Кат Номер</th>
                                         <th>Бренд</th>
                                         <th>1C ID</th>
@@ -25,12 +27,20 @@
                                 </thead>
                                 <tbody>
                                     {% for object in object_list %}
-
                                     <tr>
-                                        <td>{{ object.pk }}</td>
-                                        <td><i @click="deleteProduct('{{ object.id }}')" class="far fa-trash-alt product-trash"></i></td>
+                                        <td><a href="{% url 'product-detail' object.pk %}">{{ object.pk }}</a></td>
+                                        <td><i @click="deleteProduct('{{ object.id }}')"
+                                                class="far fa-trash-alt product-trash"></i></td>
                                         <td>
-                                            <a href="{% url 'product-detail' object.pk %}"><b>{{ object.name }}</b></a>
+                                            <a href="{% url 'product-detail' object.pk %}">{{ object.name }}</a>
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'product-detail' object.pk %}">{{ object.name2 }}</a>
+                                        </td>
+                                        <td>
+                                            {% for cat in object.category.all %}
+                                            <div class="model-bage-purple">{{ cat }}</div>
+                                            <br>{% endfor %}
                                         </td>
                                         <td>{{ object.cat_number }}</td>
                                         <td>{{ object.brand|upper }}</td>
@@ -60,11 +70,10 @@
 <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 <script>
-
     $(document).ready(function () {
         $('#product-list').DataTable({
             "pageLength": 100,
-            "order": [[ 1, "asc" ]]
+            "order": [[1, "asc"]]
             //paging: false
         });
     });

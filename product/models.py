@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from product.utils import categorizer_split
+from product.utils import categorizer
+from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
 import os
 from brands.models import BrandsDict
 from product.utils import unique_slug_generator, get_youtube_id
-from django.db.models.signals import pre_save
+from django.db.models.signals import pre_save, post_save
 from django.db import models
 from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
@@ -16,11 +19,18 @@ from .utils import delete_file
 from mptt.models import MPTTModel, TreeForeignKey
 
 
-class Category(MPTTModel):
+class Category(MPTTModel):  # MPTT model here for now
     name = models.CharField(max_length=50, unique=True)
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children', db_index=True, on_delete=models.CASCADE)
-    slug = models.SlugField()
+    old_group_id = models.IntegerField(blank=True)
+    slug = models.SlugField(blank=True)
+
+    plus = models.CharField(max_length=1000, blank=True)
+    minus = models.CharField(max_length=1000, blank=True)
+    full_plus = models.TextField(null=True, blank=True)
+    full_minus = models.TextField(null=True, blank=True)
+    tags = models.ManyToManyField('CategoryTags', blank=True, related_name='category_tags')
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -44,20 +54,13 @@ class Category(MPTTModel):
     def __str__(self):
         return self.name
 
-
-# class Category(models.Model):  # Categories of products class
-#     name = models.CharField(max_length=100)
-#     parent = models.ForeignKey(
-#         'self', on_delete=models.CASCADE, blank=True, null=True)
-#     slug = models.SlugField(max_length=50)
-
-#     def __str__(self):
-#         return self.name
+class CategoryTags(models.Model):
+    name = models.CharField(max_length=50)
 
 
 class Units(models.Model):  # Units for parts
     unit_name = models.CharField(max_length=10, default='шт')
-    
+
     class Meta:
         verbose_name = ("Еденица измерения")
         verbose_name_plural = ("Еденицы измерения")
@@ -109,7 +112,9 @@ class CarModel(models.Model):
     name = models.CharField(max_length=45, blank=True)
     engine = models.ManyToManyField(
         CarEngine, blank=True, related_name='car_engine')
-    carmake = models.ForeignKey(CarMake, on_delete=models.DO_NOTHING, related_name='car_model')
+    carmake = models.ForeignKey(
+        CarMake, on_delete=models.DO_NOTHING, related_name='car_model')
+
     class Meta:
         verbose_name = ("Модель Машины")
         verbose_name_plural = ("Модели Машины")
@@ -152,6 +157,7 @@ class ProductImage(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True, related_name='product_image')
+
     class Meta:
         verbose_name = ("Фото")
         verbose_name_plural = ("Фото")
@@ -224,6 +230,7 @@ class ProductVideos(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True)
+
     class Meta:
         verbose_name = ("Видео")
         verbose_name_plural = ("Видео")
@@ -238,6 +245,7 @@ class ProductDescription(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True)
+
     class Meta:
         verbose_name = ("Описание товара")
         verbose_name_plural = ("Описания товара")
@@ -245,12 +253,13 @@ class ProductDescription(models.Model):
 
 class Product(models.Model):  # Main table product
     name = models.CharField(max_length=255)
+    name2 = models.CharField(max_length=255, null=True, blank=True)
     brand = models.ForeignKey(BrandsDict, on_delete=models.DO_NOTHING,
                               null=True, blank=True, related_name='product_brand')
     car_model = models.ManyToManyField(
         CarModel, related_name='model_product')
     cat_number = models.CharField(max_length=255)
-    category = models.ManyToManyField(
+    category = TreeManyToManyField(
         Category, related_name='category_reverse', blank=True)
     # Field for the cross selling products many many
     related = models.ManyToManyField('self', blank=True)
@@ -263,6 +272,7 @@ class Product(models.Model):  # Main table product
     active = models.BooleanField(default=True)
     engine = models.ManyToManyField(
         'CarEngine', related_name='car_related_engine', blank=True)
+
     class Meta:
         verbose_name = ("Товар")
         verbose_name_plural = ("Товары")
@@ -304,20 +314,45 @@ class ProductAttribute(models.Model):
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True)
+
     class Meta:
         verbose_name = ("Атрибут")
         verbose_name_plural = ("Атрибуты")
 
+################### Category pre save receiver ####################################
+
+
+def post_save_categorizer(sender, instance, *args, **kwargs):  #
+
+    categorizer_split(instance, Category)
+
+
+post_save.connect(post_save_categorizer, Product)
+
+
 ################### Slug pre save receiver ####################################
 
 
-def slug_save(sender, instance, *args, **kwargs):  # Slug saver
+def product_slug_save(sender, instance, *args, **kwargs):  # Slug saver
+
     if not instance.slug:
         instance.slug = unique_slug_generator(
             instance, instance.name, instance.slug)
 
 
-pre_save.connect(slug_save, Product)
+pre_save.connect(product_slug_save, Product)
+
+
+################### Slug pre save receiver Category ####################################
+
+
+def category_slug_save(sender, instance, *args, **kwargs):  # Slug saver
+    if not instance.slug:
+        instance.slug = unique_slug_generator(
+            instance, instance.name, instance.slug)
+
+
+pre_save.connect(category_slug_save, Category)
 
 #################### Youtube ID Pre Save Receiver #############################
 

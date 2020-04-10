@@ -1,0 +1,106 @@
+{% extends 'product/base-forms.html' %}
+{% load static %}
+{% block page_title %}Список Товаров{% endblock %}
+{% block content %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Custom elements start here -->
+    <section class="content" id="app-list">
+        <div class="container-fluid">
+            <div class="row pt-2">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body  p-2" style="height: 100%;">
+                            <table id="product-list2" class="table table-head-fixed" data-toggle="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Del</th>
+                                        <th data-sortable="true">Название</th>
+                                        <th data-sortable="true">Параметры</th>
+                                        <th>Кат Номер</th>
+                                        <th>Бренд</th>
+                                        <th>1C ID</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    <tr v-for="product in part">
+                                        <td><a href="">{ product.id }</a></td>
+                                        <td><i @click="deleteProduct(product.id)"
+                                                class="far fa-trash-alt product-trash"></i></td>
+                                        <td>
+                                            { product.name }
+                                            <input v-model="product.name"
+                                                class="form-control form-control-sm" type="text"
+                                                :id="'productName-' + product.id" placeholder="Наименование" >
+                                        </td>
+                                        <td>
+                                            <input v-model="product.name2"
+                                                class="form-control form-control-sm" type="text"
+                                                :id="'productName2-' + product.id" placeholder="Параметры" >
+                                        </td>
+                                        <td>
+                                            { product.cat_number }
+                                        </td>
+                                        <td>{ product.brand }</td>
+                                        <td>{ product.one_c_id }</td>
+                                    </tr>
+                                    
+                                </tbody>
+                                <!-- <tbody>
+                                    {#% for object in object_list %#}
+                                    <tr>
+                                        <td><a href="{#% url 'product-detail' object.pk %#}"></a>{{ object.pk }}</a></td>
+                                        <td><i @click="deleteProduct('{{ object.id }}')"
+                                                class="far fa-trash-alt product-trash"></i></td>
+                                        <td>
+                                            <input v-model="part.name"
+                                                class="form-control form-control-sm product-main-name" type="text"
+                                                id="productName-{{ object.id }}" placeholder="Наименование" value="{{ object.name }}">
+                                        </td>
+                                        <td>
+                                            <a href="{#% url 'product-detail' object.pk %#}"><b>{{ object.name2 }}</b></a>
+                                        </td>
+                                        <td>
+                                            {#% for cat in object.category.all %#}
+                                            <p style="margin-bottom:1px;" class="model-bage-purple">{{ cat }}</p>
+                                            <br>{#% endfor %#}
+                                        </td>
+                                        <td>{{ object.cat_number }}</td>
+                                        <td>{{ object.brand|upper }}</td>
+                                        <td>{{ object.one_c_id }}</td>
+                                        <td>{#% for mod in object.car_model.all %}#
+                                            <span class="model-bage-green">{{ mod.name }}</span>
+                                            {#% endfor %#}
+                                        </td>
+                                    </tr>
+                                    {#% endfor %#}
+                                </tbody> -->
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.Custom elements ends here -->
+</div>
+<!-- /.content-wrapper -->
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'js/product_list_js_vue.js' %}"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#product-list').DataTable({
+            "pageLength": 100,
+            "order": [[1, "asc"]]
+            //paging: false
+        });
+    });
+</script>
+{% endblock %}

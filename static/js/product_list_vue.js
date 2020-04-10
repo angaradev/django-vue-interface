@@ -7,19 +7,13 @@ let vi = new Vue({
     data: {
         modelsList: []
     },
-    methods: {
+    methods: { //Method will update product inline on product list page
         async deleteProduct(id) {
-            const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`
+            const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
             let result = await apiService(endpoint, 'DELETE');
             location.reload();
         }
-    },
-    // async getModelsForMenu(id) {
-    //     const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodel/${id}/`
-    //     let result = await apiService(endpoint, 'DELETE');
-    //     result = this.modelsList;
-    //     console.log(this.modelsList);
-    // }
+    }
 });
 
 

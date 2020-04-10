@@ -173,3 +173,20 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     padding: 1px;
     background-color: #28a745;
 }
+.model-bage-purple {
+    color: #f8f9fa;
+    border-radius: 2px;
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 1px;
+    background-color: #605ca8;
+}
+
+#myUL {
+    padding-top: 1rem;
+    padding-left: 0;
+}
+.bold {
+    font-weight: bold;
+}

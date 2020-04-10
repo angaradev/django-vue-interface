@@ -29,7 +29,8 @@ const app = new Vue({
         part: {
             id: null,
             one_c_id: 0,
-            name: null,
+            name: 'Название',
+            name2: 'Доп Параметры',
             cat_number: '',
             category: '',
             brand: 1,
@@ -163,6 +164,7 @@ const app = new Vue({
 
             const data = {
                 name: this.part.name,
+                name2: this.part.name2,
                 cat_number: this.part.cat_number,
                 brand: brandId,
                 car_model: car_mod,

@@ -3,6 +3,7 @@ from django.urls import path, include, re_path
 from product import views as productviews
 
 
+
 urlpatterns = [
     #path('', TemplateView.as_view(template_name='index1.html')),
     path('', productviews.MainMain.as_view(), name='product-main'),
@@ -13,5 +14,13 @@ urlpatterns = [
     #re_path(r'^category/(?P<hierarchy>.+)/$', productviews.show_category, name='categories'),
     path('locale/', productviews.view_locale,),
     path('insertold/', productviews.insert_from_old,),
+    path('generes/', productviews.test_category),
+    path('categorize/', productviews.main_work, name='categorizer'),
+    path('categorize-cats/', productviews.main_work_for_cats, name='categorizer-cats'),
+    path('checkgroup/', productviews.check_group, name='checkgroup'),
+    path('checkgroup-cat/', productviews.check_cat, name='checkgroup-cat'),
+    path('categorizeeverything/', productviews.categorize_bulk, name='categorize-everything'),
+    path('prod-list/<int:pk>/', productviews.ProductListViewForJs.as_view(), name='product-list-js'),
+    
 ]
 

@@ -12,12 +12,26 @@
                     <form action="." id="basic">
                         <div class="card card-success">
                             <div class="card-header">
-                                <h3 class="card-title">Основные параметры</h3>
+                                <h3 class="card-title bold">{ part.name }
+                                    <span v-for="car in value">{ car.name } </span>
+                                    { part.name2 }</h3>
                             </div>
                             <div class="card-body">
-                                <label for="productName">Название Зачасти</label>
-                                <input v-model="part.name" class="form-control form-control-sm" type="text"
-                                    id="productName" placeholder="Наименование" value="{{ object.name }}">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="productName">Название Зачасти</label>
+                                        <input v-model="part.name" class="form-control form-control-sm" type="text"
+                                            id="productName" placeholder="Наименование" value="{{ object.name }}">
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label for="productName2">Название Зачасти</label>
+                                        <input v-model="part.name2" class="form-control form-control-sm" type="text"
+                                            id="productName2" placeholder="Наименование" value="{{ object.name2 }}">
+                                    </div>
+                                </div>
                                 <br>
                                 <div class="row">
                                     <div class="col-6">
@@ -76,8 +90,7 @@
                                     <div class="col-12">
                                         <div>
                                             <label class="typo__label">Выбрать Двигатель</label>
-                                            <vue-multiselect
-                                             v-model="valueEngine" :options="selectCarEngineList"
+                                            <vue-multiselect v-model="valueEngine" :options="selectCarEngineList"
                                                 :multiple="true" :close-on-select="false" :clear-on-select="false"
                                                 :preserve-search="true" placeholder="Выбрать Двигатели" label="name"
                                                 track-by="name" :preselect-first="false">

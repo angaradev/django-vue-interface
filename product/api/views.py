@@ -1,7 +1,17 @@
 # -*- coding: utf-8 -*-
 
 
-from product.models import Product, Units, CarModel, CarEngine, ProductImage, ProductVideos
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponse
+from product.forms import KeyWordForm
+import operator
+import json
+from django.core import serializers
+from functools import reduce
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from django.db.models import Q
+from product.models import Product, Units, CarModel, CarEngine, ProductImage, ProductVideos, Category
 from brands.models import BrandsDict
 from product.api.serializers import (ProductSerializer,
                                      UnitsSerializer,
@@ -12,7 +22,8 @@ from product.api.serializers import (ProductSerializer,
                                      ImageSerializer,
                                      VideoSerializer,
                                      CarEngineSerializerSession,
-                                     CarModelSerializerSession
+                                     CarModelSerializerSession,
+                                     CategorySerializer
                                      )
 from django.http import Http404
 from rest_framework import viewsets
@@ -21,6 +32,57 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
 from .helpers import modify_input_for_multiple_files
+
+
+class ProductList(APIView):
+
+    
+    def get(self, request, format=None):
+        category = request.GET.get('category', None)
+        snippets = Product.objects.all()[:50]
+        serializer = ProductSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+
+class CategorizerSingleProduct(APIView):
+
+    # Here is the logic find category for the string
+    def cat(self, string):
+        categories_qs = Category.objects.all().filter(id__gt=2000)
+        string = string.lower()
+        ready = list()
+
+        for cat in categories_qs:
+            minus = [x.minus.strip() for x in cat.to_category_minus.all()]
+            plus = [x.plus.strip() for x in cat.to_category.all()]
+            plus_single_list = []
+
+            for p in plus:
+                find = None
+                single_list = p.split()
+                plus_single_list.append(single_list)
+
+            for sing_lst in plus_single_list:
+                if all(plus_word in string for plus_word in sing_lst):
+                    find = string
+            if find:
+                # print(minus)
+                if any(minus_word in find for minus_word in minus):
+                    pass
+                else:
+                    if (cat.id, cat.name) not in ready:
+                        ready.append({'id': cat.id, 'name': cat.name})
+                    #print(minus, plus)
+
+        return ready
+
+    def get(self, request, product_name):
+        #product_name = request.GET.get('product_name')
+        result = self.cat(product_name)
+        serializer = CategorySerializer(result, many=True)
+        print(result)
+        return Response(serializer.data)
+
 
 # Class to work with detailed product all methods exept
 # POST post is right below there
@@ -125,7 +187,7 @@ class SelectFieldsBrandsView(APIView):
 class SelectFieldsModelsView(APIView):
 
     def get(self, request, pk):
-        models_list = CarModel.objects.filter(carmake=pk) 
+        models_list = CarModel.objects.filter(carmake=pk)
         serializer = CarModelSerializer(models_list, many=True)
         return Response(serializer.data)
 
@@ -207,3 +269,4 @@ class getPartCarEngine(APIView):
             qs = CarEngine.objects.filter(id__in=id_list)
         serializer = CarEngineSerializerSession(qs, many=True)
         return Response(serializer.data)
+
