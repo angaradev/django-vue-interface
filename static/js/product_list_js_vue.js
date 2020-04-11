@@ -128,7 +128,7 @@ let vi = new Vue({
                 unit: this.part[i].unit,
                 engine: this.part[i].engine
             }
-            console.log(JSON.stringify(data));
+            //console.log(JSON.stringify(data));
             let response = await apiService(endpoint, 'PUT', data);
             if (response) {
                 this.successToast('Товар сохранен!');

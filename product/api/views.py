@@ -188,7 +188,7 @@ class SelectFieldsBrandsView(APIView):
 class SelectFieldsModelsView(APIView):
 
     def get(self, request, pk):
-        models_list = CarModel.objects.filter(carmake=pk)
+        models_list = CarModel.objects.all()#filter(carmake=pk)
         serializer = CarModelSerializer(models_list, many=True)
         return Response(serializer.data)
 

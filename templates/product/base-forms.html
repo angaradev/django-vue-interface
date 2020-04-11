@@ -35,7 +35,8 @@
       <!-- Left navbar links -->
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" data-widget="pushmenu" data-enable-remember="True" href="#"><i class="fas fa-bars"></i></a>
+          <a class="nav-link" data-widget="pushmenu" data-enable-remember="True" href="#"><i
+              class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
           <a href="{% url 'home' %}" class="nav-link">Главная</a>
@@ -181,16 +182,9 @@
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-
-            <li class="nav-item">
-              <a href="{% url 'product-main' %}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Товары</p>
-              </a>
-            </li>
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <i class="nav-icon fas fa-truck-moving"></i>
                 <p>
                   Выбрать Машину
                   <i class="right fas fa-angle-left"></i>
@@ -198,7 +192,6 @@
               </a>
               <ul class="nav nav-treeview">
                 {% for make in car_makes %}
-
                 <li class="nav-item has-treeview">
                   <a href="#" class="nav-link">
                     <i class="nav-icon fas fa-copy"></i>
@@ -225,11 +218,53 @@
               </ul>
             </li>
             <li class="nav-item">
-              <a href="{% url 'categorizer' %}" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Группы</p>
+              <a href="{% url 'product-main' %}" class="nav-link">
+                <i class="fas fa-dolly-flatbed nav-icon"></i>
+                <p>Товары {{ request.session.car.car_name }}</p>
               </a>
             </li>
+            <!-- Section for inline editing parts categorized by categories or alphabetically not decided yet -->
+            <li class="nav-item has-treeview">
+              <a href="#" class="nav-link">
+                <i class="fas fa-table nav-icon"></i>
+                <p>
+                  Inline Edit {{ request.session.car.car_name }}
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                {% for make in car_makes %}
+                <li class="nav-item has-treeview">
+                  <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-copy"></i>
+                    <p>
+                      {{ make.name }}
+                      <i class="fas fa-angle-left right"></i>
+                      <span class="badge badge-info right">{{ make.model_count }}</span>
+                    </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                    {% for car in make.car_model.all %}
+                    <li class="nav-item">
+                      <a href="{% url 'product-list' car.id %}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>{{ car.name }}</p>
+                        <span class="badge badge-success right">{{ car.part_count }}</span>
+                      </a>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+                {% endfor %}
+
+              </ul>
+            </li>
+            <!-- <li class="nav-item">
+              <a href="{% url 'product-list-js' request.session.car.car_make_id %}" class="nav-link">
+                <i class="fas fa-table nav-icon"></i>
+                <p>Inline Edit</p>
+              </a>
+            </li> -->
             <li class="nav-item has-treeview">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-chart-pie"></i>
@@ -499,7 +534,7 @@
   <link href="https://cdn.jsdelivr.net/npm/vue-toast-notification/dist/theme-default.css" rel="stylesheet">
   <!-- Init the plugin -->
   <script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
-  
+
   <script>
     // Vue.use(VueToast);
 

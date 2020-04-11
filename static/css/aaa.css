@@ -49,6 +49,7 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     font-size: 0.9rem;
     color: #e84393;
 }
+
 .product-trash {
     font-size: 0.7rem;
     color: #e84393;
@@ -138,25 +139,31 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     height: 60px;
     width: 90px;
 }
+
 .product-vieo-input:focus {
     color: #007bff;
 }
+
 .product-main-name {
     color: #6610f2;
     font-weight: bold;
 }
+
 .product-main-name:focus {
     color: #001f3f;
     font-weight: bold;
 }
+
 .load-spiner {
     display: flex;
     justify-content: center;
     padding: 1rem 0 1rem 0;
 }
+
 .product-upload-button {
     cursor: pointer;
 }
+
 .multiselect__tags input {
     height: calc(1.8125rem + 2px);
     padding: .25rem .5rem;
@@ -164,6 +171,7 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     line-height: 1.5;
     border-radius: .2rem;
 }
+
 .model-bage-green {
     color: #f8f9fa;
     border-radius: 2px;
@@ -173,6 +181,7 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     padding: 1px;
     background-color: #28a745;
 }
+
 .model-bage-purple {
     color: #f8f9fa;
     border-radius: 2px;
@@ -187,6 +196,7 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     padding-top: 1rem;
     padding-left: 0;
 }
+
 .bold {
     font-weight: bold;
 }
@@ -200,8 +210,9 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     background: #fff;
     font-size: 13px;
     font-weight: 600;
-  }
-  .multiselect__tag {
+}
+
+.multiselect__tag {
     position: relative;
     display: inline-block;
     padding: 4px 26px 4px 10px;
@@ -215,25 +226,30 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     overflow: hidden;
     max-width: 100%;
     text-overflow: ellipsis;
-  }
-
-  .multiselect__input,
-.multiselect__single {
-    font-size: 13px;
-  position: relative;
-  display: inline-block;
-  min-height: 10px;
-  line-height: 10px;
-  border: none;
-  border-radius: 2px;
-  background: #fff;
-  padding: 0 0 0 5px;
-  width: calc(100%);
-  transition: border 0.1s ease;
-  box-sizing: border-box;
-  margin-bottom: 8px;
-  vertical-align: top;
 }
+
+.multiselect__input, .multiselect__single {
+    font-size: 13px;
+    position: relative;
+    display: inline-block;
+    min-height: 10px;
+    line-height: 10px;
+    border: none;
+    border-radius: 2px;
+    background: #fff;
+    padding: 0 0 0 5px;
+    width: calc(100%);
+    transition: border 0.1s ease;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+    vertical-align: top;
+}
+
+.multiselect__single {
+    color: #6610f2;
+    text-transform: uppercase;
+}
+
 .multiselect__option {
     display: block;
     padding: 12px;
@@ -245,8 +261,9 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     position: relative;
     cursor: pointer;
     white-space: nowrap;
-  }
-  .multiselect__option:after {
+}
+
+.multiselect__option:after {
     top: 0;
     right: 0;
     position: absolute;
@@ -254,4 +271,4 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     padding-right: 12px;
     padding-left: 20px;
     font-size: 13px;
-  }
+}

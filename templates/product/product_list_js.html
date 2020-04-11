@@ -25,7 +25,7 @@
                                 </thead>
                                 <tbody>
                                     <tr v-for="(product, i) in part">
-                                        <td><a href="">{ product.id }</a></td>
+                                        <td><a :href="'/product/' + product.id + '/'">{ product.id }</a></td>
                                         <td><i @click="deleteProduct(product.id)"
                                                 class="far fa-trash-alt product-trash"></i></td>
                                         <td>

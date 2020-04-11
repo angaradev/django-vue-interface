@@ -1,0 +1,97 @@
+{% extends 'product/base-forms.html' %}
+{% load static %}
+{% block page_title %}Список Товаров{% endblock %}
+{% block content %}
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Custom elements start here -->
+    <section class="content" id="app-list">
+        <div class="container-fluid">
+            <div class="row pt-2">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-text-width"></i>
+                                Description Horizontal
+                            </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <dl class="row">
+                                <dt class="col-sm-4">Description lists</dt>
+                                <dd class="col-sm-8">A description list is perfect for defining terms.</dd>
+                                <dt class="col-sm-4">Euismod</dt>
+                                <dd class="col-sm-8">Vestibulum id ligula porta felis euismod semper eget lacinia odio
+                                    sem nec elit.</dd>
+                                <dd class="col-sm-8 offset-sm-4">Donec id elit non mi porta gravida at eget metus.</dd>
+                                <dt class="col-sm-4">Malesuada porta</dt>
+                                <dd class="col-sm-8">Etiam porta sem malesuada magna mollis euismod.</dd>
+                                <dt class="col-sm-4">Felis euismod semper eget lacinia</dt>
+                                <dd class="col-sm-8">Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum
+                                    nibh, ut fermentum massa justo
+                                    sit amet risus.
+                                </dd>
+                            </dl>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="card card-default">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="fas fa-bullhorn"></i>
+                                Callouts
+                            </h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="callout callout-danger">
+                                <h5>I am a danger callout!</h5>
+
+                                <p>There is a problem that we need to fix. A wonderful serenity has taken possession of
+                                    my entire
+                                    soul,
+                                    like these sweet mornings of spring which I enjoy with my whole heart.</p>
+                            </div>
+                            <div class="callout callout-info">
+                                <h5>I am an info callout!</h5>
+
+                                <p>Follow the steps to continue to payment.</p>
+                            </div>
+                            <div class="callout callout-warning">
+                                <h5>I am a warning callout!</h5>
+
+                                <p>This is a yellow callout.</p>
+                            </div>
+                            <div class="callout callout-success">
+                                <h5>I am a success callout!</h5>
+
+                                <p>This is a green callout.</p>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.Custom elements ends here -->
+</div>
+<!-- /.content-wrapper -->
+{% endblock content %}
+{% block js %}
+<script src="{% static 'js/product_list_js_vue.js' %}"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#product-list').DataTable({
+            "pageLength": 100,
+            "order": [[1, "asc"]]
+            //paging: false
+        });
+    });
+</script>
+{% endblock %}
