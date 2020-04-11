@@ -42,6 +42,9 @@
           <a href="{% url 'home' %}" class="nav-link">Главная</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
+          <a href="{% url 'documentation' %}" class="nav-link">Документация</a>
+        </li>
+        <li class="nav-item d-none d-sm-inline-block">
           <span data-toggle="dummy-tooltip" data-placement="right"
             title="Задать начальные значения Модели, Двигателя, чтобы не подставлять каждый раз при создании товара">
             {% if request.session.car %}
@@ -233,17 +236,17 @@
                 </p>
               </a>
               <ul class="nav nav-treeview">
-                {% for make in car_makes %}
+                {% for cat in car_categories %}
                 <li class="nav-item has-treeview">
-                  <a href="#" class="nav-link">
-                    <i class="nav-icon fas fa-copy"></i>
+                  <a href="{% url 'product-list-js' cat.id %}" class="nav-link">
+                    <i class="nav-icon fas fa-cog"></i>
                     <p>
-                      {{ make.name }}
-                      <i class="fas fa-angle-left right"></i>
-                      <span class="badge badge-info right">{{ make.model_count }}</span>
+                      {{ cat.name }}
+                      <!-- <i class="fas fa-angle-left right"></i> -->
+                      <span class="badge badge-info right">{{ cat.id }}</span>
                     </p>
                   </a>
-                  <ul class="nav nav-treeview">
+                  <!-- <ul class="nav nav-treeview">
                     {% for car in make.car_model.all %}
                     <li class="nav-item">
                       <a href="{% url 'product-list' car.id %}" class="nav-link">
@@ -253,7 +256,7 @@
                       </a>
                     </li>
                     {% endfor %}
-                  </ul>
+                  </ul> -->
                 </li>
                 {% endfor %}
 

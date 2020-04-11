@@ -1,4 +1,4 @@
-from .models import CarModel, CarEngine, CarMake
+from .models import CarModel, CarEngine, CarMake, Product, Category
 from django.db.models import Count
 
 
@@ -8,8 +8,11 @@ def session_processor(request):
     #    product_count=Count('model_product'))
     car_engines = CarEngine.objects.all()
 
+    car_categories = Category.objects.filter(level=2)
+
     return {
         # 'car_models': car_models,
         'car_engines': car_engines,
-        'car_makes': car_makes
+        'car_makes': car_makes,
+        'car_categories': car_categories
     }

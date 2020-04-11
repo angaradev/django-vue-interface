@@ -10,7 +10,7 @@ from django.core import serializers
 from functools import reduce
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
-from django.db.models import Q
+from django.db.models import Q, Count
 from product.models import Product, Units, CarModel, CarEngine, ProductImage, ProductVideos, Category
 from brands.models import BrandsDict
 from product.api.serializers import (ProductSerializer,
@@ -38,9 +38,11 @@ class ProductList(APIView):
 
     
     def get(self, request, format=None):
-        category_list = request.GET.get('category', None).split(',')
-        print(category_list)
-        snippets = Product.objects.filter(category__in=category_list).order_by('name')
+        #category_list = request.GET.get('category', None).split(',')
+        car = request.session.get('car')['car_model_id']
+        cat = request.GET.get('category')
+        categ = Category.objects.get(id=cat)
+        snippets = Product.objects.filter(car_model=car, category__in=categ.get_descendants(include_self=True)).order_by('name')
         serializer = ProductSerializer(snippets, many=True)
         return Response(serializer.data)
 

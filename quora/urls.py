@@ -9,7 +9,7 @@ from django.conf.urls.static import static
 from users.forms import CustomUserForm
 from core.views import IndexTemplateView
 from django.views.generic import TemplateView
-from home.views import Home
+from home.views import Home, DocumentationView
 
 
 admin.site.site_header = 'Мега Интерфейс'
@@ -19,6 +19,7 @@ admin.site.site_title = 'Интерфейс'
 urlpatterns = [
     #path('', TemplateView.as_view(template_name='index1.html')),
     path('', Home.as_view(), name='home'),
+    path('documentation/', DocumentationView.as_view(), name='documentation'),
     path('admin/', admin.site.urls),
     path('accounts/register/', RegistrationView.as_view(
         form_class=CustomUserForm,

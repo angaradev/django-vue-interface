@@ -9,10 +9,10 @@ from product.models import (Product, ProductImage,
 
 
 
-class CategorySerializer(serializers.Serializer):
-    
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(max_length=100)
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name']
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -115,6 +115,7 @@ class ProductSerializer(serializers.ModelSerializer):
     #car_model = CarModelSerializer(instance=CarModel, required=True)
     # engine = CarEngineSerializer(instance=CarEngine, required=False)
     #car_make = CarMakeSerializer(instance=CarMake, required=True)
+    category = CategorySerializer(many=True)
 
     class Meta:
         model = Product

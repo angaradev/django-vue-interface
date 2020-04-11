@@ -277,7 +277,7 @@ def main_work(request):
                 defaults={
                     'plus':  '\n'.join(plus),
                     'minus': '\n'.join(minus),
-                    'parent_id': parent.id,
+                    #'parent_id': parent.id,
                 }
             )
             for prod in nom_qs:

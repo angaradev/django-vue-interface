@@ -7,6 +7,8 @@ let vi = new Vue({
     delimiters: ['{', '}'],
     el: '#app-list',
     data: {
+        productsLoading: false,
+        listEditCount: null,
         value: [],
         selectCarModelList: [],
         formBrand: [],
@@ -37,8 +39,6 @@ let vi = new Vue({
             const data = await apiService(endpoint);
             this.selectCarModelList = data;
         },
-
-        
         async getSelectBrandsList() {
             let localstor;
             let dif = 0;
@@ -47,7 +47,7 @@ let vi = new Vue({
                 localstor = JSON.parse(localStorage.getItem("key"));
                 dif = (newTimestamp - localstor.timestamp) / 1000 / 60;
             }
-            console.log(dif)
+            //console.log(dif)
             if (dif > 30) {
                 const endpoint = `${ApplicationMainHost}/api/product/selectlistbrands/`;
                 const data = await apiService(endpoint);
@@ -61,8 +61,6 @@ let vi = new Vue({
             } else {
                 this.options = JSON.parse(localStorage.getItem("key")).options;
             }
-
-
         },
         errorToast(message) {
             this.$toast.open({
@@ -90,9 +88,13 @@ let vi = new Vue({
             
         },
         async loadProducts(category) {
+
+            this.productsLoading = true;
             const endpoint = `${ApplicationMainHost}/api/product/list/?category=${category}`;
             let result = await apiService(endpoint);
             this.part = result;
+            this.listEditCount = result.length;
+            console.log(this.listEditCount)
 
             this.part.forEach((element, index) => {
                 brand = this.options.filter(obj => {
@@ -109,7 +111,7 @@ let vi = new Vue({
                 })
                 this.part[index].car_model = c_l;
             });
-
+            this.productsLoading = false;
         },
         async saveProduct(id, i) {
             // Отправляем основные данные на сервер
@@ -138,16 +140,13 @@ let vi = new Vue({
             }
             //window.location.href = `${ApplicationMainHost}/product/`
         },
-
-
-
-
-
-
     },
 
     created() {
-        this.loadProducts([2002, 2003, 2004, 2005]);
+        const url = window.location.pathname;
+        const cat_split = url.split('/');
+        const category = cat_split[cat_split.length - 2];
+        this.loadProducts(category);
         this.getSelectBrandsList();
         this.getSelectCarModelList(1);
 

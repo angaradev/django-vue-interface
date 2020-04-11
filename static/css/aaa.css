@@ -272,3 +272,66 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     padding-left: 20px;
     font-size: 13px;
 }
+
+.my-infobox {
+    font-size: 120%;
+    padding: 0.3rem;
+    min-height: 20px;
+    background-color: #fff;
+    border-radius: 3px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.my-info-box-text {
+    font-weight: 600;
+    color: #28a745;
+    margin-left: 0.5rem;
+}
+
+/* Стили для инфобоксов поменьше */
+
+.my-info-box-number {
+    font-size: 16px;
+    display: inline-block;
+    padding: 0 5px 5px 5px;
+    color: #fff;
+    background-color: #6614f2;
+    font-weight: bold;
+    margin-left: 1rem;
+    min-width: 26px;
+    height: 26px;
+    line-height: 26px;
+    border-radius: 15%;
+}
+
+.my-info-box-icon {
+    background-color: #28a745;
+    color: #fff;
+    border-radius: .25rem;
+    font-size: 1.2rem;
+    justify-content: center;
+    text-align: center;
+    width: 30px;
+}
+
+/* Tags for categories in inline editing page */
+
+.category-tags {
+    display: flex;
+}
+.category-tag {
+    display: inline-block;
+    padding: 2px;
+    border-radius: 3px;
+    background-color: #6614f2;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.6rem;
+    margin: 5px 2px 0 0;
+}
+.documentation-container {
+    display: flex;
+    flex-direction: column;
+}
