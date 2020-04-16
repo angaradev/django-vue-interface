@@ -33,7 +33,7 @@ let vi = new Vue({
     },
     methods: { //Method will update product inline on product list page
 
-        async getSelectCarModelList(id=1) {
+        async getSelectCarModelList(id = 1) {
 
             const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodel/${id}/`;
             const data = await apiService(endpoint);
@@ -84,8 +84,8 @@ let vi = new Vue({
         async getPartCarModel(id_list, i) { //Gettin car model list for specific car part
             const endpoint = `${ApplicationMainHost}/api/product/selectpartcarmodel/?pk=${id_list}`;
             const data = await apiService(endpoint);
-            this.part[i].car_model = [{'id': data.id, 'name': data.name }];
-            
+            this.part[i].car_model = [{ 'id': data.id, 'name': data.name }];
+
         },
         async loadProducts(category) {
 
@@ -94,7 +94,6 @@ let vi = new Vue({
             let result = await apiService(endpoint);
             this.part = result;
             this.listEditCount = result.length;
-            console.log(this.listEditCount)
 
             this.part.forEach((element, index) => {
                 brand = this.options.filter(obj => {
@@ -105,8 +104,8 @@ let vi = new Vue({
             // Adding car models to v-model
             this.part.forEach((element, index) => {
                 let c_l = []
-                element.car_model.forEach((e,i) => {
-                    let v = this.selectCarModelList.find(obj=> obj.id === e);
+                element.car_model.forEach((e, i) => {
+                    let v = this.selectCarModelList.find(obj => obj.id === e);
                     c_l.push(v);
                 })
                 this.part[index].car_model = c_l;
@@ -118,7 +117,7 @@ let vi = new Vue({
             // Needs to make API and Login in Vue -- Here
             const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
             let cl = [];
-            this.part[i].car_model.forEach(e=>{
+            this.part[i].car_model.forEach(e => {
                 cl.push(e.id);
             });
             const data = {
@@ -128,7 +127,8 @@ let vi = new Vue({
                 brand: this.part[i].brand.id,
                 car_model: cl,
                 unit: this.part[i].unit,
-                engine: this.part[i].engine
+                engine: this.part[i].engine,
+                product_cross: this.part[i].product_cross
             }
             //console.log(JSON.stringify(data));
             let response = await apiService(endpoint, 'PUT', data);
