@@ -227,7 +227,6 @@ class ProductSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
 
         cross_data = validated_data.pop('product_cross')
-        print(cross_data[0]['id'])
         # Менее Адский гемор по вложенной сериализации
         engine_data = validated_data.get('engine')
         try:
