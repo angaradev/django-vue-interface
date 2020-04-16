@@ -1,12 +1,49 @@
 # -*- coding: utf-8 -*-
 
+from product.models import Cross
 from rest_framework import serializers
 from product.models import (Product, ProductImage,
                             Category, Units, CarModel, CarMake, CarEngine,
                             Country, BrandsDict,
                             ProductVideos,
-                            Category)
+                            Category,
+                            ProductDescription,
+                            ProductAttribute,
+                            ProductAttributeName)
 
+
+class ProductAttribureNameSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = ProductAttributeName
+        fields = ['id', 'name']
+
+
+class ProductAttributeSerializer(serializers.ModelSerializer):
+
+    # attribute_name = ProductAttribureNameSerializer(
+    #    instance=ProductAttributeName, read_only=True)
+
+    class Meta:
+        model = ProductAttribute
+        fields = ['id', 'attribute_name', 'attribute_value', 'product']
+
+    # def create(self, validated_data):
+
+    #     attribute_name_data = validated_data.pop('attribute_name')
+
+    #     try:
+    #         attr_name = ProductAttributeName.objects.get(
+    #             name=attribute_name_data['name'])
+    #     except:
+    #         attr_name = ProductAttributeName.objects.create(
+    #             name=attribute_name_data['name'])
+    #     attr = ProductAttribute.objects.create(
+    #         attribute_name=attr_name,
+    #         attribute_value=validated_data.get('attribute_value'),
+    #         product=Product.objects.get(id=validated_data.get('product').id)
+    #     )
+    #     return attr
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -60,7 +97,7 @@ class CarMakeSerializer(serializers.ModelSerializer):
 
 class CarModelSerializer(serializers.ModelSerializer):
     id = serializers.ModelField(model_field=CarModel()._meta.get_field('id'))
-    
+
     carmake = CarMakeSerializer(
         instance=CarMake, required=False, read_only=True)
 
@@ -89,7 +126,7 @@ class CarModelSerializerSession(serializers.ModelSerializer):
 
     class Meta:
         model = CarModel
-        fields = '__all__' #['id', 'name']
+        fields = '__all__'  # ['id', 'name']
 
 
 class SessionSerializer(serializers.Serializer):
@@ -110,13 +147,28 @@ class BrandsDictSerializer(serializers.ModelSerializer):
         fields = ('id', 'brand')
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    #unit = UnitsSerializer(instance=Units)
-    #car_model = CarModelSerializer(instance=CarModel, required=True)
-    # engine = CarEngineSerializer(instance=CarEngine, required=False)
-    #car_make = CarMakeSerializer(instance=CarMake, required=True)
-    category = CategorySerializer(many=True)
+class ProductRelatedSerializer(serializers.ModelSerializer):
 
+    '''
+    This Serializer made for adding related product only for product instance
+    '''
+    class Meta:
+        model = Product
+        fields = ['id', 'related']
+
+
+class CrossSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=False, required=False)
+    class Meta:
+        model = Cross
+        fields = ['id', 'cross']
+
+
+class ProductSerializer(serializers.ModelSerializer):
+
+    category = CategorySerializer(many=True, required=False)
+    product_cross = CrossSerializer(many=True, required=True)
+    
     class Meta:
         model = Product
         #fields = '__all__'
@@ -124,8 +176,6 @@ class ProductSerializer(serializers.ModelSerializer):
                   'name',
                   'name2',
                   'cat_number',
-                  # 'created_date',
-                  # 'updated_date',
                   'category',
                   'slug',
                   'brand',
@@ -133,15 +183,16 @@ class ProductSerializer(serializers.ModelSerializer):
                   'unit',
                   'one_c_id',
                   'active',
-                  'engine'
+                  'engine',
+                  'product_cross'
                   ]
 
         # represent full fields of serializer nested objects
         depth = 0
 
-    #Create method
+    # Create method
     def create(self, validated_data):
-        #car models array
+        # car models array
         car_model_data = validated_data.pop('car_model')
         car_model_list = [x.id for x in car_model_data]
         car_model_qs = CarModel.objects.filter(id__in=car_model_list)
@@ -150,17 +201,15 @@ class ProductSerializer(serializers.ModelSerializer):
         car_engine_list = [x.id for x in car_engine_data]
         car_engine_qs = CarEngine.objects.filter(id__in=car_engine_list)
 
-        
         brand_qs = BrandsDict.objects.get(id=validated_data.get('brand').id)
         unit_qs = Units.objects.get(id=validated_data['unit'].id)
-       
 
         product = Product.objects.create(
             name=validated_data['name'],
             name2=validated_data['name2'],
             cat_number=validated_data['cat_number'],
             brand=brand_qs,
-            #car_model=car_model_qs,
+            # car_model=car_model_qs,
             unit=unit_qs,
             one_c_id=validated_data['one_c_id'],
             active=validated_data['active']
@@ -177,6 +226,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
 
+        cross_data = validated_data.pop('product_cross')
+        print(cross_data[0]['id'])
         # Менее Адский гемор по вложенной сериализации
         engine_data = validated_data.get('engine')
         try:
@@ -208,7 +259,8 @@ class ProductSerializer(serializers.ModelSerializer):
         # Car Engine update logic
         car_engine_data = validated_data.pop('engine')
         car_engine_list = [_.id for _ in car_engine_data]
-        car_engine_qs = CarEngine.objects.filter(car_related_engine=instance.id)
+        car_engine_qs = CarEngine.objects.filter(
+            car_related_engine=instance.id)
 
         instance.brand = validated_data.get('brand', instance.brand)
         instance.name = validated_data.get('name', instance.name)
@@ -219,17 +271,34 @@ class ProductSerializer(serializers.ModelSerializer):
         instance.one_c_id = validated_data.get('one_c_id', instance.one_c_id)
         instance.active = validated_data.get('active', instance.active)
         instance.save()
-        
-        
+
         for car in car_model_qs:
             instance.car_model.remove(car)
         for car_l in car_model_list:
             instance.car_model.add(CarModel.objects.get(id=car_l))
 
-        #Car engine making references
+        # Car engine making references
         for engine in car_engine_qs:
             instance.engine.remove(engine)
         for eng in car_engine_list:
             instance.engine.add(CarEngine.objects.get(id=eng))
 
+        # Creating or updating crosses
+        for cross in cross_data:
+            objct, created = Cross.objects.update_or_create(
+                product = instance,
+                cross = cross['cross'],
+                defaults={'product': instance, 'cross': cross['cross']}
+            )
+
         return instance
+
+
+class ProductDescriptionSerializer(serializers.ModelSerializer):
+    '''
+    Serializer for product description has to get, post, put, delete methods.
+    Defenantly must be ModelViewSet serialiser
+    '''
+    class Meta:
+        model = ProductDescription
+        fields = ['id', 'text', 'product']

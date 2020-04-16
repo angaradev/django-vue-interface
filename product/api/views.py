@@ -11,7 +11,16 @@ from functools import reduce
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.db.models import Q, Count
-from product.models import Product, Units, CarModel, CarEngine, ProductImage, ProductVideos, Category
+from product.models import (Product,
+                            Units,
+                            CarModel,
+                            CarEngine,
+                            ProductImage,
+                            ProductVideos,
+                            Category,
+                            ProductDescription,
+                            ProductAttribute,
+                            ProductAttributeName)
 from brands.models import BrandsDict
 from product.api.serializers import (ProductSerializer,
                                      UnitsSerializer,
@@ -23,7 +32,11 @@ from product.api.serializers import (ProductSerializer,
                                      VideoSerializer,
                                      CarEngineSerializerSession,
                                      CarModelSerializerSession,
-                                     CategorySerializer
+                                     CategorySerializer,
+                                     ProductDescriptionSerializer,
+                                     ProductAttributeSerializer,
+                                     ProductAttribureNameSerializer,
+                                     ProductRelatedSerializer
                                      )
 from django.http import Http404
 from rest_framework import viewsets
@@ -34,15 +47,96 @@ from rest_framework.renderers import JSONRenderer
 from .helpers import modify_input_for_multiple_files
 
 
-class ProductList(APIView):
+class ProductRelatedGetPutDelete(APIView):
+    '''
+    Class for manage related products
+    '''
 
-    
+    def get(self, request, pk):
+        product = Product.objects.get(id=pk)
+        serializer = ProductRelatedSerializer(product, many=False)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        product = Product.objects.get(id=pk)
+        serializer = ProductRelatedSerializer(product, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def delete(self, request, pk, format=None):
+    #     product = Product.objects.get(id=pk)
+    #     product.delete()
+    #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProductAttributeList(viewsets.ModelViewSet):
+    model = ProductAttributeName
+    queryset = model.objects.all().order_by('name')
+    serializer_class = ProductAttribureNameSerializer
+
+
+class ProductAttributeViewSet(viewsets.ModelViewSet):
+
+    '''
+    Class for product attributes.
+    If attribute exists it adding it to new value,
+    If not exists it creates new attribute and adding it to a value
+    '''
+
+    model = ProductAttribute
+    queryset = ProductAttribute.objects.all().order_by('id')
+    serializer_class = ProductAttributeSerializer
+
+    def get_queryset(self):
+        if self.request.query_params.get('product_id'):
+            product_id = self.request.query_params.get('product_id', None)
+            queryset = self.model.objects.filter(product=product_id)
+        else:
+            queryset = self.model.objects.all()
+
+        return queryset
+
+
+class DescriptionViewSet(viewsets.ModelViewSet):
+
+    '''
+    View for get, create, update, and delete product description.
+    '''
+
+    serializer_class = ProductDescriptionSerializer
+    queryset = ProductDescription.objects.all()
+    model = ProductDescription
+
+    def get_queryset(self):
+        if self.request.query_params.get('product_id'):
+            product_id = self.request.query_params.get('product_id', None)
+            queryset = self.model.objects.filter(product=product_id)
+        else:
+            queryset = self.model.objects.all()
+
+        return queryset
+
+
+class ProductList(APIView):
+    '''
+    API View for list  editinline products.
+    Filtering queryset by car from session
+    And category level 2 from GET request
+    '''
+
     def get(self, request, format=None):
         #category_list = request.GET.get('category', None).split(',')
         car = request.session.get('car')['car_model_id']
-        cat = request.GET.get('category')
-        categ = Category.objects.get(id=cat)
-        snippets = Product.objects.filter(car_model=car, category__in=categ.get_descendants(include_self=True)).order_by('name')
+        cat = request.GET.get('category', None)
+        if cat:
+            categ = Category.objects.get(id=cat)
+            snippets = Product.objects.filter(
+                car_model=car, category__in=categ.get_descendants(include_self=True)).order_by('name')
+        else:
+            snippets = Product.objects.filter(
+                car_model=car).order_by('name')
         serializer = ProductSerializer(snippets, many=True)
         return Response(serializer.data)
 
@@ -190,7 +284,7 @@ class SelectFieldsBrandsView(APIView):
 class SelectFieldsModelsView(APIView):
 
     def get(self, request, pk):
-        models_list = CarModel.objects.all()#filter(carmake=pk)
+        models_list = CarModel.objects.all()  # filter(carmake=pk)
         serializer = CarModelSerializer(models_list, many=True)
         return Response(serializer.data)
 
@@ -272,4 +366,3 @@ class getPartCarEngine(APIView):
             qs = CarEngine.objects.filter(id__in=id_list)
         serializer = CarEngineSerializerSession(qs, many=True)
         return Response(serializer.data)
-

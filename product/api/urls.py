@@ -2,16 +2,20 @@ from django.urls import path, include, re_path
 from product.api import views as productApiViews
 from rest_framework.routers import DefaultRouter
 
-from .views import ImageViewSet, VideoViewSet
+from .views import ImageViewSet, VideoViewSet, DescriptionViewSet, ProductAttributeViewSet, ProductAttributeList
 router = DefaultRouter()
 router.register(r'images', ImageViewSet)
 router.register(r'videos', VideoViewSet)
+router.register(r'description', DescriptionViewSet)
+router.register(r'attribute', ProductAttributeViewSet)
+router.register(r'attributes', ProductAttributeList) 
 
 urlpatterns = [
     #path('', TemplateView.as_view(template_name='index1.html')),
     # Prefix in browser api/product/
     path('', include(router.urls)),
     path('detail/<int:pk>/', productApiViews.DetailGet.as_view(), name='api-product-detail'),
+    path('related/<int:pk>/', productApiViews.ProductRelatedGetPutDelete.as_view(), name='api-product-related'),
     path('list/', productApiViews.ProductList.as_view(), name='api-product-list'),
     path('detailcreate/', productApiViews.CreateNewProduct.as_view(), name='create-new-product'),
     path('selectlistunits/', productApiViews.SelectFieldsUnitsView.as_view(), name='api-select-unit-list'),

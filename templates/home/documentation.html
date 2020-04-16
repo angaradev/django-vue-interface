@@ -38,16 +38,5 @@
 <!-- /.content-wrapper -->
 {% endblock content %}
 {% block js %}
-<script src="{% static 'js/product_list_js_vue.js' %}"></script>
-<script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-<script>
-    $(document).ready(function () {
-        $('#product-list').DataTable({
-            "pageLength": 100,
-            "order": [[1, "asc"]]
-            //paging: false
-        });
-    });
-</script>
+
 {% endblock %}

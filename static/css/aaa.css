@@ -335,3 +335,7 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     display: flex;
     flex-direction: column;
 }
+
+.description-save-button {
+    margin-top: 0.5rem;
+}

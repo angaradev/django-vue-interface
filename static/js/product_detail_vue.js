@@ -3,7 +3,9 @@
 //############### VUE PART STARTS HERE #####################//
 //##########################################################//
 Vue.use(VueToast);
+Vue.use(CKEditor);
 Vue.component('vue-multiselect', window.VueMultiselect.default);
+
 const vsel = Vue.component('v-select', VueSelect.VueSelect);
 let il = {
 
@@ -11,22 +13,7 @@ let il = {
                 <h3>{{ message }}</h3>
                 <img style="height: 100px; width: 100px;"
                 v-for="prod_img in productImages" :src="prod_img.image" alt="...">
-                </div>`,
-    // data: function (){
-    //     return{
-    //         productImages: []
-    //     }
-    // },
-    // methods: {
-    //     async getImage(id) {
-    //         endpoint = `${ApplicationMainHost}/api/product/images/?product_id=${id}`;
-    //         let response = await apiService(endpoint);
-    //         this.productImages = response.results;
-
-    //     }
-    // }
-
-
+                </div>`
 };
 
 const app = new Vue({
@@ -36,6 +23,26 @@ const app = new Vue({
         'image-loader': il
     },
     data: {
+        //Crosess
+        crossesList: [],
+        //Create dual list for related product
+        loadRelated: false,
+        list1: [
+            {id: 1, name: 'Запчасть 1', cat_number: '13334h500'}
+        ],
+        list2: [],
+        searchRelated: '',
+        chkResponse: [],
+        addAtrName: null,
+        addAttributeName: false,
+        editor: ClassicEditor,
+        editorData: '<p>Напишите текст сюда.</p>',
+        descriptionId: null,
+        addDescriptionButton: false,
+        editorConfig: {
+            // The configuration of the editor.
+        },
+
         value: [],
         valueEngine: [],
         options: [
@@ -56,6 +63,7 @@ const app = new Vue({
                     country: {}
                 }
             },
+            product_cross: [],
             unit: null,
             engine: '',
             active: true,
@@ -76,9 +84,23 @@ const app = new Vue({
         // Video part of Code
         productVideos: [],
         productVideoUrl: '',
-        imageLoading: false
+        imageLoading: false,
+        attributeFields: [
+            {
+                id: 0,
+                attribute_name: 'attribute',
+                attribute_value: 'attr value'
+            }
+        ],
+        attributeList: []
     },
     computed: {
+        //search in related product tab
+        filteredList() {
+            return this.list1.filter(post => {
+                return post.name.toLowerCase().includes(this.searchRelated.toLowerCase());
+            });
+        },
         selectedUnit: {
             get() {
                 if (this.selectedUnitId) {
@@ -140,12 +162,216 @@ const app = new Vue({
                 else {
                     return '';
                 }
-
             }
         }
     },
 
     methods: {
+        //Methods for crosses
+        addCrossRow() {
+            this.part.product_cross.push({id: 0, cross: ''});
+        },
+        async deleteCross(i){
+            this.part.product_cross.splice(i, 1);
+        },
+        
+        //Methods for related products
+        async getProductList(product_list) {
+            this.loadRelated = true;
+            const endpoint = `${ApplicationMainHost}/api/product/list/`;
+            let response = await apiService(endpoint);
+            this.list1 = response;
+            this.getRelatedProduct(this.part.id);
+            this.loadRelated = false;
+        },
+        async getRelatedProduct(id) {
+            //let id = this.part.id;
+            const endpoint = `${ApplicationMainHost}/api/product/related/${id}/`;
+            let response = await apiService(endpoint);
+            let new_arr = [];
+            for (let i = 0; i < response.related.length; i++) {
+                const find = this.list1.find(item => item.id == response.related[i]);
+                new_arr.push(find)
+            }
+            this.list2 = new_arr;
+        },
+        async saveRelated() {
+            let id = this.part.id;
+            const endpoint = `${ApplicationMainHost}/api/product/related/${id}/`;
+            let related_list = [];
+            for (let i = 0; i < this.list2.length; i++) {
+                related_list.push(this.list2[i].id);
+            }
+            const data = {
+                product: this.part.id,
+                related: related_list
+            }
+            let response = await apiService(endpoint, 'PUT', data);
+            if (response) {
+                this.successToast('Сопутствующие сохранены!');
+            } else {
+                this.errorToast('Сопутствующие сохранены!');
+            }
+        },
+        oneToRight() {
+            let select = document.getElementById('list1').value;
+            if(select != "") {
+                let i = this.list1.find(e => e.id == select);
+                this.list2.push(i);
+                let del = this.list1.indexOf(i);
+                this.list1.splice(del,1);
+            }
+        },
+        oneToLeft(){
+            let select = document.getElementById('list2').value;
+            if(select != "") {
+                let i = this.list2.find(e => e.id == select);
+                this.list1.push(i);
+                let del = this.list2.indexOf(i);
+                this.list2.splice(del,1);
+            }
+        },
+        // Attribute portion of code
+        async addAttrNameMethod() {
+            const endpoint = `${ApplicationMainHost}/api/product/attributes/`;
+            const data = {
+                name: this.addAtrName
+            }
+            let response = await apiService(endpoint, 'POST', data);
+            this.attributeList.push({ 'atr_name': response.name, 'atr_value': '', 'atr_id': null, 'product': this.part.id, 'atr_name_id': response.id});
+            this.addAtrName = null;
+            this.addAttributeName = false;
+        },
+        addAttributeRow() {
+            this.attributeFields.push({ id: null, name: '', value: '' })
+        },
+        async getAttributeList() {
+            const endpoint = `${ApplicationMainHost}/api/product/attributes/`;
+            let response = await apiService(endpoint);
+            if (response.results.length === 0) {
+
+            } else {
+                this.attributeList = response.results;
+                //console.log(this.attributeList);
+
+            }
+        },
+        async getAttribute(product_id) {
+            const endpoint = `${ApplicationMainHost}/api/product/attribute/?product_id=${product_id}`;
+            let response = await apiService(endpoint);
+
+            if (response.results.length === 0) {
+            } else {
+                this.attributeFields = response.results;
+                let arr = []
+                this.attributeList.forEach((element, index) => {
+                    this.attributeFields.forEach(el => {
+                        if (element.id === el.attribute_name) {
+                            this.attributeList[index] = { 'atr_name': element.name, 'atr_value': el.attribute_value, 'atr_id': el.id, 'product': this.part.id, 'atr_name_id': element.id }
+                        } else {
+                            if (!this.attributeList[index].atr_name) {
+                                this.attributeList[index] = { 'atr_name': element.name, 'atr_value': '', 'atr_id': null, 'product': this.part.id, 'atr_name_id': element.id }
+                            }
+                        }
+                    });
+                });
+            }
+        },
+        async saveAttribute() {
+
+            /*
+            1) implement foreach method in wich get attribute id,
+            2) in that loop sending request upon id exists
+                If exists: update that attribute
+                If not exists: create that attribute
+            4) By the way method update is not defined for now
+            */
+            // emulating loop for update element
+            let endpoint;
+            let response;
+            let response_chk_arr = [];
+            let data;
+            let elements = this.attributeList
+            product_id = this.part.id;
+            for (let index = 0; index < elements.length; index++) {
+                element = elements[index]
+                if (element.atr_id) {
+                    endpoint = `${ApplicationMainHost}/api/product/attribute/${element.atr_id}/`;
+                    data = {
+                        attribute_name: element.atr_name_id,
+                        attribute_value: element.atr_value,
+                        product: product_id
+                    }
+                    response = await apiService(endpoint, 'PUT', data);
+                    if (response) {
+                        this.chkResponse.push(response);
+                    }
+                }
+                else if (element.atr_value != "") {
+                    endpoint = `${ApplicationMainHost}/api/product/attribute/`;
+                    data = {
+                        attribute_name: element.atr_name_id,
+                        attribute_value: element.atr_value,
+                        product: product_id
+                    }
+                    response = await apiService(endpoint, 'POST', data);
+                    if (response) {
+                        this.chkResponse.push(response);
+                    }
+                }
+            };
+            if ( this.chkResponse.length > 0) {
+                this.successToast('Описание сохранено успешно');
+            } else {
+                this.errorToast('Описание не сохранено!');
+            }
+        },
+
+        // Begin description portion of code
+        async getDescription(product_id) {
+            const endpoint = `${ApplicationMainHost}/api/product/description/?product_id=${product_id}`;
+            let response = await apiService(endpoint);
+            if (response.results.length === 0) {
+                this.addDescriptionButton = false;
+            } else {
+                this.editorData = response.results[0].text || null;
+                this.descriptionId = response.results[0].id || null;
+                this.addDescriptionButton = true;
+            }
+
+        },
+        async saveDescription() {
+            if (this.descriptionId) {
+                const id = this.descriptionId;
+                const endpoint = `${ApplicationMainHost}/api/product/description/${id}/`;
+                const data = {
+                    text: this.editorData,
+                    product: this.part.id
+                }
+                let response = await apiService(endpoint, 'PUT', data);
+                if (response) {
+                    this.successToast('Описание сохранено успешно');
+                } else {
+                    this.errorToast('Описание не сохранено!');
+                }
+            }
+
+        },
+        async addDescription() {
+            const endpoint = `${ApplicationMainHost}/api/product/description/`;
+            data = {
+                text: this.editorData,
+                product: this.part.id
+            }
+            const response = await apiService(endpoint, 'POST', data);
+            if (response) {
+                this.successToast('Описание сохранено успешно');
+            } else {
+                this.errorToast('Описание не сохранено!');
+            }
+
+        },
+        // End of description section of code
         errorToast(message) {
             this.$toast.open({
                 message: message,
@@ -309,11 +535,12 @@ const app = new Vue({
                 car_model: car_mod,
                 unit: unitId,
                 active: this.part.active,
-                engine: engine
+                engine: engine,
+                product_cross: this.part.product_cross
             }
             //console.log(JSON.stringify(data));
             let response = await apiService(endpoint, 'PUT', data);
-            console.log(response)
+            //console.log(response)
             if (response) {
                 this.successToast('Товар сохранен!');
             }
@@ -349,7 +576,7 @@ const app = new Vue({
             // await this.getSelectCarEnginelList(this.part.car_model.id);
             await this.getImage(this.part.id);
 
-            console.log(data)
+            //console.log(data)
         },
         async getSelectCarModelList(id) {
             const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodel/${id}/`;
@@ -383,8 +610,9 @@ const app = new Vue({
         this.getSelectCarEnginelList();
         this.getPart(id, car_make_id);
         this.getVideo(id);
-
-
+        this.getDescription(id);
+        this.getAttributeList();
+        this.getAttribute(id);
 
     },
     mounted() {

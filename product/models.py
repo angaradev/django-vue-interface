@@ -30,7 +30,8 @@ class Category(MPTTModel):  # MPTT model here for now
     minus = models.CharField(max_length=1000, blank=True)
     full_plus = models.TextField(null=True, blank=True)
     full_minus = models.TextField(null=True, blank=True)
-    tags = models.ManyToManyField('CategoryTags', blank=True, related_name='category_tags')
+    tags = models.ManyToManyField(
+        'CategoryTags', blank=True, related_name='category_tags')
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -53,6 +54,7 @@ class Category(MPTTModel):  # MPTT model here for now
 
     def __str__(self):
         return self.name
+
 
 class CategoryTags(models.Model):
     name = models.CharField(max_length=50)
@@ -243,7 +245,7 @@ class ProductDescription(models.Model):
     text = models.TextField(null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    product = models.ForeignKey(
+    product = models.OneToOneField(
         'Product', on_delete=models.CASCADE, blank=True, null=True)
 
     class Meta:
@@ -296,28 +298,58 @@ class AngaraOld(models.Model):
 
 class Cross(models.Model):
     cross = models.CharField(max_length=50)
-    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING)
+    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, related_name='product_cross')
 
     class Meta:
         verbose_name = ("Кросс")
         verbose_name_plural = ("Кроссы")
 
     def __str__(self):
-        return self.product
+        return self.product.name
 
 
-# Product Attribute
+class ProductAttributeName(models.Model):
+    '''
+    Класс содержит названия атрибутов.
+    При создании нового атрибута будет проверятся если он есть,
+    то просто добавляем значение.
+    Если нет, то создаем новое название атрибута и сохраняем значение в модели
+    ProductAttribute
+    '''
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        verbose_name = ("Название Атрибута")
+        verbose_name_plural = ("Названия Атрибутов")
+
+    def __str__(self):
+        return self.name
+
+
 class ProductAttribute(models.Model):
-    attribute_name = models.CharField(max_length=45, null=True)
-    attribute_value = models.CharField(max_length=45, null=True)
-    created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+    """
+    This model has to manage attributes.
+    It has to be devided by two classes.
+    One class for attribute names.
+    Another one for attributes values.
+    And it has to be connected to Product model.
+    """
+    attribute_name = models.ForeignKey(ProductAttributeName, on_delete=models.CASCADE)
+    attribute_value = models.CharField(
+        max_length=45, null=True, verbose_name='Значение атрибута')
+    created_date = models.DateTimeField(
+        auto_now_add=True, verbose_name='Дата создания')
+    updated_date = models.DateTimeField(
+        auto_now=True, verbose_name='Дата изменения')
     product = models.ForeignKey(
-        'Product', on_delete=models.CASCADE, blank=True, null=True)
+        'Product', on_delete=models.CASCADE, blank=True, null=True, verbose_name='Относится к Товару')
 
     class Meta:
         verbose_name = ("Атрибут")
         verbose_name_plural = ("Атрибуты")
+
+    def __str__(self):
+        return self.attribute_value
 
 ################### Category pre save receiver ####################################
 

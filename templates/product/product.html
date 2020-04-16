@@ -79,7 +79,6 @@
                                     </div>
                                 </div>
                                 <br>
-
                                 <div class="row">
                                     <div class="col-6">
                                         <label for="engine">DUMMY</label>
@@ -140,7 +139,6 @@
                                             class="btn btn-primary btn-xs float-right">Сохранить</button>
                                     </div>
                                 </div>
-
                             </div>
                             <!-- /.card-body -->
                         </div>
@@ -292,7 +290,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-6">
+                <div class="col-12">
                     <div class="card card-primary card-tabs">
                         <div class="card-header p-0 pt-1">
                             <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
@@ -307,9 +305,15 @@
                                         aria-controls="custom-tabs-one-profile" aria-selected="false">Описание</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill"
-                                        href="#custom-tabs-one-messages" role="tab"
-                                        aria-controls="custom-tabs-one-messages" aria-selected="false">Messages</a>
+                                    <a @click.prevent="getProductList" class="nav-link"
+                                        id="custom-tabs-one-profile-tab2" data-toggle="pill"
+                                        href="#custom-tabs-one-profile2" role="tab"
+                                        aria-controls="custom-tabs-one-profile2" aria-selected="false">Сопутсвующие</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" id="custom-tabs-one-profile-tab3" data-toggle="pill"
+                                        href="#custom-tabs-one-profile3" role="tab"
+                                        aria-controls="custom-tabs-one-profile3" aria-selected="false">Кроссы</a>
                                 </li>
                             </ul>
                         </div>
@@ -317,90 +321,124 @@
                             <div class="tab-content" id="custom-tabs-one-tabContent">
                                 <div class="tab-pane fade show active" id="custom-tabs-one-home" role="tabpanel"
                                     aria-labelledby="custom-tabs-one-home-tab">
-                                    <div class="row">
+                                    <div :key="i" v-for="(attribute, i) in attributeList" class="row mb-1">
                                         <div class="col-6">
-                                            <label for="1attr1">Атрибут Один</label>
-                                            <input class="form-control form-control-sm" type="text"
-                                                placeholder=".form-control-sm" id="1attr1">
+                                            <input v-model="attribute.atr_name" class="form-control form-control-sm"
+                                                type="text" placeholder="Название атрибута" :id="'arrt_name' + i">
                                         </div>
                                         <div class="col-6">
-                                            <label for="1attr_val1">Значение Один</label>
-                                            <input class="form-control form-control-sm" type="text"
-                                                placeholder=".form-control-sm" id="1arrt_val1">
+                                            <input v-model="attribute.atr_value" class="form-control form-control-sm"
+                                                type="text" placeholder="Пусто" :id="'arrt_val' + i">
                                         </div>
                                     </div>
-                                    <br>
-                                    <div class="row">
+                                    <div class="row mt-2">
                                         <div class="col-6">
-                                            <label for="1attr2">Атрибут Один</label>
-                                            <input class="form-control form-control-sm" type="text"
-                                                placeholder=".form-control-sm" id="1attr2">
+                                            <button @click.prevent="addAttributeName = !addAttributeName"
+                                                class="btn btn-outline-warning btn-sm">Добавить Атрибут</button>
                                         </div>
                                         <div class="col-6">
-                                            <label for="1attr_val2">Значение Один</label>
-                                            <input class="form-control form-control-sm" type="text"
-                                                placeholder=".form-control-sm" id="1arrt_val2">
+                                            <button @click.prevent="saveAttribute"
+                                                class="btn btn-outline-primary btn-sm float-right">Сохранить</button>
                                         </div>
                                     </div>
-                                    <div class="row">
+                                    <div v-if="addAttributeName" class="row mt-2">
                                         <div class="col-6">
-                                            <label for="1attr3">Атрибут Один</label>
-                                            <input class="form-control form-control-sm" type="text"
-                                                placeholder=".form-control-sm" id="1attr3">
+                                            <input v-model="addAtrName" class="form-control form-control-sm" type="text"
+                                                placeholder="Название атрибута">
                                         </div>
                                         <div class="col-6">
-                                            <label for="1attr_val3">Значение Один</label>
-                                            <input class="form-control form-control-sm" type="text"
-                                                placeholder=".form-control-sm" id="1arrt_val3">
+                                            <button @click.prevent="addAttrNameMethod"
+                                                class="btn btn-outline-success btn-sm">Сохранить</button>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel"
                                     aria-labelledby="custom-tabs-one-profile-tab">
                                     <div class="mb-3">
-                                        <textarea class="textarea" placeholder="Добавте описание запчасти"
-                                            style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">
-                                            Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris.
-                                            Phasellus volutpat augue id mi placerat mollis. Vivamus faucibus eu massa
-                                            eget condimentum. Fusce nec hendrerit sem, ac tristique nulla. Integer
-                                            vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit
-                                            condimentum, mattis urna a, malesuada nunc. Curabitur eleifend facilisis
-                                            velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum
-                                            odio volutpat massa, sit amet sollicitudin est libero sed ipsum. Nulla
-                                            lacinia, ex vitae gravida fermentum, lectus ipsum gravida arcu, id fermentum
-                                            metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend ac
-                                            ornare magna.
-                                        </textarea>
+                                        <ckeditor :editor="editor" v-model="editorData" :config="editorConfig">
+                                        </ckeditor>
+                                        <div class="description-save-button">
+                                            <button v-if="addDescriptionButton" @click.prevent="saveDescription"
+                                                class="btn btn-outline-primary btn-sm float-right">Сохранить</button>
+                                            <button v-else @click.prevent="addDescription"
+                                                class="btn btn-outline-primary btn-sm float-right">Добавить</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane fade" id="custom-tabs-one-messages" role="tabpanel"
-                                    aria-labelledby="custom-tabs-one-messages-tab">
-                                    Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris.
-                                    Phasellus volutpat augue id mi placerat mollis. Vivamus faucibus eu massa
-                                    eget condimentum. Fusce nec hendrerit sem, ac tristique nulla. Integer
-                                    vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit
-                                    condimentum, mattis urna a, malesuada nunc. Curabitur eleifend facilisis
-                                    velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum
-                                    odio volutpat massa, sit amet sollicitudin est libero sed ipsum. Nulla
-                                    lacinia, ex vitae gravida fermentum, lectus ipsum gravida arcu, id fermentum
-                                    metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend ac
-                                    ornare magna.
+                                <div class="tab-pane fade" id="custom-tabs-one-profile2" role="tabpanel"
+                                    aria-labelledby="custom-tabs-one-profile-tab2">
+                                    <div v-if="loadRelated" class="mb-3">
+                                        <h4>Загружается .... Подождите ...</h4>
+                                        <div class="load-spiner">
+                                            <img src="{% static 'images/load_primary.gif' %}" alt="">
+                                        </div>
+                                    </div>
+                                    <div v-else class="mb-3">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <input class="form-control" v-model="searchRelated" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <select class="form-control" size="20" name="list1" id="list1">
+                                                    <option :value="item.id" v-for="item in filteredList">{ item.name +
+                                                        ' | ' + item.cat_number }
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-2">
+                                                <button class="btn btn-primary btn-block mb-2"
+                                                    @click="oneToRight">&raquo;</button>
+                                                <button class="btn btn-primary btn-block mb-2"
+                                                    @click="oneToLeft">&laquo;</button>
+                                            </div>
+                                            <div class="col-5">
+                                                <select class="form-control" size="20" name="list2" id="list2">
+                                                    <option :value="item2.id" v-for="item2 in list2">{ item2.name }
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="description-save-button">
+                                            <button @click.prevent="saveRelated"
+                                                class="btn btn-outline-primary btn-sm float-right">Сопут
+                                                Сохранить</button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <!-- <div class="tab-pane fade" id="custom-tabs-one-settings" role="tabpanel"
-                                    aria-labelledby="custom-tabs-one-settings-tab">
-                                    Pellentesque vestibulum commodo nibh nec blandit. Maecenas neque magna,
-                                    iaculis tempus turpis ac, ornare sodales tellus. Mauris eget blandit dolor.
-                                    Quisque tincidunt venenatis vulputate. Morbi euismod molestie tristique.
-                                    Vestibulum consectetur dolor a vestibulum pharetra. Donec interdum placerat
-                                    urna nec pharetra. Etiam eget dapibus orci, eget aliquet urna. Nunc at
-                                    consequat diam. Nunc et felis ut nisl commodo dignissim. In hac habitasse
-                                    platea dictumst. Praesent imperdiet accumsan ex sit amet facilisis.
-                                </div> -->
+                                <div class="tab-pane fade" id="custom-tabs-one-profile3" role="tabpanel"
+                                    aria-labelledby="custom-tabs-one-profile-tab3">
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <div v-for="(cross,i) in part.product_cross" class="input-group mb-3">
+                                                    <div
+                                                    @click="deleteCross(i)" class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1"><i
+                                                                class="far fa-trash-alt product-trash"></i></span>
+                                                    </div>
+                                                    <input class="form-control mb-1"
+                                                        v-model="part.product_cross[i].cross" type="text"
+                                                        aria-describedby="basic-addon1">
+                                                </div>
+                                                <div class="description-save-button">
+                                                    <button @click.prevent="addCrossRow"
+                                                        class="btn btn-outline-warning btn-xs">Добавить Кросс</button>
+                                                    <button @click.prevent="editPart"
+                                                        class="btn btn-primary btn-xs float-right">Сохранить</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <!-- /.card -->
                     </div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="col-6">
                     <!-- Custom tabs (Charts with tabs)-->
                     <div class="card">
@@ -440,7 +478,9 @@
     </section>
     <!-- /.Custom elements ends here -->
 </div>
-<!-- /.content-wrapper -->
+
+
+
 {% endblock content %}
 {% block js %}
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
@@ -448,9 +488,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{% static 'dist/js/demo.js' %}"></script>
 <script>
-
     let car_make_id = 'hyundai'//"{{ request.session.car_make_id }}";
-
     $(function () {
         // Summernote
         $('.textarea').summernote()
@@ -465,5 +503,15 @@
 <script src="{% static 'js/axios.min.js' %}"></script>
 <script src="{% static 'js/service_api.js' %}"></script>
 <script src="{% static 'js/product_detail_jquery.js' %}"></script>
+<script src="{% static 'node_modules/@ckeditor/ckeditor5-build-classic/build/ckeditor.js' %}"></script>
+<script src="{% static 'node_modules/@ckeditor/ckeditor5-vue/dist/ckeditor.js' %}"></script>
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap4-duallistbox/4.0.1/jquery.bootstrap-duallistbox.js"></script>
+<script>
+    var demo1 = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox();
+</script>
+<!-- <script src="{% static 'node_modules/dual-listbox-vue/dist/dual-listbox.umd.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'node_modules/dual-listbox-vue/dist/dual-listbox.css' %}"> -->
+
 <script src="{% static 'js/product_detail_vue.js' %}"></script>
 {% endblock %}

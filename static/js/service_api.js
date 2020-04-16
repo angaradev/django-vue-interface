@@ -43,7 +43,7 @@ function apiService(endpoint, method, data, type = 'json') {
             'content-type': 'application/json',
             'X-CSRFTOKEN': CSRF_TOKEN
         },
-            body = data !== undefined ? JSON.stringify(data) : null
+            body = data !== undefined ? JSON.stringify(data) : null;
     }
 
     const config = {
