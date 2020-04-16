@@ -48,7 +48,7 @@ let vi = new Vue({
                 dif = (newTimestamp - localstor.timestamp) / 1000 / 60;
             }
             //console.log(dif)
-            if (dif > 30) {
+            if (dif > 30 || !localstor) {
                 const endpoint = `${ApplicationMainHost}/api/product/selectlistbrands/`;
                 const data = await apiService(endpoint);
                 this.selectBrandList = data;
