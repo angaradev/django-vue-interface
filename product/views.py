@@ -91,6 +91,15 @@ class Main(ListView):
     model = Product
 
     def get_queryset(self):
+
+        self.request.session['car'] = {
+                'car_make': 'Hyundai',
+                'car_make_id': 1,
+                'car_name': 'HD78',
+                'car_model_id': 1,
+                # 'car_engine': ''
+            }
+
         if self.kwargs.get('pk', None):
             qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(
                 model_count=Count('car_model')).order_by('name')
