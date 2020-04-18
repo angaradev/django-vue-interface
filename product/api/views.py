@@ -136,7 +136,7 @@ class ProductList(APIView):
                 car_model=car, category__in=categ.get_descendants(include_self=True)).order_by('name')
         else:
             snippets = Product.objects.filter(
-                car_model=car).order_by('name')
+                car_model=car).distinct().order_by('name')
         serializer = ProductSerializer(snippets, many=True)
         return Response(serializer.data)
 
