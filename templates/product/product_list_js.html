@@ -52,11 +52,11 @@
                                             class="far fa-trash-alt product-trash"></i></td>
                                     <td>
                                         <input @keyup.enter="saveProduct(product.id, i)" v-model="part[i].name"
-                                            class="form-control form-control-sm" type="text"
+                                            class="form-control form-control-sm input-list-first" type="text"
                                             :id="'productName-' + product.id" placeholder="Наименование">
                                         <br>
                                         <input @keyup.enter="saveProduct(product.id, i)" v-model="part[i].name2"
-                                            class="form-control form-control-sm" type="text"
+                                            class="form-control form-control-sm input-list-second" type="text"
                                             :id="'productName2-' + product.id" placeholder="Параметры">
                                     </td>
                                     <td>

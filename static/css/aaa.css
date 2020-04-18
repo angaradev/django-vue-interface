@@ -325,7 +325,7 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     display: inline-block;
     padding: 2px;
     border-radius: 3px;
-    background-color: #6614f2;
+    background-color: ;
     color: #fff;
     font-weight: bold;
     font-size: 0.6rem;
@@ -338,4 +338,11 @@ input.search-form, input.search-form::-webkit-input-placeholder {
 
 .description-save-button {
     margin-top: 0.5rem;
+}
+
+.input-list-first {
+    color: #001f3f;
+}
+.input-list-second {
+    color: #3d9970;
 }
