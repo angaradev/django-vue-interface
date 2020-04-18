@@ -133,7 +133,7 @@ class ProductList(APIView):
         if cat:
             categ = Category.objects.get(id=cat)
             snippets = Product.objects.filter(
-                car_model=car, category__in=categ.get_descendants(include_self=True)).order_by('name')
+                car_model=car, category__in=categ.get_descendants(include_self=True)).distinct().order_by('name')
         else:
             snippets = Product.objects.filter(
                 car_model=car).distinct().order_by('name')
