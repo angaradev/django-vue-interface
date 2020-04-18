@@ -92,7 +92,7 @@ class ProductAttributeViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.query_params.get('product_id'):
             product_id = self.request.query_params.get('product_id', None)
-            queryset = self.model.objects.filter(product=product_id)
+            queryset = self.model.objects.filter(product=product_id).order_by('id')
         else:
             queryset = self.model.objects.all()
 
@@ -193,7 +193,7 @@ class VideoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.query_params.get('product_id'):
             product_id = self.request.query_params.get('product_id', None)
-            queryset = self.model.objects.filter(product=product_id)
+            queryset = self.model.objects.filter(product=product_id).order_by('id')
         else:
             queryset = self.model.objects.all()
 
@@ -208,7 +208,7 @@ class ImageViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.query_params.get('product_id'):
             product_id = self.request.query_params.get('product_id', None)
-            queryset = ProductImage.objects.filter(product=product_id)
+            queryset = ProductImage.objects.filter(product=product_id).order_by('id')
         else:
             queryset = ProductImage.objects.all()
 
