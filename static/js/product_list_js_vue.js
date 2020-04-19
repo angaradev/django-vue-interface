@@ -36,8 +36,7 @@ let vi = new Vue({
         async getSelectCarModelList(id = 1) {
 
             const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodel/${id}/`;
-            const data = await apiService(endpoint);
-            this.selectCarModelList = data;
+            this.selectCarModelList = await apiService(endpoint);
         },
         async getSelectBrandsList() {
             let localstor;
@@ -102,14 +101,19 @@ let vi = new Vue({
                 this.part[index].brand = brand;
             });
             // Adding car models to v-model
-            this.part.forEach((element, index) => {
+            await this.getSelectCarModelList(1);
+            for (let index = 0; index < this.part.length; index++) {
                 let c_l = []
-                element.car_model.forEach((e, i) => {
+                let element = this.part[index].car_model;
+                for (let i = 0; i < element.length; i++) {
+                    e = element[i];
                     let v = this.selectCarModelList.find(obj => obj.id === e);
+                    console.log(v)
                     c_l.push(v);
-                })
+                }
                 this.part[index].car_model = c_l;
-            });
+            }
+
             this.productsLoading = false;
         },
         async saveProduct(id, i) {
@@ -146,9 +150,10 @@ let vi = new Vue({
         const url = window.location.pathname;
         const cat_split = url.split('/');
         const category = cat_split[cat_split.length - 2];
-        this.loadProducts(category);
         this.getSelectBrandsList();
+        //Here needs to edit car make id
         this.getSelectCarModelList(1);
+        this.loadProducts(category);
 
     },
     mounted() {
