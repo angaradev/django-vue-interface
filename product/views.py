@@ -12,7 +12,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from .models import Product, Units, Category, CarModel, AngaraOld, BrandsDict
+from .models import Product, Units, Category, CarModel, AngaraOld, CarEngine
+from brands.models import BrandsDict
 from django.db.models import Count
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
@@ -32,6 +33,61 @@ class ProductListViewForJs(TemplateView):
         context = {
         }
         return render(request, self.template_name, context)
+
+import pickle
+
+def insert_from_old_hd(request):
+    '''
+    Function inserting hd form csv file pickled in the
+    root of project.
+    Also makes bounds to engines and car models
+    '''
+    
+    with open('hd.pickle', 'rb') as handle:
+        hd_list = pickle.load(handle)  
+    
+    def devide_info(string):
+        str_list = string.split('/')
+        str_list = [x.strip() for x in str_list]
+        return str_list
+    
+    
+    
+    qs_from = hd_list
+    i = 0
+    for qa in qs_from:
+        name = qa[1]
+        cat_number = qa[3]
+        one_c_id = qa[11] or None
+        try:
+            brand = BrandsDict.objects.filter(brand_supplier__ang_brand__icontains=qa[5].strip()).distinct()
+        except:
+            brand = None
+        if brand:
+            brand_id = brand[0].id
+        else:
+            brand_id = None
+        try:
+            new = Product.objects.create(
+                name=name,
+                brand=BrandsDict.objects.get(id=brand_id),
+                cat_number=cat_number,
+                one_c_id=one_c_id,
+                unit=Units.objects.get(id=1)
+            )
+            for car in devide_info(qa[7]):
+                car_model = CarModel.objects.filter(name=car).first()
+            
+                new.car_model.add(CarModel.objects.get(id=car_model.id))
+            for eng in devide_info(qa[8]):
+                engine = CarEngine.objects.filter(name__icontains=eng).first()
+                new.engine.add(CarEngine.objects.get(id=engine.id))
+            # new.save()
+        except Exception as e:
+            print(e)
+            i += 1
+            print(i)
+    return redirect('product-main')
 
 
 

@@ -12,8 +12,11 @@ urlpatterns = [
     path('create/', productviews.CreateView.as_view(), name='product-new'),
     path('category/<str:hierarchy>/', productviews.show_category, name='categories'),
     #re_path(r'^category/(?P<hierarchy>.+)/$', productviews.show_category, name='categories'),
-    path('locale/', productviews.view_locale,),
-    path('insertold/', productviews.insert_from_old,),
+    
+    path('locale/', productviews.view_locale),
+    path('insertold/', productviews.insert_from_old),
+    path('insertold-hd/', productviews.insert_from_old_hd),
+
     path('generes/', productviews.test_category),
     path('categorize/', productviews.main_work, name='categorizer'),
     path('categorize-cats/', productviews.main_work_for_cats, name='categorizer-cats'),
