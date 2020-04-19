@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pickle
+from django.conf import settings
 from product.utils import categorizer_split
 from django.forms import inlineformset_factory
 from django.forms import formset_factory
@@ -25,7 +27,6 @@ from functools import reduce
 from django.contrib.auth.decorators import login_required
 
 
-
 class ProductListViewForJs(TemplateView):
     template_name = 'product/product_list_js.html'
 
@@ -34,7 +35,6 @@ class ProductListViewForJs(TemplateView):
         }
         return render(request, self.template_name, context)
 
-import pickle
 
 def insert_from_old_hd(request):
     '''
@@ -42,17 +42,15 @@ def insert_from_old_hd(request):
     root of project.
     Also makes bounds to engines and car models
     '''
-    
-    with open('hd.pickle', 'rb') as handle:
-        hd_list = pickle.load(handle)  
-    
+
+    with open(settings.BASE_ROOT + 'hd.pickle', 'rb') as handle:
+        hd_list = pickle.load(handle)
+
     def devide_info(string):
         str_list = string.split('/')
         str_list = [x.strip() for x in str_list]
         return str_list
-    
-    
-    
+
     qs_from = hd_list
     i = 0
     for qa in qs_from:
@@ -60,7 +58,8 @@ def insert_from_old_hd(request):
         cat_number = qa[3]
         one_c_id = qa[11] or None
         try:
-            brand = BrandsDict.objects.filter(brand_supplier__ang_brand__icontains=qa[5].strip()).distinct()
+            brand = BrandsDict.objects.filter(
+                brand_supplier__ang_brand__icontains=qa[5].strip()).distinct()
         except:
             brand = None
         if brand:
@@ -76,10 +75,14 @@ def insert_from_old_hd(request):
                 unit=Units.objects.get(id=1)
             )
             for car in devide_info(qa[7]):
+                if not car:
+                    car = 'HD78'
                 car_model = CarModel.objects.filter(name=car).first()
-            
+
                 new.car_model.add(CarModel.objects.get(id=car_model.id))
             for eng in devide_info(qa[8]):
+                if not eng:
+                    eng = 'неважно'
                 engine = CarEngine.objects.filter(name__icontains=eng).first()
                 new.engine.add(CarEngine.objects.get(id=engine.id))
             # new.save()
@@ -88,7 +91,6 @@ def insert_from_old_hd(request):
             i += 1
             print(i)
     return redirect('product-main')
-
 
 
 # For working bulk upload parts from 1c Porter,Porter2 only
@@ -149,12 +151,12 @@ class Main(ListView):
     def get_queryset(self):
 
         self.request.session['car'] = {
-                'car_make': 'Hyundai',
-                'car_make_id': 1,
-                'car_name': 'HD78',
-                'car_model_id': 1,
-                # 'car_engine': ''
-            }
+            'car_make': 'Hyundai',
+            'car_make_id': 1,
+            'car_name': 'HD78',
+            'car_model_id': 1,
+            # 'car_engine': ''
+        }
 
         if self.kwargs.get('pk', None):
             qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(
@@ -342,7 +344,7 @@ def main_work(request):
                 defaults={
                     'plus':  '\n'.join(plus),
                     'minus': '\n'.join(minus),
-                    #'parent_id': parent.id,
+                    # 'parent_id': parent.id,
                 }
             )
             for prod in nom_qs:
@@ -371,7 +373,6 @@ def main_work(request):
     return render(request, 'product/group_categorizer.html', context)
 
 
-
 @login_required
 def check_cat(request):
     # group_name = request.GET.get('group_data')
@@ -388,13 +389,11 @@ def check_cat(request):
         return JsonResponse(data)
     except:
         return False
-    
-
 
 
 ################################
 ### Categorizer of categories###
-################################ 
+################################
 
 # Categorizer for subcategories
 def main_work_for_cats(request):
@@ -408,8 +407,9 @@ def main_work_for_cats(request):
                 plus_and.append(plus)
         return plus_and
 
-    group_qs = Category.objects.filter(id__range=(20,999)).order_by('name')
-    nom_qs = Category.objects.filter(id__range=(1000, 2000), plus='').order_by('name')
+    group_qs = Category.objects.filter(id__range=(20, 999)).order_by('name')
+    nom_qs = Category.objects.filter(
+        id__range=(1000, 2000), plus='').order_by('name')
 
     key_form = KeyWordForm(request.GET)
 
@@ -419,7 +419,6 @@ def main_work_for_cats(request):
                 pk=int(request.GET.get('delete_group')))
             del_obj.delete()
         return redirect('categorizer-cats')
-    
 
     if key_form.is_valid():
         parent = key_form.cleaned_data['parent']
@@ -468,7 +467,7 @@ def main_work_for_cats(request):
             # try:
             catg = Category.objects.get(id=request.GET.get('group_id'))
             catg.name = group_name
-            catg.plus =  '\n'.join(plus)
+            catg.plus = '\n'.join(plus)
             catg.minus = '\n'.join(minus)
             catg.parent_id = parent.id
             catg.save()
@@ -481,8 +480,7 @@ def main_work_for_cats(request):
             #     catg.minus = '\n'.join(minus)
             #     catg.parent_id = parent.id
             #     catg.save()
-            
-            
+
             # for prod in nom_qs:
             #     # print(prod)
             #     categorizer_split(prod, Category)
