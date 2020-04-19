@@ -43,7 +43,7 @@ def insert_from_old_hd(request):
     Also makes bounds to engines and car models
     '''
 
-    with open(settings.BASE_DIR + 'hd.pickle', 'rb') as handle:
+    with open(settings.BASE_DIR + '/hd.pickle', 'rb') as handle:
         hd_list = pickle.load(handle)
 
     def devide_info(string):
