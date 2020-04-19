@@ -325,7 +325,7 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     display: inline-block;
     padding: 2px;
     border-radius: 3px;
-    background-color: ;
+    background-color: #6614f2;
     color: #fff;
     font-weight: bold;
     font-size: 0.6rem;
@@ -341,8 +341,8 @@ input.search-form, input.search-form::-webkit-input-placeholder {
 }
 
 .input-list-first {
-    color: #001f3f;
+    color: #6614f2;
 }
 .input-list-second {
-    color: #3d9970;
+    color: #6614f2;
 }
