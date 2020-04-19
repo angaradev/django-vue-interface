@@ -238,9 +238,26 @@ def view_locale(request):
     return HttpResponse(loc_info)
 
 
+def clear_categorization():
+    '''
+    Clears all assigned categories for all products all models
+    Be carefull
+    '''
+    pds = Product.objects.all()
+    for p in pds:
+        p.category.clear()
+    return redirect('product-main')
+
+
 @login_required
 def categorize_bulk(request):
+    '''
+    First off all it clears all bounded categories.
+    Next it categorizing products
+    '''
+    clear_categorization()
     qs = Product.objects.all()
+
     for q in qs:
         categorizer_split(q, Category)
 
@@ -447,13 +464,6 @@ def main_work_for_cats(request):
             q_objects_key.add(
                 Q(reduce(operator.and_, (Q(keywords__icontains=x) for x in pl_and))), Q.OR)
 
-        # ker_qs = Kernel.objects.filter(
-        #     Q(reduce(operator.or_, (Q(keywords__icontains=x) for x in plus)) |
-        #       Q(q_objects_key)
-        #       )).exclude(reduce(operator.or_, (Q(keywords__icontains=x) for x in minus))).order_by('keywords')
-
-        #ker_qs_json = serializers.serialize('json', ker_qs)
-
         nom_qs_json = serializers.serialize('json', nom_qs)
 
         if request.is_ajax():
@@ -464,38 +474,16 @@ def main_work_for_cats(request):
             return JsonResponse(data, safe=False)
 
         if request.GET.get('save_group'):
-            # try:
             catg = Category.objects.get(id=request.GET.get('group_id'))
             catg.name = group_name
             catg.plus = '\n'.join(plus)
             catg.minus = '\n'.join(minus)
             catg.parent_id = parent.id
             catg.save()
-            # except:
-            #     ids = [x.id for x in Category.objects.filter(id__range=(99,999))]
-            #     catg = Category()
-            #     catg.id = max(ids) + 1
-            #     catg.name = group_name
-            #     catg.plus =  '\n'.join(plus)
-            #     catg.minus = '\n'.join(minus)
-            #     catg.parent_id = parent.id
-            #     catg.save()
-
-            # for prod in nom_qs:
-            #     # print(prod)
-            #     categorizer_split(prod, Category)
             return redirect('categorizer-cats')
 
     # Aggregate statistics
     group_count = group_qs.count()
-    # ker_count = Kernel.objects.filter(chk=True).count()
-    # ker_count_tot = Kernel.objects.count()
-    # nom_count = Category.objects.filter(
-    #     category__id=None).count()
-    # nom_count_tot = Product.objects.filter(car_model=car).count()
-    # counts = {'gk': group_count,
-    #           'nk': nom_count,
-    #           'nk_tot': nom_count_tot}
 
     context = {
         # 'kernels': ker_qs,
