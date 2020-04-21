@@ -260,9 +260,7 @@ class ProductSerializer(serializers.ModelSerializer):
         car_engine_list = [_.id for _ in car_engine_data]
         car_engine_qs = CarEngine.objects.filter(
             car_related_engine=instance.id)
-        one_c_id = validated_data.get('one_c_id', instance.one_c_id)
-        if not one_c_id:
-            one_c_id = None
+        
 
         instance.brand = validated_data.get('brand', instance.brand)
         instance.name = validated_data.get('name', instance.name)
