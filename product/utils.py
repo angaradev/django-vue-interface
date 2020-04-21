@@ -5,7 +5,8 @@ import os
 from PIL import Image, ImageOps
 
 
-def categorizer_split(instance, Category): # Instance - Product instance, Category - Category model, String - 
+def categorizer_split(instance, Category): # Instance - Product instance, Category - Category model, String -
+    instance.category.clear() 
     categories_qs = Category.objects.all().filter(id__gt=2000)
     string = instance.full_name.lower()
     ready = list()
@@ -31,8 +32,9 @@ def categorizer_split(instance, Category): # Instance - Product instance, Catego
                 if (cat.id, cat.name) not in ready:
                     ready.append({'id': cat.id, 'name': cat.name})
                 #print(minus, plus)
-
+    print(ready)
     for r in ready:
+        print(r)
         instance.category.remove(Category.objects.get(id=r['id']))
         instance.category.add(Category.objects.get(id=r['id']))
     return ready
