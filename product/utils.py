@@ -32,9 +32,7 @@ def categorizer_split(instance, Category): # Instance - Product instance, Catego
                 if (cat.id, cat.name) not in ready:
                     ready.append({'id': cat.id, 'name': cat.name})
                 #print(minus, plus)
-    print(ready)
     for r in ready:
-        print(r)
         instance.category.remove(Category.objects.get(id=r['id']))
         instance.category.add(Category.objects.get(id=r['id']))
     return ready
