@@ -374,9 +374,17 @@
                                         </div>
                                     </div>
                                     <div v-else class="mb-3">
-                                        <div class="row">
+                                        <div class="row pb-2">
                                             <div class="col-5">
                                                 <input class="form-control" v-model="searchRelated" type="text">
+                                            </div>
+                                            <div class="col-2"></div>
+                                            <div class="col-5">
+                                                <div class="description-save-button">
+                                                    <button @click.prevent="saveRelated"
+                                                        class="btn btn-outline-primary btn-sm float-right">Сопут
+                                                        Сохранить</button>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -400,11 +408,6 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="description-save-button">
-                                            <button @click.prevent="saveRelated"
-                                                class="btn btn-outline-primary btn-sm float-right">Сопут
-                                                Сохранить</button>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="custom-tabs-one-profile3" role="tabpanel"
@@ -413,8 +416,7 @@
                                         <div class="row">
                                             <div class="col-5">
                                                 <div v-for="(cross,i) in part.product_cross" class="input-group mb-3">
-                                                    <div
-                                                    @click="deleteCross(i)" class="input-group-prepend">
+                                                    <div @click="deleteCross(i)" class="input-group-prepend">
                                                         <span class="input-group-text" id="basic-addon1"><i
                                                                 class="far fa-trash-alt product-trash"></i></span>
                                                     </div>
