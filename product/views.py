@@ -264,13 +264,6 @@ def categorize_bulk(request):
     return redirect('product-main')
 
 
-# Logic for categorizer
-# 1) Select all records wich has no categrories
-# 2) Select appropriate group for that
-# 3) Add plus and minus keywords to Category related tables
-# 4) Record has to disapeare form list
-# 5) Working upon all groups will be done
-# 6) If group does not exist We can make it from admin side on Category model
 
 @login_required
 def check_group(request):
