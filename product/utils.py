@@ -7,7 +7,7 @@ from PIL import Image, ImageOps
 
 def categorizer_split(instance, Category): # Instance - Product instance, Category - Category model, String - 
     categories_qs = Category.objects.all().filter(id__gt=2000)
-    string = instance.name.lower()
+    string = instance.full_name.lower()
     ready = list()
 
     for cat in categories_qs:
@@ -38,37 +38,37 @@ def categorizer_split(instance, Category): # Instance - Product instance, Catego
     return ready
 
 # Categorizer work
-def categorizer(instance, Category, string): # Instance - Product instance, Category - Category model, String - 
-    categories_qs = Category.objects.all().filter(id__gt=2000)
-    string = string.lower()
-    ready = list()
+# def categorizer(instance, Category, string): # Instance - Product instance, Category - Category model, String - 
+#     categories_qs = Category.objects.all().filter(id__gt=2000)
+#     string = string.lower()
+#     ready = list()
 
-    for cat in categories_qs:
-        minus = [x.minus.strip() for x in cat.to_category_minus.all()]
-        plus = [x.plus.strip() for x in cat.to_category.all()]
-        plus_single_list = []
+#     for cat in categories_qs:
+#         minus = [x.minus.strip() for x in cat.to_category_minus.all()]
+#         plus = [x.plus.strip() for x in cat.to_category.all()]
+#         plus_single_list = []
 
-        for p in plus:
-            find = None
-            single_list = p.split()
-            plus_single_list.append(single_list)
+#         for p in plus:
+#             find = None
+#             single_list = p.split()
+#             plus_single_list.append(single_list)
 
-        for sing_lst in plus_single_list:
-            if all(plus_word in string for plus_word in sing_lst):
-                find = string
-        if find:
-            # print(minus)
-            if any(minus_word in find for minus_word in minus):
-                pass
-            else:
-                if (cat.id, cat.name) not in ready:
-                    ready.append({'id': cat.id, 'name': cat.name})
-                #print(minus, plus)
+#         for sing_lst in plus_single_list:
+#             if all(plus_word in string for plus_word in sing_lst):
+#                 find = string
+#         if find:
+#             # print(minus)
+#             if any(minus_word in find for minus_word in minus):
+#                 pass
+#             else:
+#                 if (cat.id, cat.name) not in ready:
+#                     ready.append({'id': cat.id, 'name': cat.name})
+#                 #print(minus, plus)
 
-    for r in ready:
-        instance.category.remove(Category.objects.get(id=r['id']))
-        instance.category.add(Category.objects.get(id=r['id']))
-    return ready
+#     for r in ready:
+#         instance.category.remove(Category.objects.get(id=r['id']))
+#         instance.category.add(Category.objects.get(id=r['id']))
+#     return ready
 
 # Slugifyer for products
 

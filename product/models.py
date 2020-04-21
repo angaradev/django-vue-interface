@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from product.utils import categorizer_split
-from product.utils import categorizer
+#from product.utils import categorizer
 from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
 import os
 from brands.models import BrandsDict
@@ -274,6 +274,14 @@ class Product(models.Model):  # Main table product
     active = models.BooleanField(default=True)
     engine = models.ManyToManyField(
         'CarEngine', related_name='car_related_engine', blank=True)
+
+    @property
+    def full_name(self):
+        if self.name2:
+            return self.name + ' ' + self.name2
+        else:
+            return self.name
+        
 
     class Meta:
         verbose_name = ("Товар")
