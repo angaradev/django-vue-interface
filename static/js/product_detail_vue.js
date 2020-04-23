@@ -552,6 +552,7 @@ const app = new Vue({
         async getPartCarModel(id_list) { //Gettin car model list for specific car part
             const endpoint = `${ApplicationMainHost}/api/product/selectpartcarmodel/?pk=${id_list}`;
             const data = await apiService(endpoint);
+            console.log(data)
             this.value = data;
         },
         async getPartCarEngine(id_list) {
