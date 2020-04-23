@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
 
+    'mathfilters',
+
     'django_extensions',
 
     'mptt',

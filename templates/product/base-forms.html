@@ -62,6 +62,15 @@
           <a href="{% url 'product-new' %}" class="nav-link" data-toggle="tooltip" data-placement="right"
             title="Добавить Продукт"><i class="far fa-plus-square add-product-icon"></i></a>
         </li>
+        <li class="nav-item dropdown">
+          <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            class="nav-link dropdown-toggle">Бренды</a>
+          <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <li><a  href="/suppliers/" class="dropdown-item">Добавить Бренды </a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="{% url 'main-view' %}" class="dropdown-item">Все Бренды</a></li>
+          </ul>
+        </li>
       </ul>
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
