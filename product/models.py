@@ -231,7 +231,7 @@ class ProductVideos(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     product = models.ForeignKey(
-        'Product', on_delete=models.CASCADE, blank=True, null=True)
+        'Product', on_delete=models.CASCADE, blank=True, null=True, related_name='product_video')
 
     class Meta:
         verbose_name = ("Видео")
@@ -246,7 +246,7 @@ class ProductDescription(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     product = models.OneToOneField(
-        'Product', on_delete=models.CASCADE, blank=True, null=True)
+        'Product', on_delete=models.CASCADE, blank=True, null=True, related_name='product_description')
 
     class Meta:
         verbose_name = ("Описание товара")
@@ -268,7 +268,7 @@ class Product(models.Model):  # Main table product
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=255, blank=True)
-    one_c_id = models.IntegerField( blank=True, null=True)
+    one_c_id = models.IntegerField(blank=True, null=True)
     unit = models.ForeignKey(
         'Units', on_delete=models.DO_NOTHING, related_name='product_unit')
     active = models.BooleanField(default=True)
@@ -281,7 +281,29 @@ class Product(models.Model):  # Main table product
             return self.name + ' ' + self.name2
         else:
             return self.name
-        
+
+    @property
+    def have_photo(self):
+        return self.product_image.exists()
+
+    @property
+    def have_attribute(self):
+        return self.product_attribute.exists()
+
+    @property
+    def have_description(self):
+        if not hasattr(self.product_description, 'text'):
+            return False
+        else:
+            if len(self.product_description.text) > 0:
+                return True
+            else:
+                return False
+
+    @property
+    def have_video(self):
+        return self.product_video.exists()
+       
 
     class Meta:
         verbose_name = ("Товар")
@@ -306,7 +328,8 @@ class AngaraOld(models.Model):
 
 class Cross(models.Model):
     cross = models.CharField(max_length=50)
-    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, related_name='product_cross')
+    product = models.ForeignKey(
+        Product, on_delete=models.DO_NOTHING, related_name='product_cross')
 
     class Meta:
         verbose_name = ("Кросс")
@@ -342,7 +365,8 @@ class ProductAttribute(models.Model):
     Another one for attributes values.
     And it has to be connected to Product model.
     """
-    attribute_name = models.ForeignKey(ProductAttributeName, on_delete=models.CASCADE)
+    attribute_name = models.ForeignKey(
+        ProductAttributeName, on_delete=models.CASCADE)
     attribute_value = models.CharField(
         max_length=45, null=True, verbose_name='Значение атрибута')
     created_date = models.DateTimeField(
@@ -350,7 +374,7 @@ class ProductAttribute(models.Model):
     updated_date = models.DateTimeField(
         auto_now=True, verbose_name='Дата изменения')
     product = models.ForeignKey(
-        'Product', on_delete=models.CASCADE, blank=True, null=True, verbose_name='Относится к Товару')
+        'Product', on_delete=models.CASCADE, blank=True, null=True, verbose_name='Относится к Товару', related_name='product_attribute')
 
     class Meta:
         verbose_name = ("Атрибут")

@@ -163,13 +163,11 @@ class CategorizerSingleProduct(APIView):
                 if all(plus_word in string for plus_word in sing_lst):
                     find = string
             if find:
-                # print(minus)
                 if any(minus_word in find for minus_word in minus):
                     pass
                 else:
                     if (cat.id, cat.name) not in ready:
                         ready.append({'id': cat.id, 'name': cat.name})
-                    #print(minus, plus)
 
         return ready
 
@@ -177,7 +175,6 @@ class CategorizerSingleProduct(APIView):
         #product_name = request.GET.get('product_name')
         result = self.cat(product_name)
         serializer = CategorySerializer(result, many=True)
-        print(result)
         return Response(serializer.data)
 
 
@@ -222,7 +219,6 @@ class ImageViewSet(viewsets.ModelViewSet):
         flag = 1
         arr = []
         for img_name in images:
-            print(img_name)
             modified_data = modify_input_for_multiple_files(product, img_name)
             file_serializer = ImageSerializer(data=modified_data)
             if file_serializer.is_valid():
@@ -329,12 +325,10 @@ class SetSession(APIView):
         serializer = SessionSerializer(data=request.data)
 
         if serializer.is_valid():
-            # print()
             qs = CarModel.objects.get(
                 id=serializer.validated_data.get('car_model')['id'])
             e_qs = CarEngine.objects.get(
                 id=serializer.validated_data.get('car_engine')['id'])
-            print(qs.id)
             request.session['car_model'] = qs.id
             request.session['car_engine'] = e_qs.id
             data = {

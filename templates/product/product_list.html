@@ -15,6 +15,7 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
+                                        <th>Img</th>
                                         <th>Del</th>
                                         <th data-sortable="true">Название</th>
                                         <th data-sortable="true">Параметры</th>
@@ -29,6 +30,19 @@
                                     {% for object in object_list %}
                                     <tr>
                                         <td><a href="{% url 'product-detail' object.pk %}">{{ object.pk }}</a></td>
+                                        <td>{% if object.have_photo %}
+                                            <i class="far fa-image product-image-icon"></i>
+                                            {% endif %}
+                                            {% if object.have_attribute %}
+                                            <i class="far fa-closed-captioning product-description-icon"></i>
+                                            {% endif %}
+                                            {% if object.have_description %}
+                                              <i class="fas fa-list-alt product-attribute-icon"></i>
+                                            {% endif %}
+                                            {% if object.have_video %}
+                                             <i class="fas fa-film product-video-icon"></i>
+                                            {% endif %}
+                                            </td>
                                         <td><i @click="deleteProduct('{{ object.id }}')"
                                                 class="far fa-trash-alt product-trash"></i></td>
                                         <td>
@@ -73,7 +87,7 @@
     $(document).ready(function () {
         $('#product-list').DataTable({
             "pageLength": 100,
-            "order": [[1, "asc"]]
+            "order": [[3, "asc"]]
             //paging: false
         });
     });

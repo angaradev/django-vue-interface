@@ -28,7 +28,7 @@ const app = new Vue({
         //Create dual list for related product
         loadRelated: false,
         list1: [
-            {id: 1, name: 'Запчасть 1', cat_number: '13334h500'}
+            { id: 1, name: 'Запчасть 1', cat_number: '13334h500' }
         ],
         list2: [],
         searchRelated: '',
@@ -169,12 +169,12 @@ const app = new Vue({
     methods: {
         //Methods for crosses
         addCrossRow() {
-            this.part.product_cross.push({id: 0, cross: ''});
+            this.part.product_cross.push({ id: 0, cross: '' });
         },
-        async deleteCross(i){
+        async deleteCross(i) {
             this.part.product_cross.splice(i, 1);
         },
-        
+
         //Methods for related products
         async getProductList(product_list) {
             this.loadRelated = true;
@@ -215,20 +215,20 @@ const app = new Vue({
         },
         oneToRight() {
             let select = document.getElementById('list1').value;
-            if(select != "") {
+            if (select != "") {
                 let i = this.list1.find(e => e.id == select);
                 this.list2.push(i);
                 let del = this.list1.indexOf(i);
-                this.list1.splice(del,1);
+                this.list1.splice(del, 1);
             }
         },
-        oneToLeft(){
+        oneToLeft() {
             let select = document.getElementById('list2').value;
-            if(select != "") {
+            if (select != "") {
                 let i = this.list2.find(e => e.id == select);
                 this.list1.push(i);
                 let del = this.list2.indexOf(i);
-                this.list2.splice(del,1);
+                this.list2.splice(del, 1);
             }
         },
         // Attribute portion of code
@@ -238,7 +238,8 @@ const app = new Vue({
                 name: this.addAtrName
             }
             let response = await apiService(endpoint, 'POST', data);
-            this.attributeList.push({ 'atr_name': response.name, 'atr_value': '', 'atr_id': null, 'product': this.part.id, 'atr_name_id': response.id});
+            //console.log(response)
+            this.attributeList.push({ 'atr_name': response.name, 'atr_value': '', 'atr_id': null, 'product': this.part.id, 'atr_name_id': response.id });
             this.addAtrName = null;
             this.addAttributeName = false;
         },
@@ -248,24 +249,23 @@ const app = new Vue({
         async getAttributeList() {
             const endpoint = `${ApplicationMainHost}/api/product/attributes/`;
             let response = await apiService(endpoint);
-            if (response.results.length === 0) {
-
-            } else {
-                this.attributeList = response.results;
-                //console.log(this.attributeList);
-
-            }
+            this.attributeList = response.results;
         },
         async getAttribute(product_id) {
             const endpoint = `${ApplicationMainHost}/api/product/attribute/?product_id=${product_id}`;
             let response = await apiService(endpoint);
 
             if (response.results.length === 0) {
+                for (let index = 0; index < this.attributeList.length; index++) {
+                    let elem = this.attributeList[index];
+                    this.attributeList[index] = { 'atr_name': elem.name, 'atr_value': '', 'atr_id': null, 'product': this.part.id, 'atr_name_id': elem.id }
+                }
             } else {
                 this.attributeFields = response.results;
-                let arr = []
-                this.attributeList.forEach((element, index) => {
-                    this.attributeFields.forEach(el => {
+                for (let index = 0; index < this.attributeList.length; index++) {
+                    let element = this.attributeList[index];
+                    for (let i = 0; i < this.attributeFields.length; i++) {
+                        let el = this.attributeFields[i];
                         if (element.id === el.attribute_name) {
                             this.attributeList[index] = { 'atr_name': element.name, 'atr_value': el.attribute_value, 'atr_id': el.id, 'product': this.part.id, 'atr_name_id': element.id }
                         } else {
@@ -273,8 +273,8 @@ const app = new Vue({
                                 this.attributeList[index] = { 'atr_name': element.name, 'atr_value': '', 'atr_id': null, 'product': this.part.id, 'atr_name_id': element.id }
                             }
                         }
-                    });
-                });
+                    }
+                }
             }
         },
         async saveAttribute() {
@@ -320,10 +320,10 @@ const app = new Vue({
                     }
                 }
             };
-            if ( this.chkResponse.length > 0) {
-                this.successToast('Описание сохранено успешно');
+            if (this.chkResponse.length > 0) {
+                this.successToast('Атрибут сохранен успешно');
             } else {
-                this.errorToast('Описание не сохранено!');
+                this.errorToast('Атрибут не сохранен!');
             }
         },
 

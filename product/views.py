@@ -163,7 +163,6 @@ class Main(ListView):
                 model_count=Count('car_model')).order_by('name')
             car_model = CarModel.objects.get(id=self.kwargs['pk'])
             car_make = CarMake.objects.get(car_model=car_model)
-            print(car_make.name)
             self.request.session['car'] = {
                 'car_make': car_make.name,
                 'car_make_id': car_make.id,
@@ -187,7 +186,6 @@ class MainMain(ListView):
     def get_queryset(self):
         car_session = self.request.session.get('car', None)
         if self.kwargs.get('pk', None):
-
             qs = self.model.objects.filter(car_model=self.kwargs['pk']).annotate(
                 model_count=Count('car_model')).order_by('name')
             self.request.session['car'] = {
@@ -199,7 +197,6 @@ class MainMain(ListView):
         elif car_session:
             qs = self.model.objects.filter(
                 car_model=self.request.session['car']['car_model_id']).order_by('name')
-
         else:
             qs = self.model.objects.all().order_by('name')[:200]
         return qs

@@ -346,3 +346,19 @@ input.search-form, input.search-form::-webkit-input-placeholder {
 .input-list-second {
     color: #6614f2;
 }
+.product-image-icon {
+    font-size: 0.7rem;
+    color: #6610f2;
+}
+.product-description-icon {
+    font-size: 0.7rem;
+    color: #17a2b8;
+}
+.product-attribute-icon {
+    font-size: 0.7rem;
+    color: #ff851b;
+}
+.product-video-icon {
+    font-size: 0.7rem;
+    color: #01ff70;
+}
