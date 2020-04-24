@@ -53,6 +53,7 @@
             <a href="{% url 'product-list' request.session.car.car_model_id %}" class="nav-link font-weight-bold">
               <span class="color-navy">{{ request.session.car.car_make }} {{ request.session.car.car_name|upper }} <small class="badge badge-success"><i class="fas fa-truck"></i> {{ count_model_product }}</small></span>
             </a>
+            <span id="car_m_id" token="{{ request.session.car.car_model_id }}"></span>
             {% endif %}
           </span>
         </li>
