@@ -7,17 +7,23 @@
     <!-- Custom elements start here -->
     <section class="content" id="app-list">
         <div class="container-fluid">
-            <div class="row">
+            <div class="row pt-2">
                 <div class="col-12">
                     <!-- Default box -->
-                    <div class="card collapsed-card">
-                        <div class="card-header">
-                            <span class="card-title mr-5 color-navy">Всего товаров <small class="badge badge-primary"><i class="fas fa-truck-monster"></i> {{ object_list.count }}</small></span>
-                            <span class="card-title color-fuchsia">Выбрать Номенклатуру по Начальной Букве Алфавита. Кликни на минус слева!</span>
+                    <div class="card card-primary collapsed-card">
+                        <div class="card-header card-header-filter">
+                            <small class="card-title badge badge-white mr-4"> 
+                                <span v-for="a in alphabet" class="card-title">
+                                    <span class="letter-loop" v-if="a.selected">{ a.name }</span>
+                                </span>
+                            </small>
+                            <small class="card-title badge badge-white mr-4 letter-loop">{{ object_list.count }}</small>
+                            <!-- <span class="card-title ml-5">Выбрать Номенклатуру по Начальной Букве Алфавита. Кликни на минус
+                                слева!</span> -->
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"
                                     data-toggle="tooltip" title="Открыть фильтр">
-                                    <i class="fas fa-minus"></i></button>
+                                    <i class="fas fa-plus"></i></button>
                                 <button type="button" class="btn btn-tool" data-card-widget="remove"
                                     data-toggle="tooltip" title="Удалить Фильтр">
                                     <i class="fas fa-times"></i></button>
@@ -25,18 +31,17 @@
                         </div>
                         <div class="card-body">
                             <form action="." ref="form" method="get">
-                            <div class="form-group clearfix">
-                                <div v-for="(char,i) in alphabet" class="icheck-primary d-inline">
-                                    <input type="checkbox" :id="'checkboxPrimary-' + i" v-model="char.selected" :value="char.name" @click="check"
-                                    name="alphabet"
-                                    >
-                                    <label class="mr-4 mb-3" :for="'checkboxPrimary-' + i ">
-                                        { char.name|capitalize }
-                                    </label>
+                                <div class="form-group clearfix">
+                                    <div v-for="(char,i) in alphabet" class="icheck-primary d-inline">
+                                        <input type="checkbox" :id="'checkboxPrimary-' + i" v-model="char.selected"
+                                            :value="char.name" @click="check" name="alphabet">
+                                        <label class="mr-4 mb-3" :for="'checkboxPrimary-' + i ">
+                                            { char.name|capitalize }
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                            <button @click="submit" class="btn btn-outline-primary btn-sm">Применить</button>
-                        </form>
+                                <button @click="submit" class="btn btn-outline-primary btn-sm">Применить</button>
+                            </form>
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer">

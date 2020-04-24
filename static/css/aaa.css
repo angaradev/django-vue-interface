@@ -368,3 +368,20 @@ input.search-form, input.search-form::-webkit-input-placeholder {
 .color-navy {
     color: #001f3f;
 }
+.letter-loop {
+    font-size:1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.card-header-filter {
+    line-height: 1.3rem;
+}
+.filter-bage {
+    background-color: #ffffff;
+    padding: 2px;
+}
+.badge-white {
+    background-color: #fff;
+    /* color: #007bff; */
+    color: #ff851b;
+}
