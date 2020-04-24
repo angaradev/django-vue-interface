@@ -362,3 +362,9 @@ input.search-form, input.search-form::-webkit-input-placeholder {
     font-size: 0.7rem;
     color: #01ff70;
 }
+.color-fuchsia {
+    color: #f012be;
+}
+.color-navy {
+    color: #001f3f;
+}

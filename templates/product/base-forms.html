@@ -8,20 +8,22 @@
   <title>{% block page_title %}Раздел работы с Продуктом{% endblock %}</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
   <!-- Font Awesome -->
   <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <link rel="icon" type="image/png" href="{% static 'images/favicon.png' %}" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
   <!-- summernote -->
   <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.css' %}">
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
   <!-- CSS FOR Search Select Plugin -->
   <!-- <link href="{% static 'css/select2.min.css' %}" rel="stylesheet" /> -->
   <!-- use the latest vue-select release -->
   <link rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+  
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/vue-multiselect@2.1.0/dist/vue-multiselect.min.css">
@@ -48,15 +50,11 @@
           <span data-toggle="dummy-tooltip" data-placement="right"
             title="Задать начальные значения Модели, Двигателя, чтобы не подставлять каждый раз при создании товара">
             {% if request.session.car %}
-            <a href="{% url 'product-list' request.session.car.car_model_id %}" class="nav-link">
-
-              <span class="color-success">{{ request.session.car.car_name }}</span>
+            <a href="{% url 'product-list' request.session.car.car_model_id %}" class="nav-link font-weight-bold">
+              <span class="color-navy">{{ request.session.car.car_make }} {{ request.session.car.car_name|upper }} <small class="badge badge-success"><i class="fas fa-truck"></i> {{ count_model_product }}</small></span>
             </a>
             {% endif %}
           </span>
-        <li class="nav-item d-none d-sm-inline-block"><a id="car_m_id" token="{{ request.session.car.car_make_id }}"
-            href="#" class="nav-link">{{ request.session.car.car_make }}</a></li>
-
         </li>
         <li class="nav-item d-none d-sm-inline-block">
           <a href="{% url 'product-new' %}" class="nav-link" data-toggle="tooltip" data-placement="right"

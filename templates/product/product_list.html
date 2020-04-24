@@ -7,6 +7,45 @@
     <!-- Custom elements start here -->
     <section class="content" id="app-list">
         <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Default box -->
+                    <div class="card collapsed-card">
+                        <div class="card-header">
+                            <span class="card-title mr-5 color-navy">Всего товаров <small class="badge badge-primary"><i class="fas fa-truck-monster"></i> {{ object_list.count }}</small></span>
+                            <span class="card-title color-fuchsia">Выбрать Номенклатуру по Начальной Букве Алфавита. Кликни на минус слева!</span>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                    data-toggle="tooltip" title="Открыть фильтр">
+                                    <i class="fas fa-minus"></i></button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove"
+                                    data-toggle="tooltip" title="Удалить Фильтр">
+                                    <i class="fas fa-times"></i></button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form action="." ref="form" method="get">
+                            <div class="form-group clearfix">
+                                <div v-for="(char,i) in alphabet" class="icheck-primary d-inline">
+                                    <input type="checkbox" :id="'checkboxPrimary-' + i" v-model="char.selected" :value="char.name" @click="check"
+                                    name="alphabet"
+                                    >
+                                    <label class="mr-4 mb-3" :for="'checkboxPrimary-' + i ">
+                                        { char.name|capitalize }
+                                    </label>
+                                </div>
+                            </div>
+                            <button @click="submit" class="btn btn-outline-primary btn-sm">Применить</button>
+                        </form>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                        </div>
+                        <!-- /.card-footer-->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
             <div class="row pt-2">
                 <div class="col-12">
                     <div class="card">
@@ -37,12 +76,12 @@
                                             <i class="far fa-closed-captioning product-description-icon"></i>
                                             {% endif %}
                                             {% if object.have_description %}
-                                              <i class="fas fa-list-alt product-attribute-icon"></i>
+                                            <i class="fas fa-list-alt product-attribute-icon"></i>
                                             {% endif %}
                                             {% if object.have_video %}
-                                             <i class="fas fa-film product-video-icon"></i>
+                                            <i class="fas fa-film product-video-icon"></i>
                                             {% endif %}
-                                            </td>
+                                        </td>
                                         <td><i @click="deleteProduct('{{ object.id }}')"
                                                 class="far fa-trash-alt product-trash"></i></td>
                                         <td>

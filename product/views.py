@@ -149,7 +149,6 @@ class Main(ListView):
     model = Product
 
     def get_queryset(self):
-
         self.request.session['car'] = {
             'car_make': 'Hyundai',
             'car_make_id': 1,
@@ -170,12 +169,21 @@ class Main(ListView):
                 'car_model_id': self.kwargs['pk'],
                 # 'car_engine': ''
             }
+            letters = self.request.GET.getlist('alphabet', None)
+            if letters:
+                query = reduce(lambda q,value: q|Q(name__istartswith=value), letters, Q())
+                qs = qs.filter(query).order_by('name')
         elif self.request.session['car']['car_model_id']:
             qs = self.model.objects.filter(
                 car_model=self.request.session['car']['car_model_id']).order_by('name')
         else:
             qs = self.model.objects.all().order_by('name')[:200]
         return qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+
+        context = super().get_context_data(**kwargs)
+        return context
 
 
 @method_decorator(login_required, name='dispatch')
