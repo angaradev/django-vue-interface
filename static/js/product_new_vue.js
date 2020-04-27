@@ -24,7 +24,7 @@ Vue.component('vue-multiselect', window.VueMultiselect.default);
 const vsel = Vue.component('v-select', VueSelect.VueSelect);
 const app = new Vue({
     delimiters: ['{', '}'],
-    el: '#app',
+    el: '#app_new',
     data: {
         part: {
             id: null,
@@ -173,18 +173,18 @@ const app = new Vue({
                 active: this.part.active,
                 engine: engine
             }
-            
+
             try {
                 const response = await apiService(endpoint, 'POST', data);
-                if (response){
+                if (response) {
                     console.log(response)
                     this.successToast("Товар сохранен");
                     //window.location.href = `${ApplicationMainHost}/product/`;
                 }
-                else{
+                else {
                     this.errorToast('Товар не сохранился!');
                 }
-                    
+
             } catch (e) {
                 console.log(e);
             }
@@ -199,6 +199,7 @@ const app = new Vue({
             const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodelnew/`;
             const data = await apiService(endpoint);
             this.selectCarModelList = data;
+            console.log(data)
             // this.sessionCountry = this.selectCarModelList[0].carmake.country.country;
             // this.sessionCarMake = this.selectCarModelList[0].carmake.name;
             // setTimeout(() => {
