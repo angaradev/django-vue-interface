@@ -611,10 +611,12 @@ const app = new Vue({
         this.getPart(id, car_make_id);
         this.getVideo(id);
         this.getDescription(id);
-        this.getAttributeList();
-        this.getAttribute(id);
+
 
     },
     mounted() {
+        const id = document.getElementById('mainId').getAttribute('token') || '';
+        this.getAttributeList();
+        this.getAttribute(id);
     }
 });

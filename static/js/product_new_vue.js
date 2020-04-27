@@ -173,7 +173,7 @@ const app = new Vue({
                 active: this.part.active,
                 engine: engine
             }
-            console.log(JSON.stringify(data))
+            //console.log(JSON.stringify(data))
 
             try {
                 const response = await apiService(endpoint, 'POST', data);
