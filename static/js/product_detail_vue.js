@@ -607,8 +607,6 @@ const app = new Vue({
         this.getSelectBrandsList();
         const id = document.getElementById('mainId').getAttribute('token') || '';
         const car_make_id = document.getElementById('car_m_id').getAttribute('token') || '';
-
-        console.log(car_make_id)
         this.getSelectCarEnginelList();
         this.getPart(id, car_make_id);
         this.getVideo(id);
