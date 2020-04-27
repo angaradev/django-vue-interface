@@ -329,7 +329,7 @@ class AngaraOld(models.Model):
 class Cross(models.Model):
     cross = models.CharField(max_length=50)
     product = models.ForeignKey(
-        Product, on_delete=models.DO_NOTHING, related_name='product_cross')
+        Product, on_delete=models.DO_NOTHING, related_name='product_cross', blank=True)
 
     class Meta:
         verbose_name = ("Кросс")

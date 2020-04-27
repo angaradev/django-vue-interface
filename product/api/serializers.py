@@ -167,7 +167,7 @@ class CrossSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
 
     category = CategorySerializer(many=True, required=False)
-    product_cross = CrossSerializer(many=True, required=True)
+    product_cross = CrossSerializer(many=True, required=False)
     
     class Meta:
         model = Product
