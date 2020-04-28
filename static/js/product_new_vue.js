@@ -200,7 +200,7 @@ const app = new Vue({
             const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodelnew/`;
             const data = await apiService(endpoint);
             this.selectCarModelList = data;
-            console.log(data)
+            //console.log(data)
             // this.sessionCountry = this.selectCarModelList[0].carmake.country.country;
             // this.sessionCarMake = this.selectCarModelList[0].carmake.name;
             // setTimeout(() => {
