@@ -568,6 +568,8 @@ const app = new Vue({
         },
         async getPart(id, car_make_id) {
             const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
+            await  this.getAttributeList();
+            await this.getAttribute(id);
             const data = await apiService(endpoint);
             this.part = data;
             this.getPartCarModel(this.part.car_model);
@@ -615,8 +617,8 @@ const app = new Vue({
 
     },
     mounted() {
-        const id = document.getElementById('mainId').getAttribute('token') || '';
-        this.getAttributeList();
-        this.getAttribute(id);
+        // const id = document.getElementById('mainId').getAttribute('token') || '';
+        // this.getAttributeList();
+        // this.getAttribute(id);
     }
 });
