@@ -28,9 +28,9 @@ const app = new Vue({
     data: {
         part: {
             id: null,
-            one_c_id: 0,
-            name: 'Название',
-            name2: 'Доп Параметры',
+            one_c_id: null,
+            name: '',
+            name2: '',
             cat_number: '',
             category: '',
             brand: 1,
