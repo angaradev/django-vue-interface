@@ -135,7 +135,7 @@
                                         </div>
                                     </div>
                                     <div class="col-6">
-                                        <button @click.prevent="editPart"
+                                        <button @click.prevent="saveAll"
                                             class="btn btn-primary btn-xs float-right">Сохранить</button>
                                     </div>
                                 </div>
@@ -337,7 +337,7 @@
                                                 class="btn btn-outline-warning btn-sm">Добавить Атрибут</button>
                                         </div>
                                         <div class="col-6">
-                                            <button @click.prevent="saveAttribute"
+                                            <button @click.prevent="saveAll"
                                                 class="btn btn-outline-primary btn-sm float-right">Сохранить</button>
                                         </div>
                                     </div>
@@ -358,7 +358,7 @@
                                         <ckeditor :editor="editor" v-model="editorData" :config="editorConfig">
                                         </ckeditor>
                                         <div class="description-save-button">
-                                            <button v-if="addDescriptionButton" @click.prevent="saveDescription"
+                                            <button v-if="addDescriptionButton" @click.prevent="saveAll"
                                                 class="btn btn-outline-primary btn-sm float-right">Сохранить</button>
                                             <button v-else @click.prevent="addDescription"
                                                 class="btn btn-outline-primary btn-sm float-right">Добавить</button>
@@ -381,7 +381,7 @@
                                             <div class="col-2"></div>
                                             <div class="col-5">
                                                 <div class="description-save-button">
-                                                    <button @click.prevent="saveRelated"
+                                                    <button @click.prevent="saveAll"
                                                         class="btn btn-outline-primary btn-sm float-right">Сопут
                                                         Сохранить</button>
                                                 </div>

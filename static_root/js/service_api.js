@@ -1,3 +1,5 @@
+
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -15,17 +17,23 @@ function getCookie(name) {
 }
 var CSRF_TOKEN = getCookie('csrftoken');
 //import { CSRF_TOKEN } from './api.token';
+
+
 async function getJSON(response) {
+    if (response.status === 400) {
+        return false
+    }
     if (response.status === 204) return '';
-    return response.json()
+    return response.json();
 }
+
 function apiService(endpoint, method, data, type = 'json') {
     let headers = {};
     if (type == 'file') {
 
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFTOKEN': CSRF_TOKEN
+            'X-CSRFTOKEN': CSRF_TOKEN,
         },
             body = data;
 
@@ -35,7 +43,7 @@ function apiService(endpoint, method, data, type = 'json') {
             'content-type': 'application/json',
             'X-CSRFTOKEN': CSRF_TOKEN
         },
-            body = data !== undefined ? JSON.stringify(data) : null
+            body = data !== undefined ? JSON.stringify(data) : null;
     }
 
     const config = {
@@ -45,7 +53,10 @@ function apiService(endpoint, method, data, type = 'json') {
     }
     return fetch(endpoint, config)
         .then(getJSON)
-        .catch(error => console.log(error));
+        .catch(error =>  {
+            console.log(error);
+            
+        });
 }
 
 
@@ -77,5 +88,6 @@ function axiosUploadImageApi(endpoint, form_data) {
         }
     }).catch(err => {
         console.log(err);
+        return false;
     })
 }

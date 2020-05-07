@@ -167,6 +167,31 @@ const app = new Vue({
     },
 
     methods: {
+
+        //Save all method
+        saveAll() {
+            try {
+                this.saveAttribute();
+            } catch (e) {
+                console.log('Cannot save attribute! Error ' + e)
+            }
+            try {
+                this.saveDescription();
+            } catch (e) {
+                console.log('Cannot save description! Error ' + e)
+            }
+            try {
+                this.saveRelated();
+            } catch (e) {
+                console.log('Cannot save Related! Error ' + e)
+            }
+            try {
+                this.editPart();
+            } catch (e) {
+                console.log('Cannot save Part! Error ' + e)
+            }
+            
+        },
         //Methods for crosses
         addCrossRow() {
             this.part.product_cross.push({ id: 0, cross: '' });
@@ -568,7 +593,7 @@ const app = new Vue({
         },
         async getPart(id, car_make_id) {
             const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
-            await  this.getAttributeList();
+            await this.getAttributeList();
             await this.getAttribute(id);
             const data = await apiService(endpoint);
             this.part = data;
@@ -614,11 +639,8 @@ const app = new Vue({
         this.getVideo(id);
         this.getDescription(id);
 
-
     },
     mounted() {
-        // const id = document.getElementById('mainId').getAttribute('token') || '';
-        // this.getAttributeList();
-        // this.getAttribute(id);
+
     }
 });

@@ -9,15 +9,28 @@ settings = {
 //##########################################################//
 //############### VUE PART STARTS HERE #####################//
 //##########################################################//
+Vue.use(VueToast);
+Vue.component('vue-multiselect', window.VueMultiselect.default);
+
+//Vue.$toast.open('message string');
+
+// Can accept an Object of options
+// Vue.$toast.open({
+//     message: 'message string',
+//     type: 'error',
+//     position: 'top-right'
+//     // all other options
+// });
 const vsel = Vue.component('v-select', VueSelect.VueSelect);
 const app = new Vue({
     delimiters: ['{', '}'],
-    el: '#app',
+    el: '#app_new',
     data: {
         part: {
             id: null,
-            one_c_id: 0,
-            name: null,
+            one_c_id: null,
+            name: '',
+            name2: '',
             cat_number: '',
             category: '',
             brand: 1,
@@ -32,6 +45,8 @@ const app = new Vue({
             active: true,
             engine: {}
         },
+        value: [],
+        valueEngine: [],
         selectCarModelList: [],
         selectUnitList: [],
         selectBrandList: [],
@@ -54,7 +69,7 @@ const app = new Vue({
                     let result = this.selectUnitList.filter(a => {
                         return a.id == settings.defaultUnitId;
                     });
-                    return result
+                    return result;
                 }
             },
             set(val) {
@@ -72,7 +87,7 @@ const app = new Vue({
                 let result = this.selectBrandList.filter(a => {
                     return a.id == this.part.brand
                 });
-                return result
+                return result;
             }
         },
         selectedCarModel: {
@@ -86,7 +101,7 @@ const app = new Vue({
                 let result = this.selectCarModelList.filter(a => {
                     return a.id == selectedSession.car_engine;
                 });
-                return result
+                return '';
             }
         },
         selectedCarEngine: {
@@ -100,7 +115,7 @@ const app = new Vue({
                 let result = this.selectCarEngineList.filter(a => {
                     return a.id == selectedSession.car_engine;
                 });
-                return result
+                return '';
             }
         }
     },
@@ -108,7 +123,7 @@ const app = new Vue({
         async createPart() {
             // Отправляем основные данные на сервер
             // Needs to make API and Login in Vue -- Here
-            endpoint = `http://localhost:8000/api/product/detailcreate/`;
+            endpoint = `${ApplicationMainHost}/api/product/detailcreate/`;
 
             //Логика: Если есть выбранный бренд или ед изм то отправляем их
             //или дефолтовые значения
@@ -135,58 +150,101 @@ const app = new Vue({
             } else {
                 engineId = this.selectedCarEnginelId.id;
             }
+            let car_mod = this.value.map(obj => {
+                return obj.id;
+            });
+            //Lgic of car engine values comprihansion list
+            let engine = [];
+            if (this.valueEngine.lenght == 0) {
+                engine = [];
+            }
+            engine = this.valueEngine.map(obj => {
+                return obj.id;
+            });
 
             const data = {
                 name: this.part.name,
+                name2: this.part.name2,
                 cat_number: this.part.cat_number,
                 brand: brandId,
-                car_model: {
-                    id: carId
-                },
+                car_model: car_mod,
                 unit: unitId,
                 one_c_id: this.part.one_c_id,
                 active: this.part.active,
-                engine: engineId
+                engine: engine
             }
-            //console.log(JSON.stringify(data));
-            const response = await apiService(endpoint, 'POST', data);
-            console.log(response)
+            //console.log(JSON.stringify(data))
+
+            try {
+                const response = await apiService(endpoint, 'POST', data);
+                if (response) {
+                    console.log(response)
+                    this.successToast("Товар сохранен");
+                    //window.location.href = `${ApplicationMainHost}/product/`;
+                }
+                else {
+                    this.errorToast('Товар не сохранился!');
+                }
+
+            } catch (e) {
+                console.log(e);
+            }
         },
         async getPart(id) {
-            const endpoint = `http://localhost:8000/api/product/detail/${id}/`;
+            const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
             const data = await apiService(endpoint);
             this.part = data;
 
         },
-        async getSelectCarModelList(id) {
-            const endpoint = `http://localhost:8000/api/product/selectlistcarmodelnew/${id}/`;
+        async getSelectCarModelList() {
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodelnew/`;
             const data = await apiService(endpoint);
             this.selectCarModelList = data;
-            this.sessionCountry = this.selectCarModelList[0].carmake.country.country;
-            this.sessionCarMake = this.selectCarModelList[0].carmake.name;
+            //console.log(data)
+            // this.sessionCountry = this.selectCarModelList[0].carmake.country.country;
+            // this.sessionCarMake = this.selectCarModelList[0].carmake.name;
+            // setTimeout(() => {
+            //     this.successToast('Товар сохранен успешно!');
+            // }, 3000)
+            // this.errorToast('Товар не сохранился!');
+
         },
-        async getSelectCarEnginelList(id) {
-            const endpoint = `http://localhost:8000/api/product/selectlistcarengine/${id}/`; // Do not forget change api
+        errorToast(message) {
+            this.$toast.open({
+                message: message,
+                type: 'error',
+                position: 'top-right'
+            })
+        },
+        successToast(message) {
+            this.$toast.open({
+                message: message,
+                type: 'success',
+                position: 'top-right'
+            })
+        },
+        async getSelectCarEnginelList() {
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistcarengine/`; // Do not forget change api
             const data = await apiService(endpoint);
             this.selectCarEngineList = data;
         },
         async getSelectUnitList() {
-            const endpoint = `http://localhost:8000/api/product/selectlistunits/`;
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistunits/`;
             const data = await apiService(endpoint);
             this.selectUnitList = data;
         },
         async getSelectBrandsList() {
-            const endpoint = `http://localhost:8000/api/product/selectlistbrands/`;
+            const endpoint = `${ApplicationMainHost}/api/product/selectlistbrands/`;
             const data = await apiService(endpoint);
             this.selectBrandList = data;
         }
     },
-    
+
     created() {
         this.getSelectUnitList();
         this.getSelectBrandsList();
-        this.getSelectCarModelList(selectedSession.car_model);
-        this.getSelectCarEnginelList(selectedSession.car_engine);
+        this.getSelectCarModelList();
+        this.getSelectCarEnginelList();
     },
     mounted() {
     }
