@@ -167,7 +167,6 @@ const app = new Vue({
     },
 
     methods: {
-
         //Save all method
         saveAll() {
             try {
