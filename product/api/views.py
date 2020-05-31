@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
+from rest_framework import generics
+from .serializers import CategoryTreeSerializer
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from product.forms import KeyWordForm
@@ -92,7 +94,8 @@ class ProductAttributeViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.query_params.get('product_id'):
             product_id = self.request.query_params.get('product_id', None)
-            queryset = self.model.objects.filter(product=product_id).order_by('id')
+            queryset = self.model.objects.filter(
+                product=product_id).order_by('id')
         else:
             queryset = self.model.objects.all()
 
@@ -139,6 +142,15 @@ class ProductList(APIView):
                 car_model=car).distinct().order_by('name')
         serializer = ProductSerializer(snippets, many=True)
         return Response(serializer.data)
+
+
+class CategoriesTreeList(generics.ListCreateAPIView):
+    '''
+    API View for category Tree view
+    recursively making json
+    '''
+    queryset = Category.objects.filter(parent__isnull=True)
+    serializer_class = CategoryTreeSerializer
 
 
 class CategorizerSingleProduct(APIView):
@@ -190,7 +202,8 @@ class VideoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.query_params.get('product_id'):
             product_id = self.request.query_params.get('product_id', None)
-            queryset = self.model.objects.filter(product=product_id).order_by('id')
+            queryset = self.model.objects.filter(
+                product=product_id).order_by('id')
         else:
             queryset = self.model.objects.all()
 
@@ -205,7 +218,8 @@ class ImageViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if self.request.query_params.get('product_id'):
             product_id = self.request.query_params.get('product_id', None)
-            queryset = ProductImage.objects.filter(product=product_id).order_by('id')
+            queryset = ProductImage.objects.filter(
+                product=product_id).order_by('id')
         else:
             queryset = ProductImage.objects.all()
 

@@ -159,6 +159,7 @@ class ProductRelatedSerializer(serializers.ModelSerializer):
 
 class CrossSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=False, required=False)
+
     class Meta:
         model = Cross
         fields = ['id', 'cross']
@@ -168,7 +169,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     category = CategorySerializer(many=True, required=False)
     product_cross = CrossSerializer(many=True, required=False)
-    
+
     class Meta:
         model = Product
         #fields = '__all__'
@@ -260,7 +261,6 @@ class ProductSerializer(serializers.ModelSerializer):
         car_engine_list = [_.id for _ in car_engine_data]
         car_engine_qs = CarEngine.objects.filter(
             car_related_engine=instance.id)
-        
 
         instance.brand = validated_data.get('brand', instance.brand)
         instance.name = validated_data.get('name', instance.name)
@@ -286,8 +286,8 @@ class ProductSerializer(serializers.ModelSerializer):
         # Creating or updating crosses
         for cross in cross_data:
             objct, created = Cross.objects.update_or_create(
-                product = instance,
-                cross = cross['cross'],
+                product=instance,
+                cross=cross['cross'],
                 defaults={'product': instance, 'cross': cross['cross']}
             )
 
@@ -302,3 +302,33 @@ class ProductDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductDescription
         fields = ['id', 'text', 'product']
+
+
+class RecursiveField(serializers.Serializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
+
+
+class CategoryTreeSerializer(serializers.ModelSerializer):
+    '''
+    This class give us caregories in tree wiew json for front end
+    '''
+    # parent = RecursiveField(many=True)
+
+    class Meta:
+        model = Category
+        fields = ('id', 'name', 'parent')
+
+
+# second try
+# class CategorySerializerSecondEdition(serializers.ModelSerializer):
+#     class Meta:
+#         model = Category
+#         fields = ('id', 'name', 'parent', 'subcategories')
+
+#     def get_fields(self):
+#         fields = super(CategorySerializer, self).get_fields()
+#         fields['subcategories'] = CategorySerializer(many=True)
+#         return fields
+

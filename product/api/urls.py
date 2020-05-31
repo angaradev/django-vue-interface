@@ -27,6 +27,8 @@ urlpatterns = [
     path('selectlistcarengine/', productApiViews.SelectFieldsEnginesView.as_view(), name='api-select-carengine-list'),
     path('session/', productApiViews.SetSession.as_view(), name='set-session'),
     path('categorize/<str:product_name>/', productApiViews.CategorizerSingleProduct.as_view(), name='categorize'),
+    #front end site starts here,
+    path('categorytree/', productApiViews.CategoriesTreeList.as_view(), name='category-tree-serializer'),
     ]
 
    
