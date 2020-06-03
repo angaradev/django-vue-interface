@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from rest_framework_recursive.fields import RecursiveField
 from product.models import Cross
 from rest_framework import serializers
 from product.models import (Product, ProductImage,
@@ -304,31 +305,7 @@ class ProductDescriptionSerializer(serializers.ModelSerializer):
         fields = ['id', 'text', 'product']
 
 
-class RecursiveField(serializers.Serializer):
-    def to_representation(self, value):
-        serializer = self.parent.parent.__class__(value, context=self.context)
-        return serializer.data
 
 
-class CategoryTreeSerializer(serializers.ModelSerializer):
-    '''
-    This class give us caregories in tree wiew json for front end
-    '''
-    # parent = RecursiveField(many=True)
 
-    class Meta:
-        model = Category
-        fields = ('id', 'name', 'parent')
-
-
-# second try
-# class CategorySerializerSecondEdition(serializers.ModelSerializer):
-#     class Meta:
-#         model = Category
-#         fields = ('id', 'name', 'parent', 'subcategories')
-
-#     def get_fields(self):
-#         fields = super(CategorySerializer, self).get_fields()
-#         fields['subcategories'] = CategorySerializer(many=True)
-#         return fields
 
