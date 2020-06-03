@@ -2,7 +2,6 @@
 
 
 from rest_framework import generics
-from .serializers import CategoryTreeSerializer
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from product.forms import KeyWordForm
@@ -47,6 +46,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.renderers import JSONRenderer
 from .helpers import modify_input_for_multiple_files
+from rest_framework.permissions import AllowAny
 
 
 class ProductRelatedGetPutDelete(APIView):
@@ -144,13 +144,6 @@ class ProductList(APIView):
         return Response(serializer.data)
 
 
-class CategoriesTreeList(generics.ListCreateAPIView):
-    '''
-    API View for category Tree view
-    recursively making json
-    '''
-    queryset = Category.objects.filter(parent__isnull=True)
-    serializer_class = CategoryTreeSerializer
 
 
 class CategorizerSingleProduct(APIView):

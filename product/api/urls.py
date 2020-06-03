@@ -1,5 +1,6 @@
 from django.urls import path, include, re_path
 from product.api import views as productApiViews
+from product.api import views_site as sitetApiViews
 from rest_framework.routers import DefaultRouter
 
 from .views import ImageViewSet, VideoViewSet, DescriptionViewSet, ProductAttributeViewSet, ProductAttributeList
@@ -27,8 +28,12 @@ urlpatterns = [
     path('selectlistcarengine/', productApiViews.SelectFieldsEnginesView.as_view(), name='api-select-carengine-list'),
     path('session/', productApiViews.SetSession.as_view(), name='set-session'),
     path('categorize/<str:product_name>/', productApiViews.CategorizerSingleProduct.as_view(), name='categorize'),
+
     #front end site starts here,
-    path('categorytree/', productApiViews.CategoriesTreeList.as_view(), name='category-tree-serializer'),
+    path('categorytree/', sitetApiViews.CategoriesTreeList.as_view(), name='category-tree-serializer'),
+    path('categoryfirst/', sitetApiViews.CategoriesListFirstLevel.as_view(), name='category-first-serializer'),
+    path('mptt-test/', sitetApiViews.MpttTest.as_view(), name='mptt-test-serializer'),
+    
     ]
 
    
