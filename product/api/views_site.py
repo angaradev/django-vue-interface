@@ -24,7 +24,8 @@ from product.api.serializers_site import (
 
     CategoryTreeSerializer,
     CategoryFirstLevelSerializer,
-    MpttTestSerializer
+    MpttTestSerializer,
+    GetSingleProductSerializer
 )
 from django.http import Http404
 from rest_framework import viewsets
@@ -66,7 +67,7 @@ class CategoriesTreeList(generics.ListCreateAPIView):
         '''
         queryset = Category.objects.add_related_count(
             Category.objects.get(id=1).get_children(),  # Queryset
-            Product,  # Related mobile
+            Product,  # Related model
             'category',  # Name of the foreignkey field
             'some_count',  # Name of the property added to the collection
             cumulative=True)  # Cumulative or not.
@@ -105,3 +106,9 @@ class MpttTest(generics.ListCreateAPIView):
         anc = queryset.get_ancestors(include_self=True)
 
         return des
+
+
+class SingleProduct(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = GetSingleProductSerializer
+    permission_classes = [AllowAny]
