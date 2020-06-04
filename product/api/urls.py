@@ -33,6 +33,7 @@ urlpatterns = [
     path('categorytree/', sitetApiViews.CategoriesTreeList.as_view(), name='category-tree-serializer'),
     path('categoryfirst/', sitetApiViews.CategoriesListFirstLevel.as_view(), name='category-first-serializer'),
     path('mptt-test/', sitetApiViews.MpttTest.as_view(), name='mptt-test-serializer'),
+    path('singleproduct/<int:pk>/', sitetApiViews.SingleProduct.as_view(), name='single-product-retrive')
     
     ]
 
