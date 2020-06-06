@@ -11,6 +11,7 @@ from django.shortcuts import redirect
 from django.db.models import Q, Count
 from product.models import (Product,
                             Units,
+                            CarMake,
                             CarModel,
                             CarEngine,
                             ProductImage,
@@ -28,6 +29,7 @@ from product.api.serializers_site import (
     MpttTestSerializer,
     GetSingleProductSerializer,
     GetCarModelSerializer,
+    GetCarMakesSerializer,
 )
 from django.http import Http404
 from rest_framework import viewsets
@@ -117,15 +119,30 @@ class SingleProduct(generics.RetrieveAPIView):
 
 
 class GetCarModelList(generics.ListAPIView):
+    '''
+    List of All Car Models
+    '''
     queryset = CarModel.objects.all()
     serializer_class = GetCarModelSerializer
     permission_classes = [AllowAny]
 
 
 class GetCarModel(APIView):
+    '''
+    Single car model havent used for now
+    '''
     permission_classes = [AllowAny]
 
     def get(self, request, pk):
         carModel = CarModel.objects.get(id=pk)
         serializer = GetCarModelSerializer(carModel)
         return Response(serializer.data)
+
+class GetCarMakes(generics.ListAPIView):
+    
+    '''
+    Retrieve List of Car Models
+    '''
+    queryset = CarMake.objects.all()
+    serializer_class = GetCarMakesSerializer
+    permission_classes = [AllowAny]

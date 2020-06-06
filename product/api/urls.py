@@ -52,7 +52,9 @@ urlpatterns = [
     path('getcarmodelsite/<int:pk>/',
          sitetApiViews.GetCarModel.as_view(), name='get-car-model-site'),
     path('getcarmodelsiteall/',
-         sitetApiViews.GetCarModelList.as_view(), name='get-car-model-list-site')
+         sitetApiViews.GetCarModelList.as_view(), name='get-car-model-list-site'),
+    path('getcarmakes/',
+         sitetApiViews.GetCarMakes.as_view(), name='get-car-makes-list-site'),
+
 
 ]
-

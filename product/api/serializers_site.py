@@ -92,3 +92,12 @@ class GetCarModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarModel
         fields = '__all__'
+
+class GetCarMakesSerializer(serializers.ModelSerializer):
+    '''
+    Car Makes All list API
+    '''
+
+    class Meta:
+        model = CarMake
+        fields = '__all__'
