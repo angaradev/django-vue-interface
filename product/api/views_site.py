@@ -19,13 +19,15 @@ from product.models import (Product,
                             ProductDescription,
                             ProductAttribute,
                             ProductAttributeName)
+
 from brands.models import BrandsDict
 from product.api.serializers_site import (
 
     CategoryTreeSerializer,
     CategoryFirstLevelSerializer,
     MpttTestSerializer,
-    GetSingleProductSerializer
+    GetSingleProductSerializer,
+    GetCarModelSerializer,
 )
 from django.http import Http404
 from rest_framework import viewsets
@@ -77,7 +79,7 @@ class CategoriesTreeList(generics.ListCreateAPIView):
         return queryset
 
 
-class CategoriesListFirstLevel(generics.ListCreateAPIView):
+class CategoriesListFirstLevel(generics.ListAPIView):
     '''
     API View for category Tree view
     returns first level of categories
@@ -89,7 +91,7 @@ class CategoriesListFirstLevel(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 
 
-class MpttTest(generics.ListCreateAPIView):
+class MpttTest(generics.ListAPIView):
     '''
     API View for category Tree view
     returns first level of categories
@@ -112,3 +114,18 @@ class SingleProduct(generics.RetrieveAPIView):
     queryset = Product.objects.all()
     serializer_class = GetSingleProductSerializer
     permission_classes = [AllowAny]
+
+
+class GetCarModelList(generics.ListAPIView):
+    queryset = CarModel.objects.all()
+    serializer_class = GetCarModelSerializer
+    permission_classes = [AllowAny]
+
+
+class GetCarModel(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        carModel = CarModel.objects.get(id=pk)
+        serializer = GetCarModelSerializer(carModel)
+        return Response(serializer.data)
