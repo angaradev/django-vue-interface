@@ -48,5 +48,5 @@ if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)
 
-# urlpatterns += [re_path(r'^.*$',
-                        # IndexTemplateView.as_view(), name='entry-point')]
+urlpatterns += [re_path(r'^.*$',
+                        IndexTemplateView.as_view(), name='entry-point')]
