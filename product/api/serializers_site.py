@@ -92,6 +92,7 @@ class GetCarModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarModel
         fields = '__all__'
+        depth = 0
 
 class GetCarMakesSerializer(serializers.ModelSerializer):
     '''
