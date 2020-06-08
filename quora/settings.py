@@ -13,7 +13,7 @@ VUE_DEV = VUE_DEV
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.24', 'dnobaka.ru', 'localhost', 'partshub.tk']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.24', 'dnobaka.ru', 'localhost', 'partshub.tk']
 
 
 # Application definition
@@ -183,9 +183,19 @@ SITE_ID = 1
 #ACCOUNT_EMAIL_VERIFICATION = 'none'
 ACCOUNT_EMAIL_REQUIRED = (True)
 
+
+# CORS Configuration
+CORS_ORIGIN_ALLOW_ALL=True
+
+# AUTHENTICATION_BACKENDS = (
+#    "django.contrib.auth.backends.ModelBackend",
+#    "allauth.account.auth_backends.AuthenticationBackend"
+# )
+
 # Django-REST-Framework
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),

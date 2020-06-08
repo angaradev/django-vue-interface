@@ -36,10 +36,8 @@ urlpatterns = [
     path('api/product/', include('product.api.urls')),
 
     path('api-auth/', include('rest_framework.urls')),
-    path('api/rest_auth/', include('rest_auth.urls')),
+    path('api/rest-auth/', include('rest_auth.urls')),
     path('api/rest-auth/registration/', include('rest_auth.registration.urls')),
-    #path('lang/', include('programmers.urls')),
-    #path('music/', include('music.urls')),
     path('branddict/', include('brand_dict.urls')),
 
 ]
@@ -50,3 +48,4 @@ if settings.DEBUG:
 
 urlpatterns += [re_path(r'^.*$',
                         IndexTemplateView.as_view(), name='entry-point')]
+
