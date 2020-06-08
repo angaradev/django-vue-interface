@@ -82,3 +82,22 @@ class GetSingleProductSerializer(serializers.ModelSerializer):
                   'product_attribute'
                   ]
         depth = 2
+
+
+class GetCarModelSerializer(serializers.ModelSerializer):
+    '''
+    Getting car models required from UI
+    '''
+
+    class Meta:
+        model = CarModel
+        fields = '__all__'
+
+class GetCarMakesSerializer(serializers.ModelSerializer):
+    '''
+    Car Makes All list API
+    '''
+
+    class Meta:
+        model = CarMake
+        fields = '__all__'
