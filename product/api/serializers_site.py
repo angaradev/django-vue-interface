@@ -54,3 +54,50 @@ class MpttTestSerializer(serializers.ModelSerializer):
 
     def get_some_count(self, obj):
         return obj.some_count
+
+
+class GetSingleProductSerializer(serializers.ModelSerializer):
+    '''
+    Serializer for getting single product for site no authentication required
+    Also getting all related fields like images, videos, attributes, etc...
+    '''
+
+    class Meta:
+        model = Product
+        fields = ['id',
+                  'name',
+                  'name2',
+                  'cat_number',
+                  'slug',
+                  'brand',
+                  'unit',
+                  'car_model',
+                  'category',
+                  'related',
+                  'engine',
+                  'product_image',
+                  'product_video',
+                  'product_description',
+                  'product_cross',
+                  'product_attribute'
+                  ]
+        depth = 2
+
+
+class GetCarModelSerializer(serializers.ModelSerializer):
+    '''
+    Getting car models required from UI
+    '''
+
+    class Meta:
+        model = CarModel
+        fields = '__all__'
+
+class GetCarMakesSerializer(serializers.ModelSerializer):
+    '''
+    Car Makes All list API
+    '''
+
+    class Meta:
+        model = CarMake
+        fields = '__all__'

@@ -11,6 +11,7 @@ from django.shortcuts import redirect
 from django.db.models import Q, Count
 from product.models import (Product,
                             Units,
+                            CarMake,
                             CarModel,
                             CarEngine,
                             ProductImage,
@@ -19,12 +20,16 @@ from product.models import (Product,
                             ProductDescription,
                             ProductAttribute,
                             ProductAttributeName)
+
 from brands.models import BrandsDict
 from product.api.serializers_site import (
 
     CategoryTreeSerializer,
     CategoryFirstLevelSerializer,
-    MpttTestSerializer
+    MpttTestSerializer,
+    GetSingleProductSerializer,
+    GetCarModelSerializer,
+    GetCarMakesSerializer,
 )
 from django.http import Http404
 from rest_framework import viewsets
@@ -66,7 +71,7 @@ class CategoriesTreeList(generics.ListCreateAPIView):
         '''
         queryset = Category.objects.add_related_count(
             Category.objects.get(id=1).get_children(),  # Queryset
-            Product,  # Related mobile
+            Product,  # Related model
             'category',  # Name of the foreignkey field
             'some_count',  # Name of the property added to the collection
             cumulative=True)  # Cumulative or not.
@@ -76,7 +81,7 @@ class CategoriesTreeList(generics.ListCreateAPIView):
         return queryset
 
 
-class CategoriesListFirstLevel(generics.ListCreateAPIView):
+class CategoriesListFirstLevel(generics.ListAPIView):
     '''
     API View for category Tree view
     returns first level of categories
@@ -88,7 +93,7 @@ class CategoriesListFirstLevel(generics.ListCreateAPIView):
     permission_classes = [AllowAny]
 
 
-class MpttTest(generics.ListCreateAPIView):
+class MpttTest(generics.ListAPIView):
     '''
     API View for category Tree view
     returns first level of categories
@@ -105,3 +110,39 @@ class MpttTest(generics.ListCreateAPIView):
         anc = queryset.get_ancestors(include_self=True)
 
         return des
+
+
+class SingleProduct(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = GetSingleProductSerializer
+    permission_classes = [AllowAny]
+
+
+class GetCarModelList(generics.ListAPIView):
+    '''
+    List of All Car Models
+    '''
+    queryset = CarModel.objects.all()
+    serializer_class = GetCarModelSerializer
+    permission_classes = [AllowAny]
+
+
+class GetCarModel(APIView):
+    '''
+    Single car model havent used for now
+    '''
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk):
+        carModel = CarModel.objects.get(id=pk)
+        serializer = GetCarModelSerializer(carModel)
+        return Response(serializer.data)
+
+class GetCarMakes(generics.ListAPIView):
+    
+    '''
+    Retrieve List of Car Models
+    '''
+    queryset = CarMake.objects.all()
+    serializer_class = GetCarMakesSerializer
+    permission_classes = [AllowAny]
