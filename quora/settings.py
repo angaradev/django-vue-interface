@@ -13,7 +13,8 @@ VUE_DEV = VUE_DEV
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.24', 'dnobaka.ru', 'localhost', 'partshub.tk']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.24',
+                 'dnobaka.ru', 'localhost', 'partshub.tk']
 
 
 # Application definition
@@ -62,7 +63,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-#        'corsheaders.middleware.CorsMiddleware',
+    #        'corsheaders.middleware.CorsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -82,8 +83,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR, 'templates'),
-        os.path.join(BASE_DIR, 'front/dist'),
-        ],
+                 os.path.join(BASE_DIR, 'front/dist'),
+                 ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -138,7 +139,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-#MAX UPLOAD DATA
+# MAX UPLOAD DATA
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 
 LANGUAGE_CODE = 'ru'
@@ -181,16 +182,15 @@ SITE_ID = 1
 
 # django-allauth
 #ACCOUNT_EMAIL_VERIFICATION = 'none'
-ACCOUNT_EMAIL_REQUIRED = (True)
+
+# ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = False
 
 
 # CORS Configuration
-CORS_ORIGIN_ALLOW_ALL=True
+CORS_ORIGIN_ALLOW_ALL = True
 
-# AUTHENTICATION_BACKENDS = (
-#    "django.contrib.auth.backends.ModelBackend",
-#    "allauth.account.auth_backends.AuthenticationBackend"
-# )
 
 # Django-REST-Framework
 REST_FRAMEWORK = {
