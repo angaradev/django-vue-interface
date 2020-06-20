@@ -116,6 +116,7 @@ class CarModel(models.Model):
         CarEngine, blank=True, related_name='car_engine')
     carmake = models.ForeignKey(
         CarMake, on_delete=models.DO_NOTHING, related_name='car_model')
+    slug = models.CharField(max_length=45, blank=True)
 
     class Meta:
         verbose_name = ("Модель Машины")
@@ -303,7 +304,6 @@ class Product(models.Model):  # Main table product
     @property
     def have_video(self):
         return self.product_video.exists()
-       
 
     class Meta:
         verbose_name = ("Товар")
@@ -406,6 +406,17 @@ def product_slug_save(sender, instance, *args, **kwargs):  # Slug saver
 
 pre_save.connect(product_slug_save, Product)
 
+################### CarModel Slug pre save receiver ####################################
+
+
+def car_slug_save(sender, instance, *args, **kwargs):  # Slug saver
+
+    if not instance.slug:
+        instance.slug = unique_slug_generator(
+            instance, instance.name, instance.slug)
+
+
+pre_save.connect(car_slug_save, CarModel)
 
 ################### Slug pre save receiver Category ####################################
 

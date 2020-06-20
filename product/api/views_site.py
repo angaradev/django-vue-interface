@@ -118,6 +118,33 @@ class SingleProduct(generics.RetrieveAPIView):
     permission_classes = [AllowAny]
 
 
+# class SingleProductC(generics.RetrieveAPIView):
+#    serializer_class = GetSingleProductSerializer
+#    permission_classes = [AllowAny]
+#
+#    def get_queryset(self):
+#        queryset = Product.objects.get(one_c_id=self.kwargs['pk'])
+#        print(queryset)
+#        return queryset
+
+
+class SingleProductC(APIView):
+    """
+    Class getting product by 1C id
+    """
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk, format=None):
+        try:
+            queryset = Product.objects.get(one_c_id=pk)
+            serializer = GetSingleProductSerializer(queryset)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({'status': 'Object is not Found'}, status=status.HTTP_404_NOT_FOUND)
+            # return Response({'error': 'error'})
+
+
 class GetCarModelList(generics.ListAPIView):
     '''
     List of All Car Models
@@ -138,11 +165,13 @@ class GetCarModel(APIView):
         serializer = GetCarModelSerializer(carModel)
         return Response(serializer.data)
 
+
 class GetCarMakes(generics.ListAPIView):
-    
+
     '''
     Retrieve List of Car Models
     '''
     queryset = CarMake.objects.all()
     serializer_class = GetCarMakesSerializer
     permission_classes = [AllowAny]
+

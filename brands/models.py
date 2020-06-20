@@ -75,6 +75,7 @@ class SuppliersBrands(models.Model):
 
 class BrandsDict(models.Model):
     brand = models.CharField(max_length=255, unique=True)
+    # needs to implement Brand Country
 
     class Meta:
         managed = True

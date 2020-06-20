@@ -56,11 +56,23 @@ class MpttTestSerializer(serializers.ModelSerializer):
         return obj.some_count
 
 
+class ProductCrossSerializer(serializers.ModelSerializer):
+    '''
+    Serializer for getting product Crosses
+    '''
+
+    class Meta:
+        model = Cross
+        fields = ['cross']
+        depth = 0
+
+
 class GetSingleProductSerializer(serializers.ModelSerializer):
     '''
     Serializer for getting single product for site no authentication required
     Also getting all related fields like images, videos, attributes, etc...
     '''
+    product_cross = ProductCrossSerializer(many=True, read_only=True)
 
     class Meta:
         model = Product
@@ -92,7 +104,8 @@ class GetCarModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarModel
         fields = '__all__'
-        depth = 0
+        depth = 1
+
 
 class GetCarMakesSerializer(serializers.ModelSerializer):
     '''
