@@ -57,6 +57,12 @@ urlpatterns = [
          sitetApiViews.GetCarModelList.as_view(), name='get-car-model-list-site'),
     path('getcarmakes/',
          sitetApiViews.GetCarMakes.as_view(), name='get-car-makes-list-site'),
+    path('analogs/<int:pk>/',
+         sitetApiViews.ProductAnalogList.as_view(), name='get-analogs'),
+    path('relatedsite/<int:pk>/',
+         sitetApiViews.ProductRelatedListView.as_view(), name='get-relatedsite'),
+
+
 
 
 ]
