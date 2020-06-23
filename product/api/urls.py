@@ -49,6 +49,8 @@ urlpatterns = [
          name='mptt-test-serializer'),
     path('singleproduct/<int:pk>/', sitetApiViews.SingleProduct.as_view(),
          name='single-product-retrive'),
+    path('onec/<int:pk>/', sitetApiViews.SingleProductC.as_view(),
+         name='single-product-retrivec'),
     path('getcarmodelsite/<int:pk>/',
          sitetApiViews.GetCarModel.as_view(), name='get-car-model-site'),
     path('getcarmodelsiteall/',
