@@ -188,7 +188,6 @@ class ProductAnalogList(APIView):
     def get(self, request, pk, format=None):
         #category_list = request.GET.get('category', None).split(',')
         cat_number = request.GET.get('cat_number')
-        print('This is pk', pk)
 
         try:
             products = Product.objects.filter(cat_number__icontains=cat_number
