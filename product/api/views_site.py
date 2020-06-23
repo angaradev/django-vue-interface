@@ -1,3 +1,4 @@
+from .helpers import RussianStemmer
 from rest_framework import generics
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
@@ -175,3 +176,50 @@ class GetCarMakes(generics.ListAPIView):
     serializer_class = GetCarMakesSerializer
     permission_classes = [AllowAny]
 
+
+class ProductAnalogList(APIView):
+    '''
+    API View for list for analogs
+    Will select parts by same catalogue number
+    '''
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk, format=None):
+        #category_list = request.GET.get('category', None).split(',')
+        cat_number = request.GET.get('cat_number')
+
+        try:
+            products = Product.objects.filter(cat_number__icontains=cat_number
+                                              ).exclude(id=pk).distinct().order_by('name')
+
+            serializer = GetSingleProductSerializer(products, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({'status': 'Objects are not Found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class ProductRelatedListView(APIView):
+    '''
+    API View for list for Related Products
+    Later probably needs to change logic
+    Now: getting products related by name
+    Later: will getting products Wich relation
+    written by hand
+    '''
+    permission_classes = [AllowAny]
+
+    def get(self, request, pk, format=None):
+        prod_name = request.GET.get('product_name')
+        car_model = request.GET.get('car_model')
+        search_list = prod_name.split(' ')
+        search_word = RussianStemmer.stem(search_list[0])
+
+        try:
+            products = Product.objects.filter(name__icontains=search_word,
+                                              car_model=car_model
+                                              ).exclude(id=pk).distinct().order_by('name')
+
+            serializer = GetSingleProductSerializer(products, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response({'status': 'Objects are not Found'}, status=status.HTTP_404_NOT_FOUND)
