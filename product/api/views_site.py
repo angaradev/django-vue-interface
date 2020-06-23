@@ -188,11 +188,11 @@ class ProductAnalogList(APIView):
     def get(self, request, pk, format=None):
         #category_list = request.GET.get('category', None).split(',')
         cat_number = request.GET.get('cat_number')
-        print(pk)
+        print('This is pk', pk)
 
         try:
             products = Product.objects.filter(cat_number__icontains=cat_number
-                                              ).exclude(one_c_id=pk).distinct().order_by('name')
+                                              ).exclude(id=pk).distinct().order_by('name')
 
             serializer = GetSingleProductSerializer(products, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -221,7 +221,7 @@ class ProductRelatedListView(APIView):
         try:
             products = Product.objects.filter(name__icontains=search_word,
                                               car_model=car_model
-                                              ).exclude(one_c_id=pk).distinct()[:12].order_by('name')
+                                              ).exclude(id=pk).distinct()[:12].order_by('name')
 
             serializer = GetSingleProductSerializer(products, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
