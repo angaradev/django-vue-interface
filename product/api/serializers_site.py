@@ -91,7 +91,8 @@ class GetSingleProductSerializer(serializers.ModelSerializer):
                   'product_video',
                   'product_description',
                   'product_cross',
-                  'product_attribute'
+                  'product_attribute',
+                  'one_c_id'
                   ]
         depth = 2
 
