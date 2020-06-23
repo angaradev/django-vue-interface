@@ -210,11 +210,13 @@ class ProductRelatedListView(APIView):
 
     def get(self, request, pk, format=None):
         prod_name = request.GET.get('product_name')
+        car_model = request.GET.get('car_model')
         search_list = prod_name.split(' ')
         search_word = RussianStemmer.stem(search_list[0])
 
         try:
-            products = Product.objects.filter(name__icontains=search_word
+            products = Product.objects.filter(name__icontains=search_word,
+                                              car_model=car_model
                                               ).exclude(id=pk).distinct().order_by('name')
 
             serializer = GetSingleProductSerializer(products, many=True)
