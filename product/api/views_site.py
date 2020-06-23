@@ -216,13 +216,11 @@ class ProductRelatedListView(APIView):
         search_list = prod_name.split(' ')
 
         search_word = RussianStemmer.stem(search_list[0])
-        print(search_word)
 
         try:
             products = Product.objects.filter(name__icontains=search_word,
                                               car_model=car_model
                                               ).distinct().exclude(id=pk)[:12]
-            print(products)
             serializer = GetSingleProductSerializer(products, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
