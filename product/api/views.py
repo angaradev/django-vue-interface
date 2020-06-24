@@ -239,6 +239,25 @@ class ImageViewSet(viewsets.ModelViewSet):
         else:
             return Response(arr, status=status.HTTP_400_BAD_REQUEST)
 
+###############################################################################
+############### IMPLEMENT WHEN ARRIVE #########################################
+###############################################################################
+
+# class ImageMainSet(APIView):
+#     def get(self, request, pk):
+#         images = ProductImage.objects.filter(product=pk)
+#         serializer = ImageSerializer(images, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
+#     def put(self, request, pk):
+#         images = ProductImage.objects.filter(product=pk)
+        
+#         serializer = ImageSerializer(images, data=request.data, partial=True)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class DetailGet(APIView):
     def get(self, request, pk):

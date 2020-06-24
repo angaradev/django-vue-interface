@@ -182,9 +182,11 @@
                                                             <input :checked="i == mainImage"
                                                                 class="custom-control-input" type="radio"
                                                                 :id="'customRadio1-' + i " name="customRadio"
-                                                                :value="prod_img.id">
+                                                                :value="prod_img.id"
+                                                                v-model="main_img"
+                                                                @change="saveMainImg(prod_img.id)">
                                                             <label :for="'customRadio1-' + i"
-                                                                class="custom-control-label">Main</label>
+                                                                class="custom-control-label">Главная{ main_img }</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-6">

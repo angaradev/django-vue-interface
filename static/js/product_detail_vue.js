@@ -92,7 +92,8 @@ const app = new Vue({
                 attribute_value: 'attr value'
             }
         ],
-        attributeList: []
+        attributeList: [],
+        main_img: null,
     },
     computed: {
         //search in related product tab
@@ -167,6 +168,10 @@ const app = new Vue({
     },
 
     methods: {
+        saveMainImg(id) {
+            //send data to server here
+            console.log('Imange id ', id, this.part.id)
+        },
         //Save all method
         saveAll() {
             try {
