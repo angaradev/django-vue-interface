@@ -53,7 +53,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class ImageSerializer(serializers.ModelSerializer):
+class ImageSerializer(serializers.ListSerializer):
 
     class Meta:
         model = ProductImage
@@ -63,8 +63,26 @@ class ImageSerializer(serializers.ModelSerializer):
                   'img150',
                   'img245',
                   'img500',
-                  'img800'
+                  'img800',
+                  'main'
                   ]
+
+
+###############################################################################
+############### IMPLEMENT WHEN ARRIVE #########################################
+###############################################################################
+
+    # def update(self, instance, validated_data):
+    #     img_mapping = {img.id: img for img in instance}
+    #     data_mapping = {item['id']: item for item in validated_data}
+    #     print('Instance', data_mapping, data_mapping)
+    #     # for obj in instance:
+    #     #     print(obj.)
+    #     # instance.main = validated_data.get('main', instance.main)
+
+
+    #     # instance.save()
+    #     return instance
 
 
 class VideoSerializer(serializers.ModelSerializer):
