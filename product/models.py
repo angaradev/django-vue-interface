@@ -158,7 +158,6 @@ class ProductImage(models.Model):
     )
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
-    main = models.BooleanField(default=False, blank=True)
     product = models.ForeignKey(
         'Product', on_delete=models.CASCADE, blank=True, null=True, related_name='product_image')
 
