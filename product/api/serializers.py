@@ -53,7 +53,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class ImageSerializer(serializers.ListSerializer):
+class ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductImage
