@@ -58,6 +58,7 @@ class ImageSerializer(serializers.ModelSerializer):
     '''
     Image serialization class
     Later needs to implement main image logic
+    It defenantly needs to be made rectangle shape
     '''
 
     class Meta:
