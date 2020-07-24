@@ -266,13 +266,13 @@ class ProductImage(models.Model):
             output, 'ImageField', f'{self.image.name}', 'image/jpeg', output.getbuffer().nbytes, 'utf-8', None)
         
         # Square 900x900
-        img900x900 = ImageOps.fit(im, (900, 900), method=method,
+        img800x800 = ImageOps.fit(im, (900, 900), method=method,
                               bleed=0.0, centering=(0.5, 0.5))
         output = io.BytesIO()
-        img900x900.save(output, format='JPEG', quality=90)
+        img800x800.save(output, format='JPEG', quality=90)
         output.seek(0)
 
-        self.img900x900 = InMemoryUploadedFile(
+        self.img800x800 = InMemoryUploadedFile(
             output, 'ImageField', f'{self.image.name}', 'image/jpeg', output.getbuffer().nbytes, 'utf-8', None)
         super().save(*args, **kwargs)
 
