@@ -97,7 +97,7 @@ input.search-form, input.search-form::-webkit-input-placeholder {
 
 .product-image-image {
     width: 150px;
-    height: 150px;
+    /* height: 150px; */
     display: block;
     margin: auto;
 }
