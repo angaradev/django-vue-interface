@@ -51,9 +51,15 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name']
+        
 
 
 class ImageSerializer(serializers.ModelSerializer):
+    '''
+    Image serialization class
+    Later needs to implement main image logic
+    It defenantly needs to be made rectangle shape
+    '''
 
     class Meta:
         model = ProductImage
