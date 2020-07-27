@@ -48,8 +48,8 @@ class DeleteBrand(DeleteView):
 def deleteBrand(request, pk):
     obj = get_object_or_404(BrandsDict, id=pk)
     if request.method == 'GET':
+        print(obj)
         obj.delete()
-        print('in here delete')
         return redirect(request.META['HTTP_REFERER'])
 
     return redirect(reverse('main-view'))

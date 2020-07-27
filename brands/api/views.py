@@ -6,7 +6,7 @@ from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import mixins
-from brands.models import BrandsDict, SuppliersBrands, BrandDictSup, AngSuppliers, BrandsDictSup
+from brands.models import BrandsDict, SuppliersBrands, BrandDictSup, AngSuppliers
 from brands.api.serializers import AngPriceAllSerializerNotExists, BrandsDictSerializer
 from brands.api.serializers import CheckDuplicatesSerializer, BrandDictSupSerializer, SuppliersSerializer
 

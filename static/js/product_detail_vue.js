@@ -169,7 +169,7 @@ const app = new Vue({
 
     methods: {
         saveMainImg(id) {
-            //send data to server here
+            //send data to server here            
             console.log('Imange id ', id, this.part.id)
         },
         //Save all method
