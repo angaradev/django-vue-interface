@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BrandsDict, BrandsDictSup, BrandDictSup
+from .models import BrandsDict,  BrandDictSup
 
 
 

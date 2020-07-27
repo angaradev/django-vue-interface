@@ -100,10 +100,10 @@ class BrandDictSup(models.Model):
         return self.ang_brand
 
 
-class BrandsDictSup(models.Model):
-    suplier_brand_name = models.CharField(max_length=255)
-    brand_dict = models.ForeignKey(
-        BrandsDict, related_name='ang_brand_name', on_delete=models.CASCADE)
+# class BrandsDictSup(models.Model):
+#     suplier_brand_name = models.CharField(max_length=255)
+#     brand_dict = models.ForeignKey(
+#         BrandsDict, related_name='ang_brand_name', on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.ang_brand
+#     def __str__(self):
+#         return self.ang_brand
