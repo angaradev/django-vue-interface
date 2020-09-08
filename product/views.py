@@ -36,8 +36,13 @@ class FindProductView(ListView):
     model = Product
 
     def get_queryset(self):
-        queryset = self.model.objects.filter(one_c_id__startswith=65)
-        return queryset
+        search = self.request.GET.get('search')
+        if search:
+            queryset = self.model.objects.filter(
+                Q(one_c_id__startswith=search) | Q(cat_number__startswith=search))
+            return queryset
+        else:
+            return redirect('home')
 
 
 class ProductListViewForJs(TemplateView):
