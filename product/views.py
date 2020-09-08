@@ -27,6 +27,19 @@ from functools import reduce
 from django.contrib.auth.decorators import login_required
 
 
+@method_decorator(login_required, name='dispatch')
+class FindProductView(ListView):
+    '''
+    Class will find the product independend of car
+    '''
+    template_name = 'product/product_list.html'
+    model = Product
+
+    def get_queryset(self):
+        queryset = self.model.objects.filter(one_c_id__startswith=65)
+        return queryset
+
+
 class ProductListViewForJs(TemplateView):
     template_name = 'product/product_list_js.html'
 
@@ -171,7 +184,8 @@ class Main(ListView):
             }
             letters = self.request.GET.getlist('alphabet', None)
             if letters:
-                query = reduce(lambda q,value: q|Q(name__istartswith=value), letters, Q())
+                query = reduce(lambda q, value: q | Q(
+                    name__istartswith=value), letters, Q())
                 qs = qs.filter(query).order_by('name')
         elif self.request.session['car']['car_model_id']:
             qs = self.model.objects.filter(
@@ -267,7 +281,6 @@ def categorize_bulk(request):
         categorizer_split(q, Category)
 
     return redirect('product-main')
-
 
 
 @login_required

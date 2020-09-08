@@ -24,6 +24,8 @@ urlpatterns = [
     path('checkgroup-cat/', productviews.check_cat, name='checkgroup-cat'),
     path('categorizeeverything/', productviews.categorize_bulk, name='categorize-everything'),
     path('prod-list/<int:pk>/', productviews.ProductListViewForJs.as_view(), name='product-list-js'),
+
+    path('find/', productviews.FindProductView.as_view(), name='fing-product'),
     
 ]
 
