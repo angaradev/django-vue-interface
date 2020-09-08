@@ -44,7 +44,8 @@ let vi = new Vue({
             , { 'name': 'э', 'selected': false }
             , { 'name': 'ю', 'selected': false }
             , { 'name': 'я', 'selected': false }
-        ]
+        ],
+        search: 65,
     },
     methods: { //Method will update product inline on product list page
         async deleteProduct(id) {
