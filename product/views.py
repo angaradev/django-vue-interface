@@ -39,7 +39,7 @@ class FindProductView(ListView):
         search = self.request.GET.get('search')
         if search:
             queryset = self.model.objects.filter(
-                Q(one_c_id__startswith=search) | Q(cat_number__startswith=search))
+                Q(one_c_id__startswith=search) | Q(cat_number__istartswith=search))
             return queryset
         else:
             return redirect('home')
