@@ -15,7 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.24',
                  'dnobaka.ru', 'localhost', 'partshub.tk']
-
+BLOG_IMAGES = 'blog/images'
 
 # Application definition
 
@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'brands',
     'brand_dict',
     'product',
+    'blog',
 
 ]
 
