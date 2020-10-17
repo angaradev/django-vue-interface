@@ -24,6 +24,7 @@ class Post(models.Model):
     parts_category = models.ManyToManyField(
         Category, related_name='parts_categories')
     slug = models.SlugField(unique=True)
+    author = models.CharField(max_length=100, default=settings.DEFAULT_AUTHOR)
 
     class Meta:
         verbose_name = 'Пост'
