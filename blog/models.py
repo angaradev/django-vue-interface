@@ -12,6 +12,9 @@ class Categories(models.Model):
         verbose_name = 'Категоиря Блога'
         verbose_name_plural = 'Категории Блога'
 
+    def __str__(self):
+        return self.name
+
 
 class Post(models.Model):
 

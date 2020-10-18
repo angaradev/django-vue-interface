@@ -7,6 +7,16 @@ from rest_framework.permissions import AllowAny
 
 
 class BlogViewSet(viewsets.ReadOnlyModelViewSet):
+    '''
+    Get blog post 
+    '''
     queryset = Post.objects.all()
     serializer_class = BlogPostSerializer
     permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        limit = self.request.GET.get('limit')
+        if limit:
+            return self.queryset.all().order_by('-date')[:int(limit)]
+
+        return self.queryset
