@@ -16,6 +16,11 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', '192.168.0.24',
                  'dnobaka.ru', 'localhost', 'partshub.tk']
 
+# Default images folder for blog posts and categories
+BLOG_IMAGES = 'blog/images'
+
+# Default Author for blog articles
+DEFAULT_AUTHOR = 'Team of AngaraParts'
 
 # Application definition
 
@@ -59,6 +64,7 @@ INSTALLED_APPS = [
     'brands',
     'brand_dict',
     'product',
+    'blog',
 
 ]
 
