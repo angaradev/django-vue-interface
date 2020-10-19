@@ -5,7 +5,6 @@ from django.conf import settings
 
 class Categories(models.Model):
     name = models.CharField(max_length=255)
-    image = models.ImageField(upload_to=settings.BLOG_IMAGES)
     slug = models.SlugField(unique=True)
 
     class Meta:
