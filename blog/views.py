@@ -3,7 +3,7 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
 from .models import Post, Categories
-from .serializers import BlogPostSerializer, CategorySerializer, PartCategorySerializer, CategorySerializerOnly
+from .serializers import BlogPostSerializer, CategorySerializer, PartCategorySerializer
 from rest_framework.permissions import AllowAny
 
 
@@ -25,5 +25,5 @@ class BlogViewSet(viewsets.ReadOnlyModelViewSet):
 
 class BlogCategoryView(ListAPIView):
     queryset = Categories.objects.all()
-    serializer_class = CategorySerializerOnly
+    serializer_class = CategorySerializer
     permission_classes = [AllowAny]
