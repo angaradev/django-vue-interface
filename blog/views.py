@@ -1,15 +1,15 @@
-from django.shortcuts import render
-
 from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
-from .models import Post, Categories
-from .serializers import BlogPostSerializer, CategorySerializer, PartCategorySerializer
 from rest_framework.permissions import AllowAny
+from django.db.models import Q
+
+from .models import Categories, Post
+from .serializers import (BlogPostSerializer, CategorySerializer)
 
 
 class BlogViewSet(viewsets.ReadOnlyModelViewSet):
     '''
-    Get blog post 
+    Get blog post
     '''
     queryset = Post.objects.all()
     serializer_class = BlogPostSerializer
@@ -27,3 +27,19 @@ class BlogCategoryView(ListAPIView):
     queryset = Categories.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]
+
+
+class BlogCategorySearchView(ListAPIView):
+    queryset = Post.objects.all()
+    serializer_class = BlogPostSerializer
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        search = self.request.GET.get('search')
+
+        if search:
+            q = self.queryset.filter(
+                Q(title__icontains=search) | Q(text__icontains=search))
+            return q
+
+        return self.queryset
