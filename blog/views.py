@@ -4,21 +4,22 @@ from rest_framework.permissions import AllowAny
 from django.db.models import Q
 
 from .models import Categories, Post
-from .serializers import (BlogPostSerializer, CategorySerializer)
+from .serializers import BlogPostSerializer, CategorySerializer
 
 
 class BlogViewSet(viewsets.ReadOnlyModelViewSet):
-    '''
+    """
     Get blog post
-    '''
+    """
+
     queryset = Post.objects.all()
     serializer_class = BlogPostSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        limit = self.request.GET.get('limit')
+        limit = self.request.GET.get("limit")
         if limit:
-            return self.queryset.all().order_by('-date')[:int(limit)]
+            return self.queryset.all().order_by("-date")[: int(limit)]
 
         return self.queryset
 
@@ -30,16 +31,30 @@ class BlogCategoryView(ListAPIView):
 
 
 class BlogCategorySearchView(ListAPIView):
+
+    """
+    If isset category returns blog filtred by category
+    else filtered by search string
+    else just all queryset
+    """
+
     queryset = Post.objects.all()
     serializer_class = BlogPostSerializer
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        search = self.request.GET.get('search')
+        search = self.request.GET.get("search")
+        category = self.request.GET.get("category")
+
+        if category:
+            print(category)
+            q = self.queryset.filter(categories=int(category))
+            return q
 
         if search:
             q = self.queryset.filter(
-                Q(title__icontains=search) | Q(text__icontains=search))
+                Q(title__icontains=search) | Q(text__icontains=search)
+            )
             return q
 
         return self.queryset
