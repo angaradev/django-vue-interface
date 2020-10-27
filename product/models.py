@@ -447,6 +447,34 @@ class Product(models.Model):  # Main table product
     )
 
     @property
+    def options(self):
+        return (
+            [
+                {
+                    "type": "default",
+                    "slug": "material",
+                    "name": "Material",
+                    "values": [
+                        {"slug": "steel", "name": "Steel"},
+                        {"slug": "aluminium", "name": "Aluminium"},
+                        {"slug": "thorium", "name": "Thorium"},
+                    ],
+                },
+                {
+                    "type": "color",
+                    "slug": "color",
+                    "name": "Color",
+                    "values": [
+                        {"slug": "white", "name": "White", "color": "#fff"},
+                        {"slug": "yellow", "name": "Yellow", "color": "#ffd333"},
+                        {"slug": "red", "name": "Red", "color": "#ff4040"},
+                        {"slug": "blue", "name": "Blue", "color": "#4080ff"},
+                    ],
+                },
+            ],
+        )
+
+    @property
     def full_name(self):
         if self.name2:
             return self.name + " " + self.name2

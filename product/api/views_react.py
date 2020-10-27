@@ -17,7 +17,6 @@ class RedSingleProductAPI(APIView):
 
     def get(self, request, slug, format=None):
         queryset = Product.objects.get(slug=slug)
-        print(queryset)
         serializer = RedGetSingleProductSerializer(queryset)
         return Response(serializer.data, status=status.HTTP_200_OK)
         # try:
