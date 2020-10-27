@@ -94,7 +94,8 @@ class GetSingleProductSerializer(serializers.ModelSerializer):
                   'product_attribute',
                   'one_c_id'
                   ]
-        depth = 2 # Dont change it All may craches
+        depth = 2  # Dont change it All may craches
+
 
 class GetCarModelSerializer(serializers.ModelSerializer):
     '''
