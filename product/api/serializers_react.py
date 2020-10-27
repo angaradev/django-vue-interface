@@ -46,9 +46,17 @@ class AttributesSerializer(serializers.ModelSerializer):
 
 
 class ProductImagesSerializer(serializers.ModelSerializer):
+
+    thumbnail_url = serializers.SerializerMethodField("get_thumbnail_url")
+
     class Meta:
+
         model = ProductImage
-        exclude = ["product", "created_date", "updated_date"]
+        # exclude = ["product", "created_date", "updated_date"]
+        fields = ["thumbnail_url"]
+
+    def get_thumbnail_url(self, obj):
+        return "http://localhost" + obj.image.url
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
@@ -65,13 +73,14 @@ class RedGetSingleProductSerializer(serializers.ModelSerializer):
 
     product_cross = ProductCrossSerializer(many=True, read_only=True)
     attributes = AttributesSerializer(many=True, read_only=True)
-    images = ProductImagesSerializer(many=True, read_only=True)
+    # images = ProductImagesSerializer(many=True, read_only=True)
     categories = CategoriesSerializer(many=True, read_only=True, source="category")
+    images = serializers.SerializerMethodField("get_images")
 
     class Meta:
         model = Product
         fields = [
-            "categories",
+            "images",
             "id",
             "name",
             "name2",
@@ -83,7 +92,7 @@ class RedGetSingleProductSerializer(serializers.ModelSerializer):
             "stock",
             "price",
             "compareAtPrice",
-            "images",
+            # "images",
             "badges",
             "rating",
             "reviews",
@@ -92,7 +101,9 @@ class RedGetSingleProductSerializer(serializers.ModelSerializer):
             "brand",
             # type
             "attributes",
+            "options",
             "tags",
+            "categories",
             "unit",
             "car_model",
             "related",
@@ -101,3 +112,8 @@ class RedGetSingleProductSerializer(serializers.ModelSerializer):
             "product_cross",
         ]
         depth = 1  # Dont change it All may craches
+
+    def get_images(self, obj):
+        print(self.context)
+        lst = [("http://localhost:8000" + x.image.url) for x in obj.images]
+        return lst
