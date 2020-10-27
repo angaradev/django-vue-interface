@@ -17,16 +17,16 @@ class RedSingleProductAPI(APIView):
 
     def get(self, request, slug, format=None):
         queryset = Product.objects.get(slug=slug)
-        # print(queryset)
-        # serializer = RedGetSingleProductSerializer(queryset)
-        # return Response(serializer.data, status=status.HTTP_200_OK)
-        try:
-            queryset = Product.objects.get(slug=slug)
+        print(queryset)
+        serializer = RedGetSingleProductSerializer(queryset)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        # try:
+        #     queryset = Product.objects.get(slug=slug)
 
-            serializer = RedGetSingleProductSerializer(queryset)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response(
-                {"status": "Object is not Found"}, status=status.HTTP_404_NOT_FOUND
-            )
-        return Response({"error": "error"})
+        #     serializer = RedGetSingleProductSerializer(queryset)
+        #     return Response(serializer.data, status=status.HTTP_200_OK)
+        # except:
+        #     return Response(
+        #         {"status": "Object is not Found"}, status=status.HTTP_404_NOT_FOUND
+        #     )
+        # return Response({"error": "error"})
