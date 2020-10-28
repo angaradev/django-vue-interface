@@ -492,7 +492,78 @@ class Product(models.Model):  # Main table product
 
     @property
     def attributes(self):
-        return self.product_attribute.all()
+        # return self.product_attribute.all()
+        return [
+            {
+                "name": "Speed",
+                "slug": "speed",
+                "featured": "true",
+                "values": [{"name": "750 RPM", "slug": "750-rpm"}],
+            },
+            {
+                "name": "Power Source",
+                "slug": "power-source",
+                "featured": "true",
+                "values": [{"name": "Cordless-Electric", "slug": "cordless-electric"}],
+            },
+            {
+                "name": "Battery Cell Type",
+                "slug": "battery-cell type",
+                "featured": "true",
+                "values": [{"name": "Lithium", "slug": "lithium"}],
+            },
+            {
+                "name": "Voltage",
+                "slug": "voltage",
+                "featured": "true",
+                "values": [{"name": "20 Volts", "slug": "20-volts"}],
+            },
+            {
+                "name": "Battery Capacity",
+                "slug": "battery-capacity",
+                "featured": "true",
+                "values": [{"name": "2 Ah", "slug": "2-ah"}],
+            },
+            {
+                "name": "Material",
+                "slug": "material",
+                "featured": "false",
+                "values": [
+                    {"name": "Aluminium", "slug": "aluminium"},
+                    {"name": "Plastic", "slug": "plastic"},
+                ],
+            },
+            {
+                "name": "Engine Type",
+                "slug": "engine-type",
+                "featured": "false",
+                "values": [{"name": "Brushless", "slug": "brushless"}],
+            },
+            {
+                "name": "Length",
+                "slug": "length",
+                "featured": "false",
+                "values": [{"name": "99 mm", "slug": "99-mm"}],
+            },
+            {
+                "name": "Width",
+                "slug": "width",
+                "featured": "false",
+                "values": [{"name": "207 mm", "slug": "207-mm"}],
+            },
+            {
+                "name": "Height",
+                "slug": "height",
+                "featured": "false",
+                "values": [{"name": "208 mm", "slug": "208-mm"}],
+            },
+            {
+                "name": "Color",
+                "slug": "color",
+                "featured": "false",
+                "values": [{"name": "Red", "slug": "red"}],
+            },
+        ]
 
     @property
     def sku(self):
@@ -517,8 +588,35 @@ class Product(models.Model):  # Main table product
     """
 
     @property
+    def type(self):
+        return {
+            "slug": "default",
+            "name": "Default",
+            "attributeGroups": [
+                {
+                    "name": "General",
+                    "slug": "general",
+                    "attributes": [
+                        "speed",
+                        "power-source",
+                        "battery-cell-type",
+                        "voltage",
+                        "battery-capacity",
+                        "material",
+                        "engine-type",
+                    ],
+                },
+                {
+                    "name": "Dimensions",
+                    "slug": "dimensions",
+                    "attributes": ["length", "width", "height"],
+                },
+            ],
+        }
+
+    @property
     def price(self):
-        return 599
+        return 199
 
     @property
     def compareAtPrice(self):
@@ -534,7 +632,7 @@ class Product(models.Model):  # Main table product
 
     @property
     def rating(self):
-        return 3
+        return 4
 
     @property
     def reviews(self):
