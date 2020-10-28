@@ -72,7 +72,7 @@ class RedGetSingleProductSerializer(serializers.ModelSerializer):
     """
 
     product_cross = ProductCrossSerializer(many=True, read_only=True)
-    attributes = AttributesSerializer(many=True, read_only=True)
+    # attributes = AttributesSerializer(many=True, read_only=True)
     # images = ProductImagesSerializer(many=True, read_only=True)
     categories = CategoriesSerializer(many=True, read_only=True, source="category")
     images = serializers.SerializerMethodField("get_images")
@@ -99,7 +99,7 @@ class RedGetSingleProductSerializer(serializers.ModelSerializer):
             "availability",
             "compatibility",
             "brand",
-            # type
+            "type",
             "attributes",
             "options",
             "tags",

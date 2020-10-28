@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.urls import reverse_lazy
+from product.utils import unique_slug_generator
 
 
 class AngSuppliers(models.Model):
@@ -31,7 +32,7 @@ class AngSuppliers(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ang_suppliers'
+        db_table = "ang_suppliers"
 
     def __str__(self):
         return self.name
@@ -53,7 +54,7 @@ class AngPricesAll(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'ang_prices_all'
+        db_table = "ang_prices_all"
 
     def __str__(self):
         return self.name
@@ -62,12 +63,17 @@ class AngPricesAll(models.Model):
 class SuppliersBrands(models.Model):
     brand = models.CharField(max_length=255, blank=True, null=True)
     supplier = models.ForeignKey(
-        AngSuppliers, on_delete=models.CASCADE, blank=True, null=True, related_name='supplier_related')
+        AngSuppliers,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="supplier_related",
+    )
     count = models.IntegerField(null=True, blank=True)
 
     class Meta:
         managed = True
-        #db_table = 'ang_prices_all'
+        # db_table = 'ang_prices_all'
 
     def __str__(self):
         return self.name
@@ -75,14 +81,18 @@ class SuppliersBrands(models.Model):
 
 class BrandsDict(models.Model):
     brand = models.CharField(max_length=255, unique=True)
+    country = models.CharField(max_length=10, null=True, blank=True)
+    country_name = models.CharField(max_length=50, null=True, blank=True)
+    slug = models.SlugField(max_length=255, blank=True)
+    image = models.ImageField(upload_to="brands", blank=True)
     # needs to implement Brand Country
 
     class Meta:
         managed = True
-        db_table = 'brands_dict'
+        db_table = "brands_dict"
 
     def get_absolute_url(self):
-        return reverse_lazy('detailfunc-view', args=[self.pk])
+        return reverse_lazy("detailfunc-view", args=[self.pk])
 
     def __str__(self):
         return self.brand
@@ -91,10 +101,19 @@ class BrandsDict(models.Model):
 class BrandDictSup(models.Model):
     ang_brand = models.CharField(max_length=255, null=True)
     brand_name = models.ForeignKey(
-        to='brands.BrandsDict', related_name='brand_supplier', on_delete=models.CASCADE)
+        to="brands.BrandsDict", related_name="brand_supplier", on_delete=models.CASCADE
+    )
 
     class Meta:
         managed = True
 
     def __str__(self):
         return self.ang_brand
+
+
+def brand_slug_save(sender, instance, *args, **kwargs):  # Slug saver
+    if not instance.slug:
+        instance.slug = unique_slug_generator(instance, instance.brand, instance.slug)
+
+
+pre_save.connect(brand_slug_save, BrandsDict)
