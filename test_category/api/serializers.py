@@ -21,6 +21,7 @@ class NoRecursionCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
         fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
+        depth = 1
 
 
 class DepthOneCategorySerializer(serializers.ModelSerializer):
