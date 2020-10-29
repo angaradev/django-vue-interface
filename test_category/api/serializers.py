@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from test_category.models import Categories
+from rest_framework.reverse import reverse
 
 
 class RecursiveField(serializers.Serializer):
@@ -14,3 +15,17 @@ class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
         fields = "__all__"
+
+
+class NoRecursionCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categories
+        fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
+
+
+class DepthOneCategorySerializer(serializers.ModelSerializer):
+    children = NoRecursionCategorySerializer(many=True)
+
+    class Meta:
+        model = Categories
+        fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
