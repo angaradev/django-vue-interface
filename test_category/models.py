@@ -25,6 +25,10 @@ class Categories(MPTTModel):
         return self.name
 
     @property
+    def image(self):
+        return "http://localhost:8000/media/123/555_tf/IMG_4210.jpg"
+
+    @property
     def type(self):
         return "shop"
 

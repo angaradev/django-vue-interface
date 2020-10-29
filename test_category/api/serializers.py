@@ -20,7 +20,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
 class NoRecursionCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
-        fields = "__all__"
+        fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
 
 
 class DepthOneCategorySerializer(serializers.ModelSerializer):
@@ -28,4 +28,4 @@ class DepthOneCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Categories
-        fields = ["id", "type", "name", "slug", "layout", "parent", "children"]
+        fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
