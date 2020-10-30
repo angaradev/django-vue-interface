@@ -1,8 +1,9 @@
-from rest_framework import generics
+from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from .serializers import CategoriesSerializer, DepthOneCategorySerializer
-from test_category.models import Categories
+from test_category.models import Categories, Product
 from rest_framework.permissions import AllowAny
+from .serializers_product import ProductSerializer
 
 
 class CategoriesView(generics.ListAPIView):
@@ -32,4 +33,11 @@ class SingleCategorySlugView(generics.RetrieveAPIView):
     queryset = Categories.objects.all()
     lookup_field = "slug"
     serializer_class = CategoriesSerializer
+    permission_classes = [AllowAny]
+
+
+class SingleProductView(viewsets.ReadOnlyModelViewSet):
+    queryset = Product.objects.all()
+    lookup_field = "slug"
+    serializer_class = ProductSerializer
     permission_classes = [AllowAny]
