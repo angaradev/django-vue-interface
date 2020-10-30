@@ -25,6 +25,7 @@ class Product(models.Model):
     categories = models.ManyToManyField("Categories", related_name="reverse_categories")
     brand = models.ForeignKey(Brands, null=True, on_delete=models.SET_NULL)
     rating = models.IntegerField()
+    price = models.IntegerField(blank=True, null=True)
 
     class Meta:
         verbose_name = "Товар"
@@ -36,9 +37,9 @@ class Product(models.Model):
     def compareAtPrice(self):
         return self.price + self.price * 0.2
 
-    @property
-    def price(self):
-        return 123
+    # @property
+    # def price(self):
+    #     return 123
 
     @property
     def stock(self):
@@ -283,3 +284,14 @@ def category_slug(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(category_slug, Categories)
+
+
+# Pre save Product fields logics
+
+
+def product_price(sender, instance, *args, **kwargs):
+    if not instance.price:
+        instance.price = randrange(5, 100, 5)
+
+
+pre_save.connect(product_price, Product)

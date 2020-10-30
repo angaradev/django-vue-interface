@@ -41,3 +41,14 @@ class SingleProductView(viewsets.ReadOnlyModelViewSet):
     lookup_field = "slug"
     serializer_class = ProductSerializer
     permission_classes = [AllowAny]
+    paginator = None
+
+    def get_queryset(self):
+        category = self.request.GET.get("category")
+        if category:
+            return self.queryset.filter(
+                categories__in=Categories.objects.filter(slug=category).get_descendants(
+                    include_self=True
+                )
+            )
+        return self.queryset
