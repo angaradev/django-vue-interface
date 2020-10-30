@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models.signals import pre_save
 from product.utils import unique_slug_generator
 from test_category.api.helpers.description_text import desc
+from random import randrange
 
 # Create your models here.
 from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
@@ -18,10 +19,12 @@ class Brands(models.Model):
 
 
 class Product(models.Model):
+
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
     categories = models.ManyToManyField("Categories", related_name="reverse_categories")
     brand = models.ForeignKey(Brands, null=True, on_delete=models.SET_NULL)
+    rating = models.IntegerField()
 
     class Meta:
         verbose_name = "Товар"
@@ -209,9 +212,9 @@ class Product(models.Model):
     def compatibility(self):
         return [1, 2]
 
-    @property
-    def rating(self):
-        return 4
+    # @property
+    # def rating(self):
+    #     return randrange(2, 5, 1)
 
     @property
     def reviews(self):
