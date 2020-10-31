@@ -6,7 +6,6 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r"products", views.SingleProductView)
 
-
 urlpatterns = [
     path("products/", include(router.urls)),
     path("categories/", views.CategoriesView.as_view(), name="cat-test"),
@@ -14,5 +13,10 @@ urlpatterns = [
         "category/<slug:slug>/",
         views.SingleCategorySlugView.as_view(),
         name="cat-test-slug",
+    ),
+    path(
+        "categorylist/<slug:slug>/",
+        views.SingleCategorySlugFlatView.as_view(),
+        name="cat-test-slug-list",
     ),
 ]
