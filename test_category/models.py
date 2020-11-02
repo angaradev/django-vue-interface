@@ -5,7 +5,7 @@ from test_category.api.helpers.description_text import desc
 from random import randrange
 
 # Create your models here.
-from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
+from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField, TreeManager
 
 
 class Brands(models.Model):
@@ -222,6 +222,11 @@ class Product(models.Model):
         return 7
 
 
+class CategoryManager(TreeManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(reverse_categories__isnull=False)
+
+
 class Categories(MPTTModel):
     name = models.CharField(max_length=100)
     parent = TreeForeignKey(
@@ -239,6 +244,8 @@ class Categories(MPTTModel):
 
     def __str__(self):
         return self.name + "-" + str(self.level)
+
+    # objects = CategoryManager()
 
     @property
     def image(self):
