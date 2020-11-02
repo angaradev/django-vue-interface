@@ -38,6 +38,18 @@ class SingleCategorySlugView(generics.RetrieveAPIView):
     serializer_class = CategoriesSerializer
     permission_classes = [AllowAny]
 
+    def get_queryset(self):
+        q = Categories.objects.add_related_count(
+            self.queryset.exclude(reverse_categories__isnull=True),
+            Product,
+            "categories",
+            "count",
+            cumulative=True,
+        )
+        for item in q:
+            print(item.count, item.name, item.level)
+        return q
+
 
 class SingleCategorySlugFlatView(generics.RetrieveAPIView):
     queryset = Categories.objects.all()
@@ -47,6 +59,12 @@ class SingleCategorySlugFlatView(generics.RetrieveAPIView):
 
 
 class SingleProductView(viewsets.ReadOnlyModelViewSet):
+    """
+    Class Set for getting single product or set of products
+    to show on category pages by category slug
+    If no products in category dont pick up them
+    """
+
     queryset = Product.objects.all()
     lookup_field = "slug"
     serializer_class = ProductSerializer
@@ -56,9 +74,10 @@ class SingleProductView(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         category = self.request.GET.get("category")
         if category:
-            return self.queryset.filter(
+            queryset = self.queryset.filter(
                 categories__in=Categories.objects.filter(slug=category).get_descendants(
                     include_self=True
                 )
             )
+            return queryset
         return self.queryset

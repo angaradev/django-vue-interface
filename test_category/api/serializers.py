@@ -9,19 +9,65 @@ class RecursiveField(serializers.Serializer):
         return serializer.data
 
 
-class CategoriesSerializer(serializers.ModelSerializer):
+class ParentSerializer(serializers.ModelSerializer):
     children = RecursiveField(many=True)
 
     class Meta:
         model = Categories
-        fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
+        fields = [
+            "id",
+            "type",
+            "name",
+            "slug",
+            "image",
+            "layout",
+            "parent",
+            "children",
+        ]
+        depth = 1
+
+
+class CategoriesSerializer(serializers.ModelSerializer):
+    """
+    Serializer for make categories working well
+    it is making right fields for frontend
+    it is solved big problem by the way
+    """
+
+    children = RecursiveField(many=True)
+    parent = ParentSerializer(read_only=True)
+
+    class Meta:
+        model = Categories
+        fields = [
+            "id",
+            "type",
+            "name",
+            "slug",
+            "image",
+            "layout",
+            "parent",
+            "children",
+        ]
         depth = 1
 
 
 class NoRecursionCategorySerializer(serializers.ModelSerializer):
+    parent = ParentSerializer()
+
     class Meta:
+
         model = Categories
-        fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
+        fields = [
+            "id",
+            "type",
+            "name",
+            "slug",
+            "image",
+            "layout",
+            "parent",
+            "children",
+        ]
         depth = 1
 
 
