@@ -24,7 +24,7 @@ class ParentSerializer(serializers.ModelSerializer):
             "parent",
             "children",
         ]
-        depth = 1
+        depth = 3
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
@@ -49,31 +49,31 @@ class CategoriesSerializer(serializers.ModelSerializer):
             "parent",
             "children",
         ]
-        depth = 1
+        depth = 3
 
 
-class NoRecursionCategorySerializer(serializers.ModelSerializer):
-    parent = ParentSerializer()
+# class NoRecursionCategorySerializer(serializers.ModelSerializer):
+#     parent = ParentSerializer()
 
-    class Meta:
+#     class Meta:
 
-        model = Categories
-        fields = [
-            "id",
-            "type",
-            "name",
-            "slug",
-            "image",
-            "layout",
-            "parent",
-            "children",
-        ]
-        depth = 1
+#         model = Categories
+#         fields = [
+#             "id",
+#             "type",
+#             "name",
+#             "slug",
+#             "image",
+#             "layout",
+#             "parent",
+#             "children",
+#         ]
+#         depth = 2
 
 
-class DepthOneCategorySerializer(serializers.ModelSerializer):
-    children = NoRecursionCategorySerializer(many=True)
+# class DepthOneCategorySerializer(serializers.ModelSerializer):
+#     children = NoRecursionCategorySerializer(many=True)
 
-    class Meta:
-        model = Categories
-        fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
+#     class Meta:
+#         model = Categories
+#         fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]

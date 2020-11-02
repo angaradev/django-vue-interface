@@ -229,6 +229,7 @@ class CategoryManager(TreeManager):
 
 class Categories(MPTTModel):
     name = models.CharField(max_length=100)
+    type = models.CharField(max_length=30, default="shop")
     parent = TreeForeignKey(
         "self",
         null=True,
@@ -251,9 +252,9 @@ class Categories(MPTTModel):
     def image(self):
         return "http://localhost:8000/media/123/555_tf/IMG_4210.jpg"
 
-    @property
-    def type(self):
-        return "shop"
+    # @property
+    # def type(self):
+    #     return "shop"
 
     @property
     def items(self):

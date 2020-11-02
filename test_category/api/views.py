@@ -2,8 +2,8 @@ from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from .serializers import (
     CategoriesSerializer,
-    DepthOneCategorySerializer,
-    NoRecursionCategorySerializer,
+    # DepthOneCategorySerializer,
+    # NoRecursionCategorySerializer,
 )
 from test_category.models import Categories, Product
 from rest_framework.permissions import AllowAny
@@ -18,8 +18,9 @@ class CategoriesView(generics.ListAPIView):
     def get_queryset(self):
 
         queryset = Categories.objects.all()
-        depth = int(self.request.GET.get("depth"))
+        depth = self.request.GET.get("depth")
         if depth and (depth == 1):
+            depth = int(depth)
             self.serializer_class = DepthOneCategorySerializer
             return queryset.filter(level__lte=0)
         elif depth and (depth == 2):
@@ -40,7 +41,7 @@ class SingleCategorySlugView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         q = Categories.objects.add_related_count(
-            self.queryset.exclude(reverse_categories__isnull=True),
+            self.queryset,
             Product,
             "categories",
             "count",
@@ -49,13 +50,6 @@ class SingleCategorySlugView(generics.RetrieveAPIView):
         for item in q:
             print(item.count, item.name, item.level)
         return q
-
-
-class SingleCategorySlugFlatView(generics.RetrieveAPIView):
-    queryset = Categories.objects.all()
-    lookup_field = "slug"
-    serializer_class = NoRecursionCategorySerializer
-    permission_classes = [AllowAny]
 
 
 class SingleProductView(viewsets.ReadOnlyModelViewSet):

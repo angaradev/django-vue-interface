@@ -16,9 +16,9 @@ urlpatterns = [
         views.SingleCategorySlugView.as_view(),
         name="cat-test-slug",
     ),
-    path(
-        "categorylist/<slug:slug>/",
-        views.SingleCategorySlugFlatView.as_view(),
-        name="cat-test-slug-list",
-    ),
+    # path(
+    #     "categorylist/<slug:slug>/",
+    #     views.SingleCategorySlugFlatView.as_view(),
+    #     name="cat-test-slug-list",
+    # ),
 ]
