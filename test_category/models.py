@@ -240,6 +240,11 @@ class Categories(MPTTModel):
     )
     slug = models.SlugField(blank=True)
 
+    @property
+    def prod_count(self):
+
+        return self.reverse_categories.count()
+
     class Meta:
         verbose_name = "Категории"
 

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from test_category.models import Categories
+from test_category.models import Categories, Product
 from rest_framework.reverse import reverse
 
 
@@ -36,11 +36,18 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
     children = RecursiveField(many=True)
     parent = ParentSerializer(read_only=True)
+    count = serializers.IntegerField(read_only=True)
+    # count_ser = serializers.SerializerMethodField("get_count_ser", read_only=True)
+
+    # def get_count_ser(self, obj):
+    #     return obj.count
 
     class Meta:
         model = Categories
         fields = [
             "id",
+            "count",
+            "prod_count",
             "type",
             "name",
             "slug",
@@ -52,28 +59,28 @@ class CategoriesSerializer(serializers.ModelSerializer):
         depth = 3
 
 
-# class NoRecursionCategorySerializer(serializers.ModelSerializer):
-#     parent = ParentSerializer()
+class NoRecursionCategorySerializer(serializers.ModelSerializer):
+    parent = ParentSerializer()
 
-#     class Meta:
+    class Meta:
 
-#         model = Categories
-#         fields = [
-#             "id",
-#             "type",
-#             "name",
-#             "slug",
-#             "image",
-#             "layout",
-#             "parent",
-#             "children",
-#         ]
-#         depth = 2
+        model = Categories
+        fields = [
+            "id",
+            "type",
+            "name",
+            "slug",
+            "image",
+            "layout",
+            "parent",
+            "children",
+        ]
+        depth = 2
 
 
-# class DepthOneCategorySerializer(serializers.ModelSerializer):
-#     children = NoRecursionCategorySerializer(many=True)
+class DepthOneCategorySerializer(serializers.ModelSerializer):
+    children = NoRecursionCategorySerializer(many=True)
 
-#     class Meta:
-#         model = Categories
-#         fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
+    class Meta:
+        model = Categories
+        fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
