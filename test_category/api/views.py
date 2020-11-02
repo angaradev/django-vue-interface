@@ -2,35 +2,33 @@ from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from .serializers import (
     CategoriesSerializer,
-    # DepthOneCategorySerializer,
+    DepthOneCategorySerializer,
     # NoRecursionCategorySerializer,
 )
 from test_category.models import Categories, Product
 from rest_framework.permissions import AllowAny
 from .serializers_product import ProductSerializer
+from django.db.models import Count
 
 
 class CategoriesView(generics.ListAPIView):
+    queryset = Categories.objects.add_related_count(
+        Categories.objects.all(), Product, "categories", "count", cumulative=True
+    )
+
     serializer_class = CategoriesSerializer
     paginator = None
     permission_classes = [AllowAny]
 
     def get_queryset(self):
 
-        queryset = Categories.objects.all()
         depth = self.request.GET.get("depth")
-        if depth and (depth == 1):
-            depth = int(depth)
+        if depth and (depth == "1"):
             self.serializer_class = DepthOneCategorySerializer
-            return queryset.filter(level__lte=0)
-        elif depth and (depth == 2):
-            """
-            Need to refactor or delete at all
-            """
-            return queryset
+            return self.queryset.filter(level__lte=0)
 
         else:
-            return queryset
+            return self.queryset.all()
 
 
 class SingleCategorySlugView(generics.RetrieveAPIView):
@@ -39,17 +37,24 @@ class SingleCategorySlugView(generics.RetrieveAPIView):
     serializer_class = CategoriesSerializer
     permission_classes = [AllowAny]
 
-    def get_queryset(self):
-        q = Categories.objects.add_related_count(
-            self.queryset,
-            Product,
-            "categories",
-            "count",
-            cumulative=True,
-        )
-        for item in q:
-            print(item.count, item.name, item.level)
-        return q
+    # def get_queryset(self):
+    #     q = Categories.objects.add_related_count(
+    #         self.queryset,
+    #         Product,
+    #         "categories",
+    #         "count",
+    #         cumulative=True,
+    #     )
+    #     for item in q:
+    #         print(item.count, item.name, item.level)
+    #     return q
+    # def get_queryset(self):
+
+    #     count_queryset = Categories.objects.add_related_count(
+    #         self.queryset, Product, "categories", "count", cumulative=True
+    #     )
+    #     zerros = [x.id for x in count_queryset if x.count == 0]
+    #     return self.queryset.exclude(id__in=zerros)
 
 
 class SingleProductView(viewsets.ReadOnlyModelViewSet):
