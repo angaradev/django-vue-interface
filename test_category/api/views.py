@@ -12,11 +12,11 @@ from django.db.models import Count
 
 
 class CategoriesView(generics.ListAPIView):
-    queryset = Categories.objects.all()
-    # queryset = Categories.objects.add_related_count(
+    # queryset = Categories.objects.all()
+    queryset = Categories.objects.add_related_count(
 
-    #     Categories.objects.all(), Product, "categories", "count", cumulative=True
-    # )
+        Categories.objects.all(), Product, "categories", "count", cumulative=True
+    )
 
     serializer_class = CategoriesSerializer
     paginator = None
@@ -34,7 +34,11 @@ class CategoriesView(generics.ListAPIView):
 
 
 class SingleCategorySlugView(generics.RetrieveAPIView):
-    queryset = Categories.objects.all()
+
+    queryset = Categories.objects.add_related_count(
+
+        Categories.objects.all(), Product, "categories", "count", cumulative=True
+    )
     lookup_field = "slug"
     serializer_class = CategoriesSerializer
     permission_classes = [AllowAny]

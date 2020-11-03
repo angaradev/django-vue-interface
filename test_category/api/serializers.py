@@ -26,7 +26,7 @@ class ParentSerializer(serializers.ModelSerializer):
             "parent",
             "children",
         ]
-        depth = 5
+        depth = 3
 
 
 class CategoriesSerializer(serializers.ModelSerializer):
@@ -37,7 +37,7 @@ class CategoriesSerializer(serializers.ModelSerializer):
     """
 
     children = RecursiveField(many=True)
-    parent = ParentSerializer(read_only=True, many=True)
+    parent = ParentSerializer(read_only=True)
     count = serializers.IntegerField(read_only=True)
     # count_ser = serializers.SerializerMethodField("get_count_ser", read_only=True)
 
