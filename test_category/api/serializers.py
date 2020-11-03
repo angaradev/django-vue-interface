@@ -11,11 +11,13 @@ class RecursiveField(serializers.Serializer):
 
 class ParentSerializer(serializers.ModelSerializer):
     children = RecursiveField(many=True)
+    count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Categories
         fields = [
             "id",
+            "count",
             "type",
             "name",
             "slug",
@@ -47,7 +49,6 @@ class CategoriesSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "count",
-            "prod_count",
             "type",
             "name",
             "slug",
@@ -61,12 +62,14 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
 class NoRecursionCategorySerializer(serializers.ModelSerializer):
     parent = ParentSerializer()
+    count = serializers.IntegerField(read_only=True)
 
     class Meta:
 
         model = Categories
         fields = [
             "id",
+            "count",
             "type",
             "name",
             "slug",
@@ -80,7 +83,18 @@ class NoRecursionCategorySerializer(serializers.ModelSerializer):
 
 class DepthOneCategorySerializer(serializers.ModelSerializer):
     children = NoRecursionCategorySerializer(many=True)
+    count = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Categories
-        fields = ["id", "type", "name", "slug", "image", "layout", "parent", "children"]
+        fields = [
+            "id",
+            "count",
+            "type",
+            "name",
+            "slug",
+            "image",
+            "layout",
+            "parent",
+            "children",
+        ]
