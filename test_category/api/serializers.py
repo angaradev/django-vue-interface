@@ -98,3 +98,20 @@ class DepthOneCategorySerializer(serializers.ModelSerializer):
             "parent",
             "children",
         ]
+
+
+class CategoriesSerializerfFlat(serializers.ModelSerializer):
+    count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Categories
+        fields = [
+            "id",
+            "count",
+            "type",
+            "name",
+            "slug",
+            "image",
+            "layout",
+            "parent",
+        ]
