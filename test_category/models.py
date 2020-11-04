@@ -22,8 +22,7 @@ class Product(models.Model):
 
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
-    categories = models.ManyToManyField(
-        "Categories", related_name="reverse_categories")
+    categories = models.ManyToManyField("Categories", related_name="reverse_categories")
     brand = models.ForeignKey(Brands, null=True, on_delete=models.SET_NULL)
     rating = models.IntegerField()
     price = models.IntegerField(blank=True, null=True)
@@ -237,7 +236,7 @@ class CategoryManager(TreeManager):
 class Categories(MPTTModel):
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=30, default="shop")
-    # product_count = models.IntegerField(blank=True, null=True)
+    layout = models.CharField(max_length=30, default="products")
     parent = TreeForeignKey(
         "self",
         null=True,
@@ -256,7 +255,7 @@ class Categories(MPTTModel):
 
     # objects = CategoryManager()
 
-    @ property
+    @property
     def image(self):
         return "http://localhost:8000/media/123/555_tf/IMG_4210.jpg"
 
@@ -264,13 +263,13 @@ class Categories(MPTTModel):
     # def type(self):
     #     return "shop"
 
-    @ property
+    @property
     def items(self):
         return 123
 
-    @ property
-    def layout(self):
-        return "products"
+    # @property
+    # def layout(self):
+    #     return "products"
 
 
 """
@@ -280,8 +279,7 @@ Pre save slug generators starts
 
 def brand_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = unique_slug_generator(
-            instance, instance.name, instance.slug)
+        instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
 
 
 pre_save.connect(brand_slug, Brands)
@@ -289,8 +287,7 @@ pre_save.connect(brand_slug, Brands)
 
 def product_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = unique_slug_generator(
-            instance, instance.name, instance.slug)
+        instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
 
 
 pre_save.connect(product_slug, Product)
@@ -298,8 +295,7 @@ pre_save.connect(product_slug, Product)
 
 def category_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = unique_slug_generator(
-            instance, instance.name, instance.slug)
+        instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
 
 
 pre_save.connect(category_slug, Categories)
