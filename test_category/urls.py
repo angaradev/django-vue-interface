@@ -6,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register(r"products", views.SingleProductView)
 
+
 urlpatterns = [
     path("products/", include(router.urls)),
     path("categories/", views.CategoriesView.as_view(), name="cat-test"),

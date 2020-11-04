@@ -1,9 +1,12 @@
+from collections import defaultdict
+from rest_framework.decorators import action
 from rest_framework import generics, viewsets
 from rest_framework.views import APIView
 from .serializers import (
     CategoriesSerializer,
     DepthOneCategorySerializer,
-    # NoRecursionCategorySerializer,
+    CategoriesSerializerfFlat
+
 )
 from test_category.models import Categories, Product
 from rest_framework.permissions import AllowAny
@@ -18,7 +21,7 @@ class CategoriesView(generics.ListAPIView):
         Categories.objects.all(), Product, "categories", "count", cumulative=True
     )
 
-    serializer_class = CategoriesSerializer
+    serializer_class = CategoriesSerializerfFlat  # CategoriesSerializer
     paginator = None
     permission_classes = [AllowAny]
 
@@ -86,3 +89,6 @@ class SingleProductView(viewsets.ReadOnlyModelViewSet):
             )
             return queryset
         return self.queryset
+
+
+# views.py
