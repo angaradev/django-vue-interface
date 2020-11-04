@@ -102,6 +102,7 @@ class DepthOneCategorySerializer(serializers.ModelSerializer):
 
 class CategoriesSerializerfFlat(serializers.ModelSerializer):
     count = serializers.IntegerField(read_only=True)
+    # parent = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Categories
@@ -115,3 +116,7 @@ class CategoriesSerializerfFlat(serializers.ModelSerializer):
             "layout",
             "parent",
         ]
+        depth = 3
+
+    # def get_parent(self, obj):
+    #     return CategoriesSerializerfFlat(obj).data
