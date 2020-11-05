@@ -3,6 +3,7 @@ from django.db.models.signals import pre_save
 from product.utils import unique_slug_generator
 from test_category.api.helpers.description_text import desc
 from random import randrange
+from .vehicle_models import *
 
 # Create your models here.
 from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField, TreeManager

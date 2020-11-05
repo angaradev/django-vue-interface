@@ -118,5 +118,23 @@ class CategoriesSerializerfFlat(serializers.ModelSerializer):
         ]
         depth = 3
 
-    # def get_parent(self, obj):
+
+# Serializer for testes with frontend part of treefying
+class CategoriesSerializerfFlatForTestes(serializers.ModelSerializer):
+    count = serializers.IntegerField(read_only=True)
+    # parent = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Categories
+        fields = [
+            "id",
+            "count",
+            "type",
+            "name",
+            "slug",
+            "image",
+            "layout",
+            "parent",
+        ]
+
     #     return CategoriesSerializerfFlat(obj).data

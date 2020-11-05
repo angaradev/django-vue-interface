@@ -5,8 +5,8 @@ from rest_framework.views import APIView
 from .serializers import (
     CategoriesSerializer,
     DepthOneCategorySerializer,
-    CategoriesSerializerfFlat
-
+    CategoriesSerializerfFlat,
+    CategoriesSerializerfFlatForTestes,
 )
 from test_category.models import Categories, Product
 from rest_framework.permissions import AllowAny
@@ -17,7 +17,6 @@ from django.db.models import Count
 class CategoriesView(generics.ListAPIView):
     # queryset = Categories.objects.all()
     queryset = Categories.objects.add_related_count(
-
         Categories.objects.all(), Product, "categories", "count", cumulative=True
     )
 
@@ -39,7 +38,6 @@ class CategoriesView(generics.ListAPIView):
 class SingleCategorySlugView(generics.RetrieveAPIView):
 
     queryset = Categories.objects.add_related_count(
-
         Categories.objects.all(), Product, "categories", "count", cumulative=True
     )
     lookup_field = "slug"
@@ -91,4 +89,15 @@ class SingleProductView(viewsets.ReadOnlyModelViewSet):
         return self.queryset
 
 
-# views.py
+# View for testes with flat serialization
+
+
+class CategoriesViewForTestes(generics.ListAPIView):
+    # queryset = Categories.objects.all()
+    queryset = Categories.objects.add_related_count(
+        Categories.objects.all(), Product, "categories", "count", cumulative=True
+    )
+
+    serializer_class = CategoriesSerializerfFlatForTestes  # CategoriesSerializer
+    paginator = None
+    permission_classes = [AllowAny]
