@@ -1,6 +1,12 @@
 from rest_framework import serializers
 from test_category.models import Vehicle, Years, Makes
 
+'''
+1. Add save users vehicle
+2. Get users vehicle
+
+'''
+
 
 class YearsSerializer(serializers.ModelSerializer):
     class Meta:
