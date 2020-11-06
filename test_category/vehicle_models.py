@@ -38,6 +38,10 @@ class Vehicle(models.Model):
         verbose_name = "Автомобил"
         verbose_name_plural = "Автомобили"
 
+    @property
+    def year(self):
+        return [int(self.year_from.year), int(self.year_to.year)]
+
     def __str__(self):
         return self.model
 
