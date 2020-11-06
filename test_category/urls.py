@@ -27,4 +27,9 @@ urlpatterns = [
         vehicle_views.YearsView.as_view(),
         name="years",
     ),
+    path(
+        "vehicle/",
+        vehicle_views.VehicleView.as_view(),
+        name="vehicles",
+    ),
 ]

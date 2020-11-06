@@ -15,6 +15,17 @@ class MakesSerializer(serializers.ModelSerializer):
 
 
 class VehicleSerializer(serializers.ModelSerializer):
+
+    year = serializers.ListField()
+    make = serializers.SerializerMethodField()
+    engine = serializers.SerializerMethodField()
+
     class Meta:
         model = Vehicle
-        fields = "__all__"
+        fields = ["id", "year", "make", "model", "engine"]
+
+    def get_make(self, obj):
+        return obj.make.name
+
+    def get_engine(self, obj):
+        return obj.engine.name
