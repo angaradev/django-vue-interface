@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import Categories, Brands, Product
-from .vehicle_models import Vehicle, Years, Makes, Country, Engine
+from .vehicle_models import Vehicle, Years, Makes, Country, Engine, UserVehicles
 
 admin.site.register(Categories)
 admin.site.register(Product)
@@ -13,3 +13,4 @@ admin.site.register(Years)
 admin.site.register(Makes)
 admin.site.register(Country)
 admin.site.register(Engine)
+admin.site.register(UserVehicles)
