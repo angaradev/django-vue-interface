@@ -1,4 +1,5 @@
 from django.db import models
+from users.models import CustomUser
 
 
 class Makes(models.Model):
@@ -78,3 +79,17 @@ class Engine(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class UserVehicles(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user")
+    vehicles = models.ForeignKey(
+        Vehicle, on_delete=models.CASCADE, related_name="vehicles"
+    )
+
+    class Meta:
+        verbose_name = "Машина Пользователя"
+        verbose_name_plural = "Машины пользователя"
+
+
+##
