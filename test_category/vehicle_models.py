@@ -88,8 +88,12 @@ class UserVehicles(models.Model):
     )
 
     class Meta:
+
         verbose_name = "Машина Пользователя"
         verbose_name_plural = "Машины пользователя"
+
+    def __str__(self):
+        return self.user.username
 
 
 ##

@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register(r"products", views.SingleProductView)
+router.register(r"vehicles", vehicle_views.VehicleView)
 
 
 urlpatterns = [
@@ -27,9 +28,9 @@ urlpatterns = [
         vehicle_views.YearsView.as_view(),
         name="years",
     ),
-    path(
-        "vehicle/",
-        vehicle_views.VehicleView.as_view(),
-        name="vehicles",
-    ),
+    # path(
+    #     "vehicle/",
+    #     vehicle_views.VehicleView.as_view(),
+    #     name="vehicles",
+    # ),
 ]
