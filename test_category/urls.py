@@ -28,9 +28,10 @@ urlpatterns = [
         vehicle_views.YearsView.as_view(),
         name="years",
     ),
-    # path(
-    #     "vehicle/",
-    #     vehicle_views.VehicleView.as_view(),
-    #     name="vehicles",
-    # ),
+    path(
+        "models/<str:make>/",
+        vehicle_views.VehiclesBySlugView.as_view(),
+        name="vehicle-by-slug",
+    ),
+    path("makes/", vehicle_views.MakesView.as_view(), name="makes-all")
 ]
