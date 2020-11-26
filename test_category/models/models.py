@@ -1,9 +1,10 @@
 from django.db import models
+
 from django.db.models.signals import pre_save
 from product.utils import unique_slug_generator
 from test_category.api.helpers.description_text import desc
 from random import randrange
-from .vehicle_models import *
+
 
 # Create your models here.
 from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField, TreeManager
@@ -23,7 +24,8 @@ class Product(models.Model):
 
     name = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
-    categories = models.ManyToManyField("Categories", related_name="reverse_categories")
+    categories = models.ManyToManyField(
+        "Categories", related_name="reverse_categories")
     brand = models.ForeignKey(Brands, null=True, on_delete=models.SET_NULL)
     rating = models.IntegerField()
     price = models.IntegerField(blank=True, null=True)
@@ -280,7 +282,8 @@ Pre save slug generators starts
 
 def brand_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
+        instance.slug = unique_slug_generator(
+            instance, instance.name, instance.slug)
 
 
 pre_save.connect(brand_slug, Brands)
@@ -288,7 +291,8 @@ pre_save.connect(brand_slug, Brands)
 
 def product_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
+        instance.slug = unique_slug_generator(
+            instance, instance.name, instance.slug)
 
 
 pre_save.connect(product_slug, Product)
@@ -296,7 +300,8 @@ pre_save.connect(product_slug, Product)
 
 def category_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
+        instance.slug = unique_slug_generator(
+            instance, instance.name, instance.slug)
 
 
 pre_save.connect(category_slug, Categories)

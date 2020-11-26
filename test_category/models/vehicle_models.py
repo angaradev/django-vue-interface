@@ -1,5 +1,7 @@
 from django.db import models
 from users.models import CustomUser
+from django.db.models.signals import pre_save
+from product.utils import unique_slug_generator
 
 
 class Makes(models.Model):
@@ -24,6 +26,8 @@ class Years(models.Model):
 
 
 class Vehicle(models.Model):
+
+    slug = models.SlugField(blank=True, null=True)
 
     year_from = models.ForeignKey(
         Years, on_delete=models.DO_NOTHING, related_name="year_from"
@@ -82,7 +86,8 @@ class Engine(models.Model):
 
 
 class UserVehicles(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user")
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="user")
     vehicles = models.ForeignKey(
         Vehicle, on_delete=models.CASCADE, related_name="vehicles"
     )
@@ -97,3 +102,13 @@ class UserVehicles(models.Model):
 
 
 ##
+# Pre save vehicle slug fields logics
+
+
+def vehicle_slug(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = unique_slug_generator(
+            instance, instance.model, instance.slug)
+
+
+pre_save.connect(vehicle_slug, Vehicle)
