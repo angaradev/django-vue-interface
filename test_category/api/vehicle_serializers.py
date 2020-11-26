@@ -28,7 +28,7 @@ class VehicleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Vehicle
-        fields = ["id", "year", "make", "model", "engine"]
+        fields = ["id", "year", "make", "model", "engine", "slug"]
 
     def get_make(self, obj):
         return obj.make.name
