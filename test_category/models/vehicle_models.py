@@ -5,6 +5,7 @@ from product.utils import unique_slug_generator
 
 
 class Makes(models.Model):
+    slug = models.SlugField(blank=True, null=True)
     name = models.CharField(max_length=50)
     country = models.ForeignKey("Country", on_delete=models.DO_NOTHING)
 
@@ -52,6 +53,7 @@ class Vehicle(models.Model):
 
 
 class Country(models.Model):
+    slug = models.SlugField(blank=True, null=True)
     name = models.CharField(max_length=50)
     code = models.CharField(max_length=10)
 
@@ -77,6 +79,7 @@ class Engine(models.Model):
     name = models.CharField(max_length=100)
     fuel = models.CharField(max_length=10, choices=FUELS, default="D")
     volume = models.CharField(max_length=10, choices=VOLUMES, default="2.5")
+    slug = models.SlugField(blank=True, null=True)
 
     class Meta:
         verbose_name = "Двигатель"
@@ -112,3 +115,25 @@ def vehicle_slug(sender, instance, *args, **kwargs):
 
 
 pre_save.connect(vehicle_slug, Vehicle)
+
+
+# presave slug for makes
+
+def makes_slug(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = unique_slug_generator(
+            instance, instance.name, instance.slug)
+
+
+pre_save.connect(makes_slug, Makes)
+
+
+# presave slug for Contries
+
+def countries_slug(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug = unique_slug_generator(
+            instance, instance.name, instance.slug)
+
+
+pre_save.connect(countries_slug, Country)
