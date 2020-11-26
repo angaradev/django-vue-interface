@@ -14,6 +14,7 @@ class YearsView(generics.ListAPIView):
 
 
 class VehicleView(viewsets.ModelViewSet):
+    lookup_field = 'slug'
     # queryset = Categories.objects.all()
     queryset = Vehicle.objects.all()
     serializer_class = VehicleSerializer
