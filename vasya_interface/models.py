@@ -7,7 +7,7 @@ class Rows(models.Model):
     name = models.CharField(max_length=150)
     brand = models.CharField(max_length=20)
     catNumber = models.CharField(max_length=20)
-    description = models.TextField()
+    description = models.TextField(blank=True, null=True)
     isDone = models.BooleanField(default=False)
     signed = models.BooleanField(default=False)
 
