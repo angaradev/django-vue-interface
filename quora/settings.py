@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "product",
     "blog",
     "test_category",
+    "vasya_interface",
 ]
 
 MIDDLEWARE = [
