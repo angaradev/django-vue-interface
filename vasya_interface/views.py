@@ -12,6 +12,7 @@ class RowsView(viewsets.ModelViewSet):
     queryset = Rows.objects.all()
     serializer_class = RowsSerializer
     permission_classes = [AllowAny]
+    paginator = None
 
 
 class TestView(generics.ListCreateAPIView):
