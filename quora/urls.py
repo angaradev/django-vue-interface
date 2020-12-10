@@ -40,6 +40,7 @@ urlpatterns = [
     path("branddict/", include("brand_dict.urls")),
     path("blog/", include("blog.urls")),
     path("testcategory/", include("test_category.urls")),
+    path("vasyainterface/", include("vasya_interface.urls")),
 ]
 
 if settings.DEBUG:
