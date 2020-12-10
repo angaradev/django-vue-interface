@@ -4,13 +4,13 @@ from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
-router.register(r"products", views.SingleProductView)
+router.register(r"testproducts", views.SingleProductView)
 router.register(r"vehicles", vehicle_views.VehicleView)
 
 
 urlpatterns = [
-    path("products/", include(router.urls)),
-    path("categories/", views.CategoriesView.as_view(), name="cat-test"),
+    path("testproducts/", include(router.urls)),
+    path("testcategories/", views.CategoriesView.as_view(), name="cat-test"),
     path(
         "categories-for-testes/",
         views.CategoriesViewForTestes.as_view(),
@@ -19,19 +19,19 @@ urlpatterns = [
     # get category by slug for red parts categories
     # url is http://localhost:8000/testcategory/category/dvigatel/
     path(
-        "category/<slug:slug>/",
+        "testcategory/<slug:slug>/",
         views.SingleCategorySlugView.as_view(),
         name="cat-test-slug",
     ),
     path(
-        "years/",
+        "itestyears/",
         vehicle_views.YearsView.as_view(),
         name="years",
     ),
     path(
-        "models/<str:make>/",
+        "testmodels/<str:make>/",
         vehicle_views.VehiclesBySlugView.as_view(),
         name="vehicle-by-slug",
     ),
-    path("makes/", vehicle_views.MakesView.as_view(), name="makes-all")
+    path("testmakes/", vehicle_views.MakesView.as_view(), name="makes-all"),
 ]
