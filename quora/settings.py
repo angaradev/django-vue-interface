@@ -22,6 +22,8 @@ BLOG_IMAGES = "blog/images"
 # Default Author for blog articles
 DEFAULT_AUTHOR = "Team of AngaraParts"
 
+# Folder to find photos ready for uploading
+
 # Application definition
 
 INSTALLED_APPS = [

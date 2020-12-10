@@ -657,6 +657,15 @@ class Product(models.Model):  # Main table product
     """
 
     @property
+    def have_photo_in_folder(self):
+        working_dir = settings.PHOTO_FOLDER_FOR_CHECK
+        for directory in os.listdir(working_dir):
+            if str(self.one_c_id) in directory:
+                return True
+
+        return False
+
+    @property
     def have_photo(self):
         return self.product_image.exists()
 
@@ -673,6 +682,9 @@ class Product(models.Model):  # Main table product
                 return True
             else:
                 return False
+        if not self.product_description:
+            return False
+        return False
 
     @property
     def have_video(self):
