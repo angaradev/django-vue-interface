@@ -570,10 +570,6 @@ class Product(models.Model):  # Main table product
         return self.one_c_id
 
     @property
-    def have_photo(self):
-        return self.product_image.exists()
-
-    @property
     def partNumber(self):
         return self.cat_number
 
@@ -659,6 +655,10 @@ class Product(models.Model):  # Main table product
     """
     Propertis to refactor ends here
     """
+
+    @property
+    def have_photo(self):
+        return self.product_image.exists()
 
     @property
     def have_attribute(self):
