@@ -15,3 +15,4 @@ class CheckProductSerializer(serializers.Serializer):
     have_attribute = serializers.BooleanField(required=False)
     have_description = serializers.BooleanField(required=False)
     have_video = serializers.BooleanField(required=False)
+    have_photo_in_folder = serializers.BooleanField(required=False)
