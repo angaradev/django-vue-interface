@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from .models import Rows
 from .serializers import RowsSerializer, CheckProductSerializer
 from rest_framework.permissions import AllowAny
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from product.models import Product
@@ -25,6 +25,12 @@ class TestView(generics.ListCreateAPIView):
 
 class CheckProductView(APIView):
     def get(self, request, one_c_id):
-        product = Product.objects.get(one_c_id=one_c_id)
-        serializer = CheckProductSerializer(product)
-        return Response(serializer.data)
+        try:
+            product = Product.objects.get(one_c_id=one_c_id)
+            serializer = CheckProductSerializer(product)
+            return Response(serializer.data)
+        except:
+            return Response(
+                {"Fail": "Product with that One C ID not found"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
