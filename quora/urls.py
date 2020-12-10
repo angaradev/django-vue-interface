@@ -39,7 +39,7 @@ urlpatterns = [
     path("api/rest-auth/registration/", include("rest_auth.registration.urls")),
     path("branddict/", include("brand_dict.urls")),
     path("blog/", include("blog.urls")),
-    path("testcategory/", include("test_category.urls")),
+    # path("testcategory/", include("test_category.urls")),
     path("vasyainterface/", include("vasya_interface.urls")),
 ]
 
