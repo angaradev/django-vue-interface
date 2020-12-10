@@ -24,6 +24,8 @@ class TestView(generics.ListCreateAPIView):
 
 
 class CheckProductView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request, one_c_id):
         try:
             product = Product.objects.get(one_c_id=one_c_id)
