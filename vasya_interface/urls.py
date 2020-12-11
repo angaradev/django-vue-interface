@@ -1,11 +1,12 @@
 from django.urls import path, include, re_path
-from .views import RowsView, TestView, CheckProductView
+from .views import RowsView, RowsViewDone, TestView, CheckProductView
 
 from rest_framework.routers import DefaultRouter
 
 
 router = DefaultRouter()
 router.register(r"rows", RowsView)
+router.register(r"rowsdone", RowsViewDone)
 
 urlpatterns = [
     path("workingrows/", include(router.urls)),
