@@ -8,7 +8,7 @@ from django.conf.urls.static import static
 from users.forms import CustomUserForm
 from core.views import IndexTemplateView
 from django.views.generic import TemplateView
-from home.views import Home, DocumentationView
+from home.views import Home, DocumentationView, React
 
 
 admin.site.site_header = "Мега Интерфейс"
@@ -39,6 +39,8 @@ urlpatterns = [
     path("api/rest-auth/registration/", include("rest_auth.registration.urls")),
     path("branddict/", include("brand_dict.urls")),
     path("blog/", include("blog.urls")),
+    path("react/", React.as_view(), name="react"),
+    re_path(r"^(?:.*)/$", React.as_view(), name="react-router"),
     # path("testcategory/", include("test_category.urls")),
     path("vasyainterface/", include("vasya_interface.urls")),
 ]
