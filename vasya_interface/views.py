@@ -12,7 +12,18 @@ from product.models import Product
 class RowsView(viewsets.ModelViewSet):
     model = Rows
 
+    # queryset = Rows.objects.filter(isDone=False)
     queryset = Rows.objects.all()
+    serializer_class = RowsSerializer
+    permission_classes = [AllowAny]
+    paginator = None
+
+
+class RowsViewDone(viewsets.ModelViewSet):
+    model = Rows
+
+    # queryset = Rows.objects.filter(isDone=False)
+    queryset = Rows.objects.filter(isDone=True)
     serializer_class = RowsSerializer
     permission_classes = [AllowAny]
     paginator = None
