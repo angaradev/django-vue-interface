@@ -39,10 +39,10 @@ urlpatterns = [
     path("api/rest-auth/registration/", include("rest_auth.registration.urls")),
     path("branddict/", include("brand_dict.urls")),
     path("blog/", include("blog.urls")),
+    path("vasyainterface/", include("vasya_interface.urls")),
     path("react/", React.as_view(), name="react"),
     re_path(r"^(?:.*)/$", React.as_view(), name="react-router"),
     # path("testcategory/", include("test_category.urls")),
-    path("vasyainterface/", include("vasya_interface.urls")),
 ]
 
 if settings.DEBUG:
