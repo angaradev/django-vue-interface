@@ -70,7 +70,10 @@ class CheckMadeFoldersView(ListAPIView):
                 print(os.path.join(path_to_photos, foldOne))
                 for foldSecond in os.listdir(os.path.join(path_to_photos, foldOne)):
                     m = re.search(r"(^\d+)_.+$", foldSecond)
-                    print(m)
+                    try:
+                        print(m.group(1))
+                    except:
+                        pass
                     parts_list.append(foldSecond)
 
             # print(parts_list)
