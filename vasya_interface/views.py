@@ -68,8 +68,12 @@ class CheckMadeFoldersView(APIView):
         # queryset = Product.objects.all()
 
         # product = Product.objects.filter(have_photo=True)
+        have_photo_list = []
         product = Product.objects.all()
-        print(product.count())
+        for prod in product:
+            if prod.have_photo:
+                have_photo_list.append(prod)
+        print(have_photo_list)
 
         serializer = CheckProductSerializer(product)
         return Response(serializer.data)
