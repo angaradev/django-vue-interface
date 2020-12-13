@@ -16,3 +16,11 @@ class CheckProductSerializer(serializers.Serializer):
     have_description = serializers.BooleanField(required=False)
     have_video = serializers.BooleanField(required=False)
     have_photo_in_folder = serializers.BooleanField(required=False)
+
+
+class CheckFolderSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(read_only=True)
+    brand = serializers.CharField(read_only=True)
+    cat_number = serializers.CharField(read_only=True)
+    have_photo = serializers.BooleanField(required=False)

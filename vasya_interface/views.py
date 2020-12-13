@@ -82,7 +82,7 @@ class CheckMadeFoldersView(ListAPIView):
         have_photo_list = []
         product = Product.objects.all()
         for prod in product:
-            if prod.have_photo and prod.one_c_id in part_list:
+            if not prod.have_photo and prod.one_c_id in part_list:
                 have_photo_list.append(prod)
 
         return have_photo_list
