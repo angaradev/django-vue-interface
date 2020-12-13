@@ -47,3 +47,29 @@ class CheckProductView(APIView):
                 {"Fail": "Product with that One C ID not found"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+
+class CheckMadeFoldersView(APIView):
+
+    # 1. Make list of all folders
+    # 2. Make list of all products
+    # 3. Make list of not done products
+
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        def getDonePhotos():
+            # Scan all folders for make list
+            parts_list = []
+            for foldOne in os.listdir:
+                print(foldOne)
+
+        try:
+            product = Product.objects.get(one_c_id=one_c_id)
+            serializer = CheckProductSerializer(product)
+            return Response(serializer.data)
+        except:
+            return Response(
+                {"Fail": "Product with that One C ID not found"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
