@@ -25,3 +25,13 @@ class CheckFolderSerializer(serializers.Serializer):
     brand = serializers.CharField(read_only=True)
     cat_number = serializers.CharField(read_only=True)
     have_photo = serializers.BooleanField(required=False)
+
+
+class FolderListSerializer(serializers.Serializer):
+
+    fld = serializers.SerializerMethodField("get_fld")
+
+    def get_fld(self, obj):
+        return [x for x in obj]
+
+    # part_list = serializers.ListField(child=serializers.CharField(max_length=50))

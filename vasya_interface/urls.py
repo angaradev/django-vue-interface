@@ -6,6 +6,7 @@ from .views import (
     CheckProductView,
     ProductNoPhotoListView,
     CheckMadeFoldersView,
+    FoldersHavePhotoView,
 )
 
 from rest_framework.routers import DefaultRouter
@@ -21,4 +22,5 @@ urlpatterns = [
     path("check/<int:one_c_id>/", CheckProductView.as_view(), name="check"),
     path("folders/", CheckMadeFoldersView.as_view(), name="check-folder"),
     path("nophoto/", ProductNoPhotoListView.as_view(), name="nophoto"),
+    path("checkfolders/", FoldersHavePhotoView.as_view(), name="folderslist"),
 ]
