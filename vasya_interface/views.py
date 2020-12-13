@@ -121,6 +121,8 @@ class FoldersHavePhotoView(APIView):
     and syncronizi it to all_photo also
     """
 
+    permission_classes = [AllowAny]
+
     # Getting folders list
     def get(self, request):
         part_list = getDonePhotos("/home/manhee/Pictures/parts")
