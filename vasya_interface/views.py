@@ -67,27 +67,22 @@ class CheckMadeFoldersView(ListAPIView):
             # Scan all folders for make list
             parts_list = []
             for foldOne in os.listdir(path_to_photos):
-                print(os.path.join(path_to_photos, foldOne))
                 for foldSecond in os.listdir(os.path.join(path_to_photos, foldOne)):
                     m = re.search(r"(^\d+)_.+$", foldSecond)
                     try:
-                        print(m.group(1))
+                        parts_list.append(m.group(1))
                     except:
                         pass
-                    parts_list.append(foldSecond)
 
-            # print(parts_list)
+            return parts_list
 
-        # try:
-        # queryset = Product.objects.all()
+        # Getting folders list
+        part_list = getDonePhotos("/home/manhee/Pictures/parts")
 
-        # product = Product.objects.filter(have_photo=True)
         have_photo_list = []
         product = Product.objects.all()
         for prod in product:
-            if prod.have_photo:
+            if prod.have_photo and prod.one_c_id in part_list:
                 have_photo_list.append(prod)
-        print(have_photo_list)
-        getDonePhotos("/home/manhee/Pictures/parts")
 
         return have_photo_list
