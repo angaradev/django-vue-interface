@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from .models import Rows
-from .serializers import RowsSerializer, CheckProductSerializer
+from .serializers import RowsSerializer, CheckProductSerializer, CheckFolderSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -58,7 +58,7 @@ class CheckMadeFoldersView(ListAPIView):
     # 2. Make list of all products
     # 3. Make list of not done products
 
-    serializer_class = CheckProductSerializer
+    serializer_class = CheckFolderSerializer
     permission_classes = [AllowAny]
     paginator = None
 
@@ -78,11 +78,13 @@ class CheckMadeFoldersView(ListAPIView):
 
         # Getting folders list
         part_list = getDonePhotos("/home/manhee/Pictures/parts")
+        if str(24995) in part_list:
+            print("In here")
 
         have_photo_list = []
         product = Product.objects.all()
         for prod in product:
-            if not prod.have_photo and prod.one_c_id in part_list:
+            if not prod.have_photo and str(prod.one_c_id) in part_list:
                 have_photo_list.append(prod)
 
         return have_photo_list

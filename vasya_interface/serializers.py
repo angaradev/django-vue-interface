@@ -20,6 +20,7 @@ class CheckProductSerializer(serializers.Serializer):
 
 class CheckFolderSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
+    one_c_id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(read_only=True)
     brand = serializers.CharField(read_only=True)
     cat_number = serializers.CharField(read_only=True)
