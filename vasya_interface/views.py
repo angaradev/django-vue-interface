@@ -5,8 +5,10 @@ from .serializers import RowsSerializer, CheckProductSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework import generics, status
 from rest_framework.views import APIView
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from product.models import Product
+import os, re
 
 
 class RowsView(viewsets.ModelViewSet):
@@ -49,20 +51,29 @@ class CheckProductView(APIView):
             )
 
 
-class CheckMadeFoldersView(APIView):
+class CheckMadeFoldersView(ListAPIView):
 
+    queryset = Product.objects.all()
     # 1. Make list of all folders
     # 2. Make list of all products
     # 3. Make list of not done products
 
+    serializer_class = CheckProductSerializer
     permission_classes = [AllowAny]
+    paginator = None
 
-    def get(self, request):
-        def getDonePhotos():
+    def get_queryset(self):
+        def getDonePhotos(path_to_photos):
             # Scan all folders for make list
             parts_list = []
-            for foldOne in os.listdir:
-                print(foldOne)
+            for foldOne in os.listdir(path_to_photos):
+                print(os.path.join(path_to_photos, foldOne))
+                for foldSecond in os.listdir(os.path.join(path_to_photos, foldOne)):
+                    m = re.search(r"(^\d+)_.+$", foldSecond)
+                    print(m)
+                    parts_list.append(foldSecond)
+
+            # print(parts_list)
 
         # try:
         # queryset = Product.objects.all()
@@ -74,11 +85,6 @@ class CheckMadeFoldersView(APIView):
             if prod.have_photo:
                 have_photo_list.append(prod)
         print(have_photo_list)
+        getDonePhotos("/home/manhee/Pictures/parts")
 
-        serializer = CheckProductSerializer(product)
-        return Response(serializer.data)
-        # except:
-        #     return Response(
-        #         {"Fail": "Product with that One C ID not found"},
-        #         status=status.HTTP_400_BAD_REQUEST,
-        #     )
+        return have_photo_list
