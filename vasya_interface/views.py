@@ -86,3 +86,21 @@ class CheckMadeFoldersView(ListAPIView):
                 have_photo_list.append(prod)
 
         return have_photo_list
+
+
+class ProductNoPhotoListView(ListAPIView):
+    """
+    Gett all products with no photots
+    """
+
+    serializer_class = CheckFolderSerializer
+    permission_classes = [AllowAny]
+    paginator = None
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        dont_have_photo = []
+        for prod in queryset:
+            if not prod.have_photo:
+                dont_have_photo.append(prod)
+        return dont_have_photo

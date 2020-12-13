@@ -4,6 +4,7 @@ from .views import (
     RowsViewDone,
     TestView,
     CheckProductView,
+    ProductNoPhotoListView,
     CheckMadeFoldersView,
 )
 
@@ -19,4 +20,5 @@ urlpatterns = [
     path("test/", TestView.as_view(), name="test"),
     path("check/<int:one_c_id>/", CheckProductView.as_view(), name="check"),
     path("folders/", CheckMadeFoldersView.as_view(), name="check-folder"),
+    path("nophoto/", ProductNoPhotoListView.as_view(), name="nophoto"),
 ]
