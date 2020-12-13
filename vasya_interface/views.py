@@ -78,8 +78,6 @@ class CheckMadeFoldersView(ListAPIView):
 
         # Getting folders list
         part_list = getDonePhotos("/home/manhee/Pictures/parts")
-        if str(24995) in part_list:
-            print("In here")
 
         have_photo_list = []
         product = Product.objects.all()
