@@ -64,12 +64,17 @@ class CheckMadeFoldersView(APIView):
             for foldOne in os.listdir:
                 print(foldOne)
 
-        try:
-            product = Product.objects.get(one_c_id=one_c_id)
-            serializer = CheckProductSerializer(product)
-            return Response(serializer.data)
-        except:
-            return Response(
-                {"Fail": "Product with that One C ID not found"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        # try:
+        # queryset = Product.objects.all()
+
+        # product = Product.objects.filter(have_photo=True)
+        product = Product.objects.all()
+        print(product.count())
+
+        serializer = CheckProductSerializer(product)
+        return Response(serializer.data)
+        # except:
+        #     return Response(
+        #         {"Fail": "Product with that One C ID not found"},
+        #         status=status.HTTP_400_BAD_REQUEST,
+        #     )
