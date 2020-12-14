@@ -1,7 +1,12 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from .models import Rows
-from .serializers import RowsSerializer, CheckProductSerializer, CheckFolderSerializer
+from .serializers import (
+    RowsSerializer,
+    CheckProductSerializer,
+    CheckFolderSerializer,
+    FolderListSerializer,
+)
 from rest_framework.permissions import AllowAny
 from rest_framework import generics, status
 from rest_framework.views import APIView
@@ -9,6 +14,21 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from product.models import Product
 import os, re
+
+
+# helper function to get dir list
+def getDonePhotos(path_to_photos):
+    # Scan all folders for make list
+    parts_list = []
+    for foldOne in os.listdir(path_to_photos):
+        for foldSecond in os.listdir(os.path.join(path_to_photos, foldOne)):
+            m = re.search(r"(^\d+)_.+$", foldSecond)
+            try:
+                parts_list.append(m.group(1))
+            except:
+                pass
+
+    return parts_list
 
 
 class RowsView(viewsets.ModelViewSet):
@@ -63,18 +83,6 @@ class CheckMadeFoldersView(ListAPIView):
     paginator = None
 
     def get_queryset(self):
-        def getDonePhotos(path_to_photos):
-            # Scan all folders for make list
-            parts_list = []
-            for foldOne in os.listdir(path_to_photos):
-                for foldSecond in os.listdir(os.path.join(path_to_photos, foldOne)):
-                    m = re.search(r"(^\d+)_.+$", foldSecond)
-                    try:
-                        parts_list.append(m.group(1))
-                    except:
-                        pass
-
-            return parts_list
 
         # Getting folders list
         part_list = getDonePhotos("/home/manhee/Pictures/parts")
@@ -104,3 +112,19 @@ class ProductNoPhotoListView(ListAPIView):
             if not prod.have_photo:
                 dont_have_photo.append(prod)
         return dont_have_photo
+
+
+class FoldersHavePhotoView(APIView):
+    """
+    Gett all folders list with photos is made
+    Later on needs to add some dir on server to upload files there
+    and syncronizi it to all_photo also
+    """
+
+    permission_classes = [AllowAny]
+
+    # Getting folders list
+    def get(self, request):
+        part_list = getDonePhotos("/home/manhee/Pictures/parts")
+        serializer = FolderListSerializer(part_list)
+        return Response(serializer.data)
