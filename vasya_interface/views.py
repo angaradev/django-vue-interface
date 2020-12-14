@@ -14,11 +14,13 @@ from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from product.models import Product
 import os, re
+from django.conf import settings
 
 
 # helper function to get dir list
-def getDonePhotos(path_to_photos):
+def getDonePhotos():
     # Scan all folders for make list
+    path_to_photos = settings.PHOTO_FOLDER_FOR_AGES
     parts_list = []
     for foldOne in os.listdir(path_to_photos):
         for foldSecond in os.listdir(os.path.join(path_to_photos, foldOne)):
@@ -85,7 +87,7 @@ class CheckMadeFoldersView(ListAPIView):
     def get_queryset(self):
 
         # Getting folders list
-        part_list = getDonePhotos("/home/manhee/Pictures/parts")
+        part_list = getDonePhotos()
 
         have_photo_list = []
         product = Product.objects.all()
@@ -125,6 +127,6 @@ class FoldersHavePhotoView(APIView):
 
     # Getting folders list
     def get(self, request):
-        part_list = getDonePhotos("/home/manhee/Pictures/parts")
+        part_list = getDonePhotos()
         serializer = FolderListSerializer(part_list)
         return Response(serializer.data)
