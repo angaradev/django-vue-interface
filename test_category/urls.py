@@ -24,7 +24,7 @@ urlpatterns = [
         name="cat-test-slug",
     ),
     path(
-        "itestyears/",
+        "testyears/",
         vehicle_views.YearsView.as_view(),
         name="years",
     ),
