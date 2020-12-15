@@ -13,6 +13,7 @@ class Rows(models.Model):
     signed = models.BooleanField(default=False)
     dateCreated = models.DateField(auto_now_add=True, blank=True)
     dateChanged = models.DateField(auto_now=True, blank=True)
+    videoUrl = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         verbose_name = "Карточка в Работе"
