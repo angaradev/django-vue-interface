@@ -44,25 +44,6 @@ class SingleCategorySlugView(generics.RetrieveAPIView):
     serializer_class = CategoriesSerializer
     permission_classes = [AllowAny]
 
-    # def get_queryset(self):
-    #     q = Categories.objects.add_related_count(
-    #         self.queryset,
-    #         Product,
-    #         "categories",
-    #         "count",
-    #         cumulative=True,
-    #     )
-    #     for item in q:
-    #         print(item.count, item.name, item.level)
-    #     return q
-    # def get_queryset(self):
-
-    #     count_queryset = Categories.objects.add_related_count(
-    #         self.queryset, Product, "categories", "count", cumulative=True
-    #     )
-    #     zerros = [x.id for x in count_queryset if x.count == 0]
-    #     return self.queryset.exclude(id__in=zerros)
-
 
 class SingleProductView(viewsets.ReadOnlyModelViewSet):
     """
