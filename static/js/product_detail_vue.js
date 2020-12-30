@@ -262,11 +262,11 @@ const app = new Vue({
       let response = await apiService(endpoint, 'POST', data);
       //console.log(response)
       this.attributeList.push({
-        atr_name: response.name,
-        atr_value: '',
-        atr_id: null,
+        attribute_text_name: response.name,
+        attribute_value: '',
+        id: null,
         product: this.part.id,
-        atr_name_id: response.id,
+        attribute_name: response.id,
       });
       this.addAtrName = null;
       this.addAttributeName = false;
@@ -343,22 +343,23 @@ const app = new Vue({
       product_id = this.part.id;
       for (let index = 0; index < elements.length; index++) {
         element = elements[index];
-        if (element.atr_id) {
-          endpoint = `${ApplicationMainHost}/api/product/attribute/${element.atr_id}/`;
+        console.log(element);
+        if (element.id) {
+          endpoint = `${ApplicationMainHost}/api/product/attribute/${element.id}/`;
           data = {
-            attribute_name: element.atr_name_id,
-            attribute_value: element.atr_value,
+            attribute_name: element.attribute_name,
+            attribute_value: element.attribute_value,
             product: product_id,
           };
           response = await apiService(endpoint, 'PUT', data);
           if (response) {
             this.chkResponse.push(response);
           }
-        } else if (element.atr_value != '') {
+        } else if (element.attribute_value != '') {
           endpoint = `${ApplicationMainHost}/api/product/attribute/`;
           data = {
-            attribute_name: element.atr_name_id,
-            attribute_value: element.atr_value,
+            attribute_name: element.attribute_name,
+            attribute_value: element.attribute_value,
             product: product_id,
           };
           response = await apiService(endpoint, 'POST', data);
