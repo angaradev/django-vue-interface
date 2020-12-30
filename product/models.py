@@ -447,34 +447,6 @@ class Product(models.Model):  # Main table product
     )
 
     @property
-    def options(self):
-        return (
-            [
-                {
-                    "type": "default",
-                    "slug": "material",
-                    "name": "Material",
-                    "values": [
-                        {"slug": "steel", "name": "Steel"},
-                        {"slug": "aluminium", "name": "Aluminium"},
-                        {"slug": "thorium", "name": "Thorium"},
-                    ],
-                },
-                {
-                    "type": "color",
-                    "slug": "color",
-                    "name": "Color",
-                    "values": [
-                        {"slug": "white", "name": "White", "color": "#fff"},
-                        {"slug": "yellow", "name": "Yellow", "color": "#ffd333"},
-                        {"slug": "red", "name": "Red", "color": "#ff4040"},
-                        {"slug": "blue", "name": "Blue", "color": "#4080ff"},
-                    ],
-                },
-            ],
-        )
-
-    @property
     def full_name(self):
         if self.name2:
             return self.name + " " + self.name2
@@ -486,84 +458,9 @@ class Product(models.Model):  # Main table product
         if self.product_description:
             return "Here is going short description for product"
 
-    @property
-    def description(self):
-        return self.product_description.text
-
-    @property
-    def attributes(self):
-        # return self.product_attribute.all()
-        return [
-            {
-                "name": "Speed",
-                "slug": "speed",
-                "featured": "true",
-                "values": [{"name": "750 RPM", "slug": "750-rpm"}],
-            },
-            {
-                "name": "Power Source",
-                "slug": "power-source",
-                "featured": "true",
-                "values": [{"name": "Cordless-Electric", "slug": "cordless-electric"}],
-            },
-            {
-                "name": "Battery Cell Type",
-                "slug": "battery-cell type",
-                "featured": "true",
-                "values": [{"name": "Lithium", "slug": "lithium"}],
-            },
-            {
-                "name": "Voltage",
-                "slug": "voltage",
-                "featured": "true",
-                "values": [{"name": "20 Volts", "slug": "20-volts"}],
-            },
-            {
-                "name": "Battery Capacity",
-                "slug": "battery-capacity",
-                "featured": "true",
-                "values": [{"name": "2 Ah", "slug": "2-ah"}],
-            },
-            {
-                "name": "Material",
-                "slug": "material",
-                "featured": "false",
-                "values": [
-                    {"name": "Aluminium", "slug": "aluminium"},
-                    {"name": "Plastic", "slug": "plastic"},
-                ],
-            },
-            {
-                "name": "Engine Type",
-                "slug": "engine-type",
-                "featured": "false",
-                "values": [{"name": "Brushless", "slug": "brushless"}],
-            },
-            {
-                "name": "Length",
-                "slug": "length",
-                "featured": "false",
-                "values": [{"name": "99 mm", "slug": "99-mm"}],
-            },
-            {
-                "name": "Width",
-                "slug": "width",
-                "featured": "false",
-                "values": [{"name": "207 mm", "slug": "207-mm"}],
-            },
-            {
-                "name": "Height",
-                "slug": "height",
-                "featured": "false",
-                "values": [{"name": "208 mm", "slug": "208-mm"}],
-            },
-            {
-                "name": "Color",
-                "slug": "color",
-                "featured": "false",
-                "values": [{"name": "Red", "slug": "red"}],
-            },
-        ]
+    # @property
+    # def description(self):
+    #     return self.product_description.text
 
     @property
     def sku(self):
@@ -582,33 +479,6 @@ class Product(models.Model):  # Main table product
     For now it is stub
 
     """
-
-    @property
-    def type(self):
-        return {
-            "slug": "default",
-            "name": "Default",
-            "attributeGroups": [
-                {
-                    "name": "General",
-                    "slug": "general",
-                    "attributes": [
-                        "speed",
-                        "power-source",
-                        "battery-cell-type",
-                        "voltage",
-                        "battery-capacity",
-                        "material",
-                        "engine-type",
-                    ],
-                },
-                {
-                    "name": "Dimensions",
-                    "slug": "dimensions",
-                    "attributes": ["length", "width", "height"],
-                },
-            ],
-        }
 
     @property
     def price(self):
@@ -641,20 +511,6 @@ class Product(models.Model):  # Main table product
     @property
     def compatibility(self):
         return "all"
-
-    @property
-    def tags(self):
-        return [
-            "Brake kit",
-            "Cool tag",
-            "Another cool tag",
-            "Defined in Product Models",
-            "Some tag",
-        ]
-
-    """
-    Propertis to refactor ends here
-    """
 
     @property
     def have_photo_in_folder(self):
