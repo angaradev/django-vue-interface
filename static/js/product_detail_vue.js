@@ -284,47 +284,13 @@ const app = new Vue({
       const endpoint = `${ApplicationMainHost}/api/product/attribute/?product_id=${product_id}`;
       let response = await apiService(endpoint);
       this.attributeList = response.results;
-      console.log(this.attributeList);
+    },
 
-      // if (response.results.length === 0) {
-      //   for (let index = 0; index < this.attributeList.length; index++) {
-      //     let elem = this.attributeList[index];
-      //     this.attributeList[index] = {
-      //       atr_name: elem.name,
-      //       atr_value: '',
-      //       atr_id: null,
-      //       product: this.part.id,
-      //       atr_name_id: elem.id,
-      //     };
-      //   }
-      // } else {
-      //   this.attributeFields = response.results;
-      //   for (let index = 0; index < this.attributeList.length; index++) {
-      //     let element = this.attributeList[index];
-      //     for (let i = 0; i < this.attributeFields.length; i++) {
-      //       let el = this.attributeFields[i];
-      //       if (element.id === el.attribute_name) {
-      //         this.attributeList[index] = {
-      //           atr_name: element.name,
-      //           atr_value: el.attribute_value,
-      //           atr_id: el.id,
-      //           product: this.part.id,
-      //           atr_name_id: element.id,
-      //         };
-      //       } else {
-      //         if (!this.attributeList[index].atr_name) {
-      //           this.attributeList[index] = {
-      //             atr_name: element.name,
-      //             atr_value: '',
-      //             atr_id: null,
-      //             product: this.part.id,
-      //             atr_name_id: element.id,
-      //           };
-      //         }
-      //       }
-      //     }
-      // }
-      // }
+    async deleteAttribute(id) {
+      const endpoint = `${ApplicationMainHost}/api/product/attribute/${id}/`;
+      const response = await apiService(endpoint, 'DELETE');
+      console.log(response);
+      this.attributeList = this.attributeList.filter((item) => item.id !== id);
     },
     async saveAttribute() {
       /*
