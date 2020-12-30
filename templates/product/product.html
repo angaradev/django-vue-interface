@@ -330,11 +330,18 @@
 
                                                 >
                                         </div>
-                                        <div class="col-6">
+                                        <div class="col-5">
                                             <input v-model="attribute.attribute_value" class="form-control form-control-sm"
                                                 type="text" placeholder="Пусто" :id="'arrt_val' + i"
                                                 >
                                         </div>
+                                            <div class="col-1">
+                                                <a @click.prevent="deleteAttribute(attribute.id)" href="#"
+                                                    class=""><span class="float-right"
+                                                    style="font-size: 1rem; color: #f012be;"><i
+                                                    class="far fa-trash-alt"></i></span>
+                                                </a>
+                                            </div>
                                     </div>
                                     <div class="row mt-2">
                                         <div class="col-6">
