@@ -99,7 +99,8 @@ class ProductAttributeViewSet(viewsets.ModelViewSet):
 
         print(product_id)
         if product_id:
-            queryset = self.model.objects.filter(product=product_id).order_by("id")
+            queryset = self.model.objects.filter(product=product_id).distinct()
+
         else:
             queryset = self.model.objects.all()
 

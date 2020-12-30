@@ -325,12 +325,15 @@
                                     aria-labelledby="custom-tabs-one-home-tab">
                                     <div :key="i" v-for="(attribute, i) in attributeList" class="row mb-1">
                                         <div class="col-6">
-                                            <input v-model="attribute.atr_name" class="form-control form-control-sm"
-                                                type="text" placeholder="Название атрибута" :id="'arrt_name' + i">
+                                            <input v-model="attribute.attribute_text_name" class="form-control form-control-sm"
+                                                type="text" placeholder="Название атрибута" :id="'attribute_name' + i"
+
+                                                >
                                         </div>
                                         <div class="col-6">
-                                            <input v-model="attribute.atr_value" class="form-control form-control-sm"
-                                                type="text" placeholder="Пусто" :id="'arrt_val' + i">
+                                            <input v-model="attribute.attribute_value" class="form-control form-control-sm"
+                                                type="text" placeholder="Пусто" :id="'arrt_val' + i"
+                                                >
                                         </div>
                                     </div>
                                     <div class="row mt-2">
