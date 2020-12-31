@@ -14,7 +14,14 @@ VUE_DEV = VUE_DEV
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "192.168.0.24", "dnobaka.ru", "localhost", "partshub.tk"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "192.168.0.107",
+    "192.168.0.24",
+    "dnobaka.ru",
+    "localhost",
+    "partshub.tk",
+]
 
 # Default images folder for blog posts and categories
 BLOG_IMAGES = "blog/images"
