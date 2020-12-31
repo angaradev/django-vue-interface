@@ -286,12 +286,13 @@ const app = new Vue({
       this.attributeList = response.results;
     },
 
+    // Delete attributes
     async deleteAttribute(id) {
       const endpoint = `${ApplicationMainHost}/api/product/attribute/${id}/`;
       const response = await apiService(endpoint, 'DELETE');
-      console.log(response);
       this.attributeList = this.attributeList.filter((item) => item.id !== id);
     },
+
     async saveAttribute() {
       /*
             1) implement foreach method in wich get attribute id,
