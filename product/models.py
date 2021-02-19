@@ -20,15 +20,52 @@ from .utils import delete_file
 from mptt.models import MPTTModel, TreeForeignKey
 
 
-class Category(MPTTModel):  # MPTT model here for now
-    name = models.CharField(max_length=50, unique=True)
+class Categories(MPTTModel):
+    name = models.CharField(max_length=100)
+    type = models.CharField(max_length=30, default="shop")
+    layout = models.CharField(max_length=30, default="products")
     parent = TreeForeignKey(
         "self",
         null=True,
         blank=True,
         related_name="children",
         db_index=True,
-        on_delete=models.CASCADE,
+        on_delete=models.DO_NOTHING,
+    )
+    slug = models.SlugField(blank=True)
+
+    class Meta:
+        verbose_name = "Категории"
+
+    def __str__(self):
+        return self.name + "-" + str(self.level)
+
+    # objects = CategoryManager()
+
+    @property
+    def image(self):
+        return "http://localhost:8000/media/123/555_tf/IMG_4210.jpg"
+
+    # @property
+    # def type(self):
+    #     return "shop"
+
+    @property
+    def items(self):
+        return 123
+
+
+class Category(MPTTModel):  # MPTT model here for now
+    name = models.CharField(max_length=50, unique=True)
+    type = models.CharField(max_length=30, default="shop")
+    layout = models.CharField(max_length=30, default="products")
+    parent = TreeForeignKey(
+        "self",
+        null=True,
+        blank=True,
+        related_name="children",
+        db_index=True,
+        on_delete=models.DO_NOTHING,
     )
     old_group_id = models.IntegerField(blank=True)
     slug = models.SlugField(blank=True)
@@ -65,6 +102,14 @@ class Category(MPTTModel):  # MPTT model here for now
 
     def __str__(self):
         return self.name
+
+    @property
+    def image(self):
+        return "http://localhost:8000/media/123/555_tf/IMG_4210.jpg"
+
+    @property
+    def items(self):
+        return 123
 
 
 class CategoryTags(models.Model):

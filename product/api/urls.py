@@ -10,6 +10,7 @@ from .views import (
     ProductAttributeViewSet,
     ProductAttributeList,
 )
+from product.api import views_a77
 
 router = DefaultRouter()
 router.register(r"images", ImageViewSet)
@@ -130,4 +131,6 @@ urlpatterns = [
         RedApiViews.RedSingleProductAPI.as_view(),
         name="red-single-product-retrive",
     ),
+    ### Starts urls for a77
+    path("a77categories/", views_a77.CategoriesView.as_view(), name="cat-test"),
 ]

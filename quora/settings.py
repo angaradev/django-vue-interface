@@ -21,6 +21,7 @@ ALLOWED_HOSTS = [
     "dnobaka.ru",
     "localhost",
     "partshub.tk",
+    "angara77.ru",
 ]
 
 # Default images folder for blog posts and categories
