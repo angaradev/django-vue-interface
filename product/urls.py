@@ -1,6 +1,5 @@
 from django.urls import path, include, re_path
 from product import views as productviews
-from product.api import views_a77
 
 
 urlpatterns = [
@@ -30,6 +29,4 @@ urlpatterns = [
         name="product-list-js",
     ),
     path("find/", productviews.FindProductView.as_view(), name="find-product"),
-    ### Starts urls for a77
-    path("a77categories/", views_a77.CategoriesView.as_view(), name="cat-test"),
 ]
