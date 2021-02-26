@@ -16,7 +16,10 @@ admin.site.site_title = "Интерфейс"
 
 
 urlpatterns = [
-    # path('', TemplateView.as_view(template_name='index1.html')),
+    path(
+        "robots.txt",
+        TemplateView.as_view(template_name="robots.txt", content_type="text/plain"),
+    ),
     path("", Home.as_view(), name="home"),
     path("documentation/", DocumentationView.as_view(), name="documentation"),
     path("admin/", admin.site.urls),
