@@ -71,6 +71,21 @@ class SingleProductView(viewsets.ReadOnlyModelViewSet):
 
 
 # View for testes with flat serialization
+class CategoriesViewRecursive(generics.ListAPIView):
+    """
+    This class I made for testing recursive categories getting wit product count
+    Further purpose will be for creating elasticsearch bulk insert models
+    Created when experimented with elasticsearch
+    """
+
+    # queryset = Categories.objects.all()
+    queryset = Categories.objects.add_related_count(
+        Categories.objects.all(), Product, "categories", "count", cumulative=True
+    )
+
+    serializer_class = CategoriesSerializerfFlatForTestes  # CategoriesSerializer
+    paginator = None
+    permission_classes = [AllowAny]
 
 
 class CategoriesViewForTestes(generics.ListAPIView):
