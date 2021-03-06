@@ -29,6 +29,32 @@ class ParentSerializer(serializers.ModelSerializer):
         depth = 3
 
 
+class CategoriesSerializerRecursive(serializers.ModelSerializer):
+    """
+    Serializer for CategoriesViewRecursive in the views
+
+    """
+
+    children = RecursiveField(many=True)
+    parent = ParentSerializer(read_only=True)
+    count = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Categories
+        fields = [
+            "id",
+            "count",
+            "type",
+            "name",
+            "slug",
+            "image",
+            "layout",
+            "parent",
+            "children",
+        ]
+        depth = 3
+
+
 class CategoriesSerializer(serializers.ModelSerializer):
     """
     Serializer for make categories working well

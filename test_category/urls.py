@@ -34,4 +34,9 @@ urlpatterns = [
         name="vehicle-by-slug",
     ),
     path("testmakes/", vehicle_views.MakesView.as_view(), name="makes-all"),
+    path(
+        "recursivecategories/",
+        views.CategoriesViewRecursive.as_view(),
+        name="recursive-views",
+    ),
 ]

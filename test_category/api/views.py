@@ -7,6 +7,7 @@ from .serializers import (
     DepthOneCategorySerializer,
     CategoriesSerializerfFlat,
     CategoriesSerializerfFlatForTestes,
+    CategoriesSerializerRecursive,
 )
 from test_category.models import Categories, Product
 from rest_framework.permissions import AllowAny
@@ -83,7 +84,7 @@ class CategoriesViewRecursive(generics.ListAPIView):
         Categories.objects.all(), Product, "categories", "count", cumulative=True
     )
 
-    serializer_class = CategoriesSerializerfFlatForTestes  # CategoriesSerializer
+    serializer_class = CategoriesSerializerRecursive  # CategoriesSerializer
     paginator = None
     permission_classes = [AllowAny]
 
