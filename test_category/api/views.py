@@ -16,6 +16,11 @@ from django.db.models import Count
 
 
 class CategoriesView(generics.ListAPIView):
+    """
+    FLAT-
+    This view takes categories in flat fashon only get parent in there
+    """
+
     # queryset = Categories.objects.all()
     queryset = Categories.objects.add_related_count(
         Categories.objects.all(), Product, "categories", "count", cumulative=True
