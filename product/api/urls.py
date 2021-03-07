@@ -133,4 +133,10 @@ urlpatterns = [
     ),
     ### Starts urls for a77
     path("a77categories/", views_a77.CategoriesView.as_view(), name="cat-test"),
+    ### Path for select category by slug for a77
+    path(
+        "a77category/<slug:slug>/",
+        views_a77.SingleCategorySlugView.as_view(),
+        name="cat-test-slug",
+    ),
 ]
