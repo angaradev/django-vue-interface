@@ -17,7 +17,7 @@ class CategoriesView(generics.ListAPIView):
     )
 
     serializer_class = CategoriesSerializerfFlat  # CategoriesSerializer
-    paginator = None
+    # paginator = None
     permission_classes = [AllowAny]
 
     def get_queryset(self):
