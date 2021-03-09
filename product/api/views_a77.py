@@ -23,7 +23,7 @@ class CategoriesView(generics.ListAPIView):
 
     # queryset = Categories.objects.all()
     queryset = Category.objects.add_related_count(
-        Category.objects.all(), Product, "category", "count", cumulative=True
+        Category.objects.filter(parent=1), Product, "category", "count", cumulative=True
     )
 
     serializer_class = CategoriesSerializerfFlat  # CategoriesSerializer
