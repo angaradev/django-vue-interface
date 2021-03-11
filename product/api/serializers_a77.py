@@ -5,7 +5,13 @@ from rest_framework.reverse import reverse
 
 class CategoriesSerializerfFlat(serializers.ModelSerializer):
     count = serializers.IntegerField(read_only=True)
-    # parent = serializers.SerializerMethodField(read_only=True)
+    parent = serializers.SerializerMethodField("get_parent", read_only=True)
+
+    def get_parent(self, obj):
+        if obj.parent.id == 1:
+            return None
+        print(obj.parent.id)
+        return Category.objects.get(id=obj.parent.id)
 
     class Meta:
         model = Category

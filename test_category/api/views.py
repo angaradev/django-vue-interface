@@ -7,6 +7,7 @@ from .serializers import (
     DepthOneCategorySerializer,
     CategoriesSerializerfFlat,
     CategoriesSerializerfFlatForTestes,
+    CategoriesSerializerRecursive,
 )
 from test_category.models import Categories, Product
 from rest_framework.permissions import AllowAny
@@ -15,6 +16,11 @@ from django.db.models import Count
 
 
 class CategoriesView(generics.ListAPIView):
+    """
+    FLAT-
+    This view takes categories in flat fashon only get parent in there
+    """
+
     # queryset = Categories.objects.all()
     queryset = Categories.objects.add_related_count(
         Categories.objects.all(), Product, "categories", "count", cumulative=True
@@ -71,6 +77,21 @@ class SingleProductView(viewsets.ReadOnlyModelViewSet):
 
 
 # View for testes with flat serialization
+class CategoriesViewRecursive(generics.ListAPIView):
+    """
+    This class I made for testing recursive categories getting wit product count
+    Further purpose will be for creating elasticsearch bulk insert models
+    Created when experimented with elasticsearch
+    """
+
+    # queryset = Categories.objects.all()
+    queryset = Categories.objects.add_related_count(
+        Categories.objects.all(), Product, "categories", "count", cumulative=True
+    )
+
+    serializer_class = CategoriesSerializerRecursive  # CategoriesSerializer
+    paginator = None
+    permission_classes = [AllowAny]
 
 
 class CategoriesViewForTestes(generics.ListAPIView):

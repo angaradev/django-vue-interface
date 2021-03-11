@@ -9,11 +9,21 @@ from product.models import Category, Product
 from rest_framework.permissions import AllowAny
 from django.db.models import Count
 
+from test_category.api.serializers import (
+    DepthOneCategorySerializer,
+    CategoriesSerializer,
+)
+
 
 class CategoriesView(generics.ListAPIView):
+    """
+    FLAT-
+    This view takes categories in flat fashon only get parent in there
+    """
+
     # queryset = Categories.objects.all()
     queryset = Category.objects.add_related_count(
-        Category.objects.all(), Product, "category", "count", cumulative=True
+        Category.objects.filter(parent=1), Product, "category", "count", cumulative=True
     )
 
     serializer_class = CategoriesSerializerfFlat  # CategoriesSerializer
@@ -29,3 +39,13 @@ class CategoriesView(generics.ListAPIView):
 
         else:
             return self.queryset.all()
+
+
+class SingleCategorySlugView(generics.RetrieveAPIView):
+
+    queryset = Category.objects.add_related_count(
+        Category.objects.all(), Product, "category", "count", cumulative=True
+    )
+    lookup_field = "slug"
+    serializer_class = CategoriesSerializer
+    permission_classes = [AllowAny]

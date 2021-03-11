@@ -10,6 +10,7 @@ router.register(r"vehicles", vehicle_views.VehicleView)
 
 urlpatterns = [
     path("testproducts/", include(router.urls)),
+    # Url for getting flat categories with one level of parent
     path("testcategories/", views.CategoriesView.as_view(), name="cat-test"),
     path(
         "categories-for-testes/",
@@ -34,4 +35,9 @@ urlpatterns = [
         name="vehicle-by-slug",
     ),
     path("testmakes/", vehicle_views.MakesView.as_view(), name="makes-all"),
+    path(
+        "recursivecategories/",
+        views.CategoriesViewRecursive.as_view(),
+        name="recursive-views",
+    ),
 ]
