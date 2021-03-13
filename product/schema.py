@@ -1,3 +1,4 @@
+from test_category.models.vehicle_models import Engine
 from product.models.models import CarMake, CarModel
 from graphene import String, ObjectType, Int, ID, Field, Schema, Interface, List
 from graphene_django import DjangoObjectType
@@ -10,6 +11,12 @@ import requests, json
 es = Elasticsearch(["http://localhost:9200"])
 
 
+class EngineType(DjangoObjectType):
+    class Meta:
+        model = Engine
+        fields = ("name",)
+
+
 class CarMakeType(DjangoObjectType):
     class Meta:
         model = CarMake
@@ -19,7 +26,7 @@ class CarMakeType(DjangoObjectType):
 class CarModelType(DjangoObjectType):
     class Meta:
         model = CarModel
-        fields = ("name",)
+        fields = ("name", "engine", "carmake", "slug")
 
 
 class Query(ObjectType):
