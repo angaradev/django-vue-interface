@@ -462,6 +462,23 @@ class ProductDescription(models.Model):
         verbose_name_plural = "Описания товара"
 
 
+class Store(models.Model):
+    """
+    Class for handling stores
+    """
+
+    class Meta:
+        verbose_name = "Склад"
+        verbose_name_plural = "Склады"
+
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=255)
+    location_city = models.CharField(max_length=50)
+    location_address = models.CharField(max_length=100)
+
+
 class Product(models.Model):  # Main table product
     name = models.CharField(max_length=255)
     name2 = models.CharField(max_length=255, null=True, blank=True)
@@ -489,6 +506,13 @@ class Product(models.Model):  # Main table product
     active = models.BooleanField(default=True)
     engine = models.ManyToManyField(
         "CarEngine", related_name="car_related_engine", blank=True
+    )
+    store = models.ForeignKey(
+        Store,
+        on_delete=models.DO_NOTHING,
+        related_name="product_store",
+        blank=True,
+        null=True,
     )
 
     @property
