@@ -9,6 +9,10 @@ class Price(models.Model):
     Class handling product prices
     """
 
+    class Meta:
+        verbose_name = "Цена"
+        verbose_name_plural = "Цены"
+
     product = models.OneToOneField(
         Product, on_delete=models.CASCADE, related_name="product_price"
     )
@@ -19,6 +23,10 @@ class PriceHistory(models.Model):
     """
     Class handling product price history
     """
+
+    class Meta:
+        verbose_name = "История цены"
+        verbose_name_plural = "История цен"
 
     product = models.OneToOneField(
         Product, on_delete=models.CASCADE, related_name="product_price_history"
@@ -32,6 +40,10 @@ class Stock(models.Model):
     """
     Handling products on stock
     """
+
+    class Meta:
+        verbose_name = "Сток"
+        verbose_name_plural = "Стоки"
 
     product = models.OneToOneField(
         Product, on_delete=models.CASCADE, related_name="product_stock"
