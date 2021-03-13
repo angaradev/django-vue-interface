@@ -11,6 +11,7 @@ from .views import (
     ProductAttributeList,
 )
 from product.api import views_a77
+from product.api.views_elastic_v1 import send_json
 
 router = DefaultRouter()
 router.register(r"images", ImageViewSet)
@@ -139,4 +140,5 @@ urlpatterns = [
         views_a77.SingleCategorySlugView.as_view(),
         name="cat-test-slug",
     ),
+    path("jsontest", send_json, name="send_json"),
 ]

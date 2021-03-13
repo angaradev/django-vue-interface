@@ -513,8 +513,7 @@ class Product(models.Model):  # Main table product
         related_name="product_store",
         blank=True,
         null=True,
-        default=1
-
+        default=1,
     )
 
     @property
