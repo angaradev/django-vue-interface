@@ -1,7 +1,7 @@
 from django.db.models.signals import pre_save, post_save
 from django.db import models
 from django.conf import settings
-from product.models.models import Product
+from product.models.models import Product, Store
 
 
 class Price(models.Model):
@@ -28,16 +28,6 @@ class PriceHistory(models.Model):
     price_date = models.DateTimeField(auto_now_add=True)
 
 
-class Store(models.Model):
-    """
-    Class for handling stores
-    """
-
-    name = models.CharField(max_length=255)
-    location_city = models.CharField(max_length=50)
-    location_address = models.CharField(max_length=100)
-
-
 class Stock(models.Model):
     """
     Handling products on stock
@@ -49,3 +39,5 @@ class Stock(models.Model):
     store = models.OneToOneField(
         Store, on_delete=models.CASCADE, related_name="store_stock"
     )
+    quantity = models.IntegerField()
+    availability_days = models.IntegerField()
