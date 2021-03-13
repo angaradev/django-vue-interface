@@ -13,6 +13,9 @@ class Price(models.Model):
         verbose_name = "Цена"
         verbose_name_plural = "Цены"
 
+    def __str__(self):
+        return self.product.full_name
+
     product = models.OneToOneField(
         Product, on_delete=models.CASCADE, related_name="product_price"
     )
@@ -27,6 +30,9 @@ class PriceHistory(models.Model):
     class Meta:
         verbose_name = "История цены"
         verbose_name_plural = "История цен"
+
+    def __str__(self):
+        return self.product.full_name
 
     product = models.OneToOneField(
         Product, on_delete=models.CASCADE, related_name="product_price_history"
@@ -44,6 +50,9 @@ class Stock(models.Model):
     class Meta:
         verbose_name = "Сток"
         verbose_name_plural = "Стоки"
+
+    def __str__(self):
+        return self.product.full_name
 
     product = models.OneToOneField(
         Product, on_delete=models.CASCADE, related_name="product_stock"

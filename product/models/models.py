@@ -466,9 +466,13 @@ class Store(models.Model):
     """
     Class for handling stores
     """
+
     class Meta:
         verbose_name = "Склад"
         verbose_name_plural = "Склады"
+
+    def __str__(self):
+        return self.name
 
     name = models.CharField(max_length=255)
     location_city = models.CharField(max_length=50)
