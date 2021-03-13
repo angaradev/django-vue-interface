@@ -508,7 +508,11 @@ class Product(models.Model):  # Main table product
         "CarEngine", related_name="car_related_engine", blank=True
     )
     store = models.ForeignKey(
-        Store, on_delete=models.DO_NOTHING, related_name="product_store", blank=True
+        Store,
+        on_delete=models.DO_NOTHING,
+        related_name="product_store",
+        blank=True,
+        null=True,
     )
 
     @property
