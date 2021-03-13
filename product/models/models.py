@@ -513,12 +513,16 @@ class Product(models.Model):  # Main table product
         related_name="product_store",
         blank=True,
         null=True,
+        default=1
+
     )
 
     @property
     def full_name(self):
         if self.name2:
-            return self.name + " " + self.name2
+            cars = [x.name for x in self.car_model.all()]
+            cars_str = " ".join(cars)
+            return self.name + " " + cars_str + " " + self.name2
         else:
             return self.name
 
