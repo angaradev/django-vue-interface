@@ -1,5 +1,5 @@
 from product.models.models_price import Price, PriceHistory, Stock
-from product.models.models import Store
+from product.models.models import Store, Years
 from django_mptt_admin.admin import DjangoMpttAdmin
 from mptt.admin import MPTTModelAdmin
 from django.contrib import admin
@@ -29,6 +29,7 @@ admin.site.register(Store)
 admin.site.register(Stock)
 admin.site.register(Price)
 admin.site.register(PriceHistory)
+admin.site.register(Years)
 
 
 # admin.site.register(Category, MPTTModelAdmin)

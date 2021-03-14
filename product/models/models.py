@@ -19,6 +19,8 @@ from PIL import Image, ImageOps
 from product.utils import delete_file
 from mptt.models import MPTTModel, TreeForeignKey
 from product.utils import unique_slug_generator
+from django.utils.text import slugify
+from transliterate import translit
 
 
 class Categories(MPTTModel):
@@ -144,12 +146,14 @@ class Country(models.Model):
 class CarMake(models.Model):
     name = models.CharField(max_length=45)
     country = models.ForeignKey(Country, on_delete=models.DO_NOTHING, blank=True)
-    slug = models.SlugField(unique=True, 
+    slug = models.SlugField(
+        unique=True,
         null=True,
-        blank=True,)
+        blank=True,
+    )
 
     def save(self, *args, **kwargs):
-        self.slug = unique_slug_generator(self, self.name, self.slug)
+        self.slug = slugify(translit(self.name, "ru", reversed=True))
         super().save(*args, **kwargs)
 
     class Meta:
@@ -213,7 +217,7 @@ class CarModel(models.Model):
         verbose_name_plural = "Модели Машины"
 
     def save(self, *args, **kwargs):
-        self.slug = unique_slug_generator(self, self.name, self.slug)
+        self.slug = slugify(translit(self.name, "ru", reversed=True))
         super().save(*args, **kwargs)
 
     @property
