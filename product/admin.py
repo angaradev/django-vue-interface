@@ -1,10 +1,14 @@
-from product.models.models_price import Price, PriceHistory, Stock
-from product.models.models import Store, Years
 from django_mptt_admin.admin import DjangoMpttAdmin
 from mptt.admin import MPTTModelAdmin
 from django.contrib import admin
-from .models import Product, Units, Country, Category, CarMake, CarModel, CarEngine
-from .models import (
+from product.models import (
+    Price,
+    PriceHistory,
+    Stock,
+    Product,
+    Units,
+    Category,
+    Store,
     ProductVideos,
     ProductImage,
     ProductAttribute,
@@ -12,6 +16,7 @@ from .models import (
     ProductAttributeName,
     Cross,
 )
+from product.models.models_vehicle import Years, CarEngine, CarMake, CarModel, Country
 
 admin.site.register(Product)
 admin.site.register(Units)
