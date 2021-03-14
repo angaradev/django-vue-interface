@@ -2,6 +2,7 @@ from django.urls import path, include, re_path
 from product import views as productviews
 from graphene_django.views import GraphQLView
 from product.schema import schema
+from django.views.decorators.csrf import csrf_exempt
 
 
 urlpatterns = [
@@ -34,7 +35,7 @@ urlpatterns = [
     # Path for product graphql
     path(
         "graphql",
-        GraphQLView.as_view(graphiql=True, schema=schema),
+        csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema)),
         name="vehicle-graphql",
     ),
 ]
