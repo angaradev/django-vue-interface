@@ -1,10 +1,6 @@
 from test_category.models.vehicle_models import Engine
 from product.models.models import CarMake, CarModel
-from graphene import String, ObjectType, Int, ID, Field, Schema, Interface, List
-from graphene_django import DjangoObjectType
-from graphene_django import DjangoListField
-from elasticsearch import Elasticsearch
-import requests, json
+from graphene import String, ObjectType, ID, Field, Schema, List
 
 
 # connections.create_connection(hosts=["localhost:9200"], timeout=20)
