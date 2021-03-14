@@ -36,7 +36,12 @@ def send_json(request):
         categories = response["aggregations"]["categories"]["buckets"]
         rebuilt_cats = []
         for category in categories:
-            new_cat = Category.objects.get(id=category["key"])
+            new_cat = None
+            try:
+                new_cat = Category.objects.get(id=category["key"])
+            except Exception as e:
+                print("Error in replace categories in elasticsearc", e)
+                print("key does not exists: ", category["key"])
             rebuilt_cats.append(
                 {
                     "key": category["key"],
