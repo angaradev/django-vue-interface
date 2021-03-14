@@ -1,5 +1,4 @@
-from test_category.models.vehicle_models import Engine
-from product.models.models import CarMake, CarModel
+from product.models import CarModel
 from graphene import String, ObjectType, ID, Field, Schema, List
 
 
