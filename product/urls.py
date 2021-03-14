@@ -1,5 +1,7 @@
 from django.urls import path, include, re_path
 from product import views as productviews
+from graphene_django.views import GraphQLView
+from product.schema import schema
 
 
 urlpatterns = [
@@ -29,4 +31,10 @@ urlpatterns = [
         name="product-list-js",
     ),
     path("find/", productviews.FindProductView.as_view(), name="find-product"),
+    # Path for product graphql
+    path(
+        "graphql",
+        GraphQLView.as_view(graphiql=True, schema=schema),
+        name="vehicle-graphql",
+    ),
 ]

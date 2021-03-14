@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     "blog",
     "test_category",
     "vasya_interface",
+    "graphene_django",
 ]
 
 MIDDLEWARE = [
