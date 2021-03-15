@@ -27,7 +27,7 @@ class NewCarModelType(ObjectType):
 
 class Query(ObjectType):
 
-    vehicle = Field(NewCarModelType, model=String())
+    vehicle = Field(NewCarModelType, slug=String())
     vehicles = List(NewCarModelType)
     makes = List(CarMakeType)
     make = Field(CarMakeType, slug=String(required=True))
@@ -84,8 +84,8 @@ class Query(ObjectType):
             "priority": make.priority,
         }
 
-    def resolve_vehicle(self, info, model):
-        car = CarModel.objects.get(slug=model)
+    def resolve_vehicle(self, info, slug):
+        car = CarModel.objects.get(slug=slug)
         years = [car.year_from, car.year_to] if car.year_from else []
         return {
             "id": car.id,
