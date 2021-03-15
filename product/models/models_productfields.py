@@ -1,6 +1,17 @@
 from django.db import models
 
 
+class ProductBages(models.Model):
+    name = models.CharField(max_length=20, null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Бейдж"
+        verbose_name_plural = "Бейджи"
+
+    def __str__(self):
+        return self.name
+
+
 class CategoryTags(models.Model):
     name = models.CharField(max_length=50)
 

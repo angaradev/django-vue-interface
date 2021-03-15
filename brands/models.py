@@ -81,6 +81,7 @@ class SuppliersBrands(models.Model):
 
 class BrandsDict(models.Model):
     brand = models.CharField(max_length=255, unique=True)
+    original = models.BooleanField(default=False)
     country = models.CharField(max_length=10, null=True, blank=True)
     country_name = models.CharField(max_length=50, null=True, blank=True)
     slug = models.SlugField(max_length=255, blank=True)
