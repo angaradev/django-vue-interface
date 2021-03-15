@@ -8,24 +8,25 @@ from graphene import String, ObjectType, ID, Field, Schema, List
 
 class NewCarModelType(ObjectType):
     id = ID()
-    model = String()
-    year = List(String)
-    engine = List(String)
-    slug = String()
-    make = String()
-    country = String()
+    model = String(required=True)
+    year = List(String, required=True)
+    engine = List(String, required=True)
+    slug = String(required=True)
+    make = String(required=True)
+    make_slug = String(required=True)
+    country = String(required=True)
 
 
 class CarMakeType(ObjectType):
-    id = ID()
-    name = String()
-    slug = String()
-    country = String()
+    id = ID(required=True)
+    name = String(required=True)
+    slug = String(required=True)
+    country = String(required=True)
 
 
 class Query(ObjectType):
 
-    vehicle = Field(NewCarModelType, id=String())
+    vehicle = Field(NewCarModelType, model=String())
     vehicles = List(NewCarModelType)
     makes = List(CarMakeType)
     vehicles_by_make = List(NewCarModelType, make=String(required=True))
@@ -34,6 +35,7 @@ class Query(ObjectType):
         qs = CarModel.objects.filter(carmake__name=make)
         lst = []
         for car in qs:
+            print(car.slug)
             years = [car.year_from, car.year_to] if car.year_from else []
             lst.append(
                 {
@@ -43,6 +45,7 @@ class Query(ObjectType):
                     "engine": car.engine.all(),
                     "slug": car.slug,
                     "make": car.carmake.name,
+                    "make_slug": car.carmake.slug,
                     "country": car.carmake.country,
                 }
             )
@@ -62,8 +65,8 @@ class Query(ObjectType):
             )
         return lst
 
-    def resolve_vehicle(self, info, id):
-        car = CarModel.objects.get(id=id)
+    def resolve_vehicle(self, info, model):
+        car = CarModel.objects.get(slug=model)
         years = [car.year_from, car.year_to] if car.year_from else []
         return {
             "id": car.id,
@@ -72,6 +75,7 @@ class Query(ObjectType):
             "engine": car.engine.all(),
             "slug": car.slug,
             "make": car.carmake.name,
+            "make_slug": car.carmake.slug,
             "country": car.carmake.country,
         }
 
@@ -88,6 +92,7 @@ class Query(ObjectType):
                     "engine": car.engine.all(),
                     "slug": car.slug,
                     "make": car.carmake.name,
+                    "make_slug": car.carmake.slug,
                     "country": car.carmake.country,
                 }
             )
