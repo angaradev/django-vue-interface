@@ -163,7 +163,9 @@ class Product(models.Model):  # Main table product
     @property
     def excerpt(self):
         if self.product_description:
-            return "Here is going short description for product"
+            return (
+                "Refactor it later please ! Here is going short description for product"
+            )
 
     # @property
     # def description(self):
@@ -188,36 +190,8 @@ class Product(models.Model):  # Main table product
     """
 
     @property
-    def price(self):
-        return 199
-
-    @property
     def compareAtPrice(self):
         return self.price + 100
-
-    @property
-    def stock(self):
-        return "in-stock"
-
-    @property
-    def badges(self):
-        return ["sale", "new", "hot"]
-
-    @property
-    def rating(self):
-        return 4
-
-    @property
-    def reviews(self):
-        return 14
-
-    @property
-    def availability(self):
-        return "in-stock"
-
-    @property
-    def compatibility(self):
-        return "all"
 
     @property
     def have_photo_in_folder(self):

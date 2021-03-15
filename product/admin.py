@@ -15,6 +15,7 @@ from product.models import (
     ProductDescription,
     ProductAttributeName,
     Cross,
+    ProductBages,
 )
 from product.models.models_vehicle import Years, CarEngine, CarMake, CarModel, Country
 
@@ -35,6 +36,7 @@ admin.site.register(Stock)
 admin.site.register(Price)
 admin.site.register(PriceHistory)
 admin.site.register(Years)
+admin.site.register(ProductBages)
 
 
 # admin.site.register(Category, MPTTModelAdmin)

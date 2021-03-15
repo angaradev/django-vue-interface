@@ -19,6 +19,9 @@ class Price(models.Model):
     product = models.OneToOneField(
         Product, on_delete=models.CASCADE, related_name="product_price"
     )
+    store = models.ForeignKey(
+        "Store", on_delete=models.DO_NOTHING, blank=True, null=True
+    )
     value = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
 
 
