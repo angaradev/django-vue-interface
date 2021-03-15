@@ -9,6 +9,7 @@ from graphene import String, ObjectType, ID, Field, Schema, List
 class CarMakeType(ObjectType):
     id = ID(required=True)
     name = String(required=True)
+    rusname = String()
     slug = String(required=True)
     country = String(required=True)
     priority = String()
@@ -17,6 +18,7 @@ class CarMakeType(ObjectType):
 class NewCarModelType(ObjectType):
     id = ID()
     model = String(required=True)
+    rusname = String()
     year = List(String, required=True)
     engine = List(String, required=True)
     slug = String(required=True)
@@ -43,6 +45,7 @@ class Query(ObjectType):
                 {
                     "id": car.id,
                     "model": car.name,
+                    "rusname": car.rusname,
                     "year": years,
                     "engine": car.engine.all(),
                     "slug": car.slug,
@@ -67,6 +70,7 @@ class Query(ObjectType):
                 {
                     "id": make.id,
                     "name": make.name,
+                    "rusname": make.rusname,
                     "slug": make.slug,
                     "country": make.country.country,
                     "priority": make.priority,
@@ -79,6 +83,7 @@ class Query(ObjectType):
         return {
             "id": make.id,
             "name": make.name,
+            "rusname": make.rusname,
             "slug": make.slug,
             "country": make.country.country,
             "priority": make.priority,
@@ -90,6 +95,7 @@ class Query(ObjectType):
         return {
             "id": car.id,
             "model": car.name,
+            "rusname": car.rusname,
             "year": years,
             "engine": car.engine.all(),
             "slug": car.slug,
@@ -113,6 +119,7 @@ class Query(ObjectType):
                 {
                     "id": car.id,
                     "model": car.name,
+                    "rusname": car.rusname,
                     "year": years,
                     "engine": car.engine.all(),
                     "slug": car.slug,
