@@ -20,10 +20,11 @@ from mptt.models import MPTTModel, TreeForeignKey
 from product.utils import unique_slug_generator
 from product.models.models_vehicle import CarModel
 from product.models.models_images import ProductImage
-from product.models.models_productfields import ProductVideos
+from product.models.models_productfields import ProductBages, ProductVideos
 
 
 class Category(MPTTModel):  # MPTT model here for now
+
     name = models.CharField(max_length=50, unique=True)
     type = models.CharField(max_length=30, default="shop")
     layout = models.CharField(max_length=30, default="products")
@@ -101,6 +102,13 @@ class Store(models.Model):
 
 
 class Product(models.Model):  # Main table product
+    class Rating(models.IntegerChoices):
+        ONE_STAR = 1
+        TWO_STARS = 2
+        THREE_STARS = 3
+        FOUR_STARS = 4
+        FIVE_STARS = 5
+
     name = models.CharField(max_length=255)
     name2 = models.CharField(max_length=255, null=True, blank=True)
     brand = models.ForeignKey(
@@ -110,8 +118,10 @@ class Product(models.Model):  # Main table product
         blank=True,
         related_name="product_brand",
     )
+
     car_model = models.ManyToManyField(CarModel, related_name="model_product")
     cat_number = models.CharField(max_length=255)
+    oem_number = models.CharField(max_length=255, blank=True, null=True)
     category = TreeManyToManyField(
         Category, related_name="category_reverse", blank=True
     )
@@ -128,14 +138,10 @@ class Product(models.Model):  # Main table product
     engine = models.ManyToManyField(
         "CarEngine", related_name="car_related_engine", blank=True
     )
-    store = models.ForeignKey(
-        Store,
-        on_delete=models.DO_NOTHING,
-        related_name="product_store",
-        blank=True,
-        null=True,
-        default=1,
+    bages = models.ForeignKey(
+        ProductBages, on_delete=models.DO_NOTHING, blank=True, null=True
     )
+    rating = models.IntegerField(choices=Rating.choices, null=True, blank=True)
 
     @property
     def full_name(self):
@@ -149,7 +155,9 @@ class Product(models.Model):  # Main table product
     @property
     def excerpt(self):
         if self.product_description:
-            return "Here is going short description for product"
+            return (
+                "Refactor it later please ! Here is going short description for product"
+            )
 
     # @property
     # def description(self):
@@ -174,36 +182,8 @@ class Product(models.Model):  # Main table product
     """
 
     @property
-    def price(self):
-        return 199
-
-    @property
     def compareAtPrice(self):
         return self.price + 100
-
-    @property
-    def stock(self):
-        return "in-stock"
-
-    @property
-    def badges(self):
-        return ["sale", "new", "hot"]
-
-    @property
-    def rating(self):
-        return 4
-
-    @property
-    def reviews(self):
-        return 14
-
-    @property
-    def availability(self):
-        return "in-stock"
-
-    @property
-    def compatibility(self):
-        return "all"
 
     @property
     def have_photo_in_folder(self):
