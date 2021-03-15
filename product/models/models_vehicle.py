@@ -32,6 +32,7 @@ class CarMake(models.Model):
     ]
 
     name = models.CharField(max_length=45)
+    rusname = models.CharField(max_length=50, blank=True, null=True)
     country = models.ForeignKey(Country, on_delete=models.DO_NOTHING, blank=True)
     priority = models.CharField(
         max_length=100, choices=PRIORITY, default=LOWEST, null=True, blank=True
@@ -104,6 +105,7 @@ class CarModel(models.Model):
         (LOWEST, "LOWEST"),
     ]
     name = models.CharField(max_length=45, blank=True)
+    rusname = models.CharField(max_length=50, blank=True, null=True)
     engine = models.ManyToManyField(CarEngine, blank=True, related_name="car_engine")
     carmake = models.ForeignKey(
         CarMake, on_delete=models.DO_NOTHING, related_name="car_model"
