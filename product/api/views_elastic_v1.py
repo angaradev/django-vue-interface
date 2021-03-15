@@ -7,12 +7,12 @@ import json, requests
 def send_json(request):
     query = request.GET.get("q")
     if not query:
-        query = 1
+        query = "hd78"
     data = json.dumps({"query": {"match_all": {}}})
     data_aggs = json.dumps(
         {
             "size": 0,
-            "query": {"term": {"car_model.model_name.keyword": "HD78"}},
+            "query": {"term": {"car_model.model_name.keyword": query}},
             "aggs": {
                 "categories": {"terms": {"field": "categories.cat_id", "size": 100}},
                 "brands": {"terms": {"field": "brand.brand_name.keyword"}},
