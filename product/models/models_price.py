@@ -4,6 +4,15 @@ from django.conf import settings
 from product.models.models import Product, Store
 
 
+def get_default_store():
+    try:
+        store = Store.objects.get(id=1)
+        return store
+    except:
+        print("No store in the database")
+    return None
+
+
 class Price(models.Model):
     """
     Class handling product prices
@@ -16,13 +25,12 @@ class Price(models.Model):
     def __str__(self):
         return self.product.full_name
 
-    product = models.OneToOneField(
-        Product, on_delete=models.CASCADE, related_name="product_price"
+    value = models.DecimalField(
+        max_digits=20,
+        decimal_places=2,
+        null=True,
+        blank=True,
     )
-    store = models.ForeignKey(
-        "Store", on_delete=models.DO_NOTHING, blank=True, null=True
-    )
-    value = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
 
 
 class PriceHistory(models.Model):
@@ -54,14 +62,15 @@ class Stock(models.Model):
         verbose_name = "Сток"
         verbose_name_plural = "Стоки"
 
-    def __str__(self):
-        return self.product.full_name
-
-    product = models.OneToOneField(
+    product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="product_stock"
     )
-    store = models.OneToOneField(
+    store = models.ForeignKey(
         Store, on_delete=models.CASCADE, related_name="store_stock"
     )
+    price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
     quantity = models.IntegerField()
     availability_days = models.IntegerField()
+
+    def __str__(self):
+        return self.product.full_name
