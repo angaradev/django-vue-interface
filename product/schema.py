@@ -1,4 +1,4 @@
-from product.models import CarModel
+from product.models import CarModel, CarMake
 from graphene import String, ObjectType, ID, Field, Schema, List
 
 
@@ -6,31 +6,101 @@ from graphene import String, ObjectType, ID, Field, Schema, List
 # es = Elasticsearch(["http://localhost:9200"])
 
 
+class CarMakeType(ObjectType):
+    id = ID(required=True)
+    name = String(required=True)
+    slug = String(required=True)
+    country = String(required=True)
+    priority = String()
+
+
 class NewCarModelType(ObjectType):
     id = ID()
-    name = String()
-    year = List(String)
-    engine = List(String)
-    slug = String()
-    make = String()
-    country = String()
+    model = String(required=True)
+    year = List(String, required=True)
+    engine = List(String, required=True)
+    slug = String(required=True)
+    make = Field(CarMakeType, required=True)
+    country = String(required=True)
+    priority = String()
 
 
 class Query(ObjectType):
 
-    vehicle = Field(NewCarModelType, id=String())
+    vehicle = Field(NewCarModelType, slug=String())
     vehicles = List(NewCarModelType)
+    makes = List(CarMakeType)
+    make = Field(CarMakeType, slug=String(required=True))
+    vehicles_by_make = List(NewCarModelType, slug=String(required=True))
 
-    def resolve_vehicle(self, info, id):
-        car = CarModel.objects.get(id=id)
+    def resolve_vehicles_by_make(self, info, slug):
+        qs = CarModel.objects.filter(carmake__slug=slug)
+        lst = []
+        for car in qs:
+            print(car.slug)
+            years = [car.year_from, car.year_to] if car.year_from else []
+            lst.append(
+                {
+                    "id": car.id,
+                    "model": car.name,
+                    "year": years,
+                    "engine": car.engine.all(),
+                    "slug": car.slug,
+                    "make": {
+                        "id": car.carmake.id,
+                        "name": car.carmake.name,
+                        "slug": car.carmake.slug,
+                        "country": car.carmake.country,
+                        "priority": car.carmake.priority,
+                    },
+                    "make_slug": car.carmake.slug,
+                    "country": car.carmake.country,
+                }
+            )
+        return lst
+
+    def resolve_makes(self, info):
+        qs = CarMake.objects.all()
+        lst = []
+        for make in qs:
+            lst.append(
+                {
+                    "id": make.id,
+                    "name": make.name,
+                    "slug": make.slug,
+                    "country": make.country.country,
+                    "priority": make.priority,
+                }
+            )
+        return lst
+
+    def resolve_make(self, info, slug):
+        make = CarMake.objects.get(slug=slug)
+        return {
+            "id": make.id,
+            "name": make.name,
+            "slug": make.slug,
+            "country": make.country.country,
+            "priority": make.priority,
+        }
+
+    def resolve_vehicle(self, info, slug):
+        car = CarModel.objects.get(slug=slug)
         years = [car.year_from, car.year_to] if car.year_from else []
         return {
             "id": car.id,
-            "name": car.name,
+            "model": car.name,
             "year": years,
             "engine": car.engine.all(),
             "slug": car.slug,
-            "make": car.carmake.name,
+            "make": {
+                "id": car.carmake.id,
+                "name": car.carmake.name,
+                "slug": car.carmake.slug,
+                "country": car.carmake.country,
+                "priority": car.carmake.priority,
+            },
+            "make_slug": car.carmake.slug,
             "country": car.carmake.country,
         }
 
@@ -42,11 +112,18 @@ class Query(ObjectType):
             lst.append(
                 {
                     "id": car.id,
-                    "name": car.name,
+                    "model": car.name,
                     "year": years,
                     "engine": car.engine.all(),
                     "slug": car.slug,
-                    "make": car.carmake.name,
+                    "make": {
+                        "id": car.carmake.id,
+                        "name": car.carmake.name,
+                        "slug": car.carmake.slug,
+                        "country": car.carmake.country,
+                        "priority": car.carmake.priority,
+                    },
+                    "make_slug": car.carmake.slug,
                     "country": car.carmake.country,
                 }
             )

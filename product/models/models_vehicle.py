@@ -1,6 +1,7 @@
 from django.utils.text import slugify
 from transliterate import translit
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 # Class Country
 class Country(models.Model):
@@ -16,8 +17,18 @@ class Country(models.Model):
 
 # Car Make class
 class CarMake(models.Model):
+    class Priority(models.TextChoices):
+        HIGEST = "HIGEST", _("HIGEST")
+        HIGH = "HIGH", _("HIGH")
+        MEDUM = "MEDIUM", _("MEDIUM")
+        LOW = "LOW", _("LOW")
+        LOWEST = "LOWEST", _("LOWEST")
+
     name = models.CharField(max_length=45)
     country = models.ForeignKey(Country, on_delete=models.DO_NOTHING, blank=True)
+    priority = models.CharField(
+        max_length=10, choices=Priority.choices, blank=True, null=True
+    )
     slug = models.SlugField(
         unique=True,
         null=True,
@@ -25,8 +36,9 @@ class CarMake(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(translit(self.name, "ru", reversed=True))
-        super().save(*args, **kwargs)
+        if not self.slug:
+            self.slug = slugify(translit(self.name, "ru", reversed=True))
+            super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Марка Машины"
@@ -38,6 +50,16 @@ class CarMake(models.Model):
 
 class CarEngine(models.Model):
     name = models.CharField(max_length=45, blank=True, null=True)
+    slug = models.SlugField(
+        unique=True,
+        null=True,
+        blank=True,
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(translit(self.name, "ru", reversed=True))
+            super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Двигатель"
@@ -62,12 +84,22 @@ class Years(models.Model):
 
 
 class CarModel(models.Model):
+    class Priority(models.TextChoices):
+        HIGEST = "HIGEST", _("HIGEST")
+        HIGH = "HIGH", _("HIGH")
+        MEDUM = "MEDIUM", _("MEDIUM")
+        LOW = "LOW", _("LOW")
+        LOWEST = "LOWEST", _("LOWEST")
+
     name = models.CharField(max_length=45, blank=True)
     engine = models.ManyToManyField(CarEngine, blank=True, related_name="car_engine")
     carmake = models.ForeignKey(
         CarMake, on_delete=models.DO_NOTHING, related_name="car_model"
     )
     slug = models.CharField(max_length=45, blank=True)
+    priority = models.CharField(
+        max_length=10, choices=Priority.choices, blank=True, null=True
+    )
 
     year_from = models.ForeignKey(
         Years,
@@ -89,8 +121,9 @@ class CarModel(models.Model):
         verbose_name_plural = "Модели Машины"
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(translit(self.name, "ru", reversed=True))
-        super().save(*args, **kwargs)
+        if not self.slug:
+            self.slug = slugify(translit(self.name, "ru", reversed=True))
+            super().save(*args, **kwargs)
 
     @property
     def year(self):
