@@ -36,8 +36,9 @@ class CarMake(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(translit(self.name, "ru", reversed=True)).replace("-", "")
-        super().save(*args, **kwargs)
+        if not self.slug:
+            self.slug = slugify(translit(self.name, "ru", reversed=True))
+            super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Марка Машины"
@@ -49,6 +50,16 @@ class CarMake(models.Model):
 
 class CarEngine(models.Model):
     name = models.CharField(max_length=45, blank=True, null=True)
+    slug = models.SlugField(
+        unique=True,
+        null=True,
+        blank=True,
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(translit(self.name, "ru", reversed=True))
+            super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Двигатель"
@@ -110,8 +121,9 @@ class CarModel(models.Model):
         verbose_name_plural = "Модели Машины"
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(translit(self.name, "ru", reversed=True))
-        super().save(*args, **kwargs)
+        if not self.slug:
+            self.slug = slugify(translit(self.name, "ru", reversed=True))
+            super().save(*args, **kwargs)
 
     @property
     def year(self):
