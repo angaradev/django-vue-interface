@@ -1,5 +1,8 @@
 from django.db import models
 
+from django.utils.text import slugify
+from transliterate import translit
+
 
 class ProductBages(models.Model):
     name = models.CharField(max_length=20, null=True, blank=True)
@@ -101,6 +104,7 @@ class ProductAttribute(models.Model):
     attribute_value = models.CharField(
         max_length=45, null=True, verbose_name="Значение атрибута"
     )
+    slug = models.SlugField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_date = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
     product = models.ForeignKey(
@@ -115,6 +119,10 @@ class ProductAttribute(models.Model):
     class Meta:
         verbose_name = "Атрибут"
         verbose_name_plural = "Атрибуты"
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(translit(self.attribute_name, "ru", reverse=True))
 
     def __str__(self):
         return self.attribute_value
