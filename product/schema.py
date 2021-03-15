@@ -6,22 +6,23 @@ from graphene import String, ObjectType, ID, Field, Schema, List
 # es = Elasticsearch(["http://localhost:9200"])
 
 
+class CarMakeType(ObjectType):
+    id = ID(required=True)
+    name = String(required=True)
+    slug = String(required=True)
+    country = String(required=True)
+    priority = String()
+
+
 class NewCarModelType(ObjectType):
     id = ID()
     model = String(required=True)
     year = List(String, required=True)
     engine = List(String, required=True)
     slug = String(required=True)
-    make = String(required=True)
-    make_slug = String(required=True)
+    make = Field(CarMakeType, required=True)
     country = String(required=True)
-
-
-class CarMakeType(ObjectType):
-    id = ID(required=True)
-    name = String(required=True)
-    slug = String(required=True)
-    country = String(required=True)
+    priority = String()
 
 
 class Query(ObjectType):
@@ -29,10 +30,11 @@ class Query(ObjectType):
     vehicle = Field(NewCarModelType, model=String())
     vehicles = List(NewCarModelType)
     makes = List(CarMakeType)
-    vehicles_by_make = List(NewCarModelType, make=String(required=True))
+    make = Field(CarMakeType, slug=String(required=True))
+    vehicles_by_make = List(NewCarModelType, slug=String(required=True))
 
-    def resolve_vehicles_by_make(self, info, make):
-        qs = CarModel.objects.filter(carmake__name=make)
+    def resolve_vehicles_by_make(self, info, slug):
+        qs = CarModel.objects.filter(carmake__slug=slug)
         lst = []
         for car in qs:
             print(car.slug)
@@ -44,7 +46,13 @@ class Query(ObjectType):
                     "year": years,
                     "engine": car.engine.all(),
                     "slug": car.slug,
-                    "make": car.carmake.name,
+                    "make": {
+                        "id": car.carmake.id,
+                        "name": car.carmake.name,
+                        "slug": car.carmake.slug,
+                        "country": car.carmake.country,
+                        "priority": car.carmake.priority,
+                    },
                     "make_slug": car.carmake.slug,
                     "country": car.carmake.country,
                 }
@@ -61,9 +69,20 @@ class Query(ObjectType):
                     "name": make.name,
                     "slug": make.slug,
                     "country": make.country.country,
+                    "priority": make.priority,
                 }
             )
         return lst
+
+    def resolve_make(self, info, slug):
+        make = CarMake.objects.get(slug=slug)
+        return {
+            "id": make.id,
+            "name": make.name,
+            "slug": make.slug,
+            "country": make.country.country,
+            "priority": make.priority,
+        }
 
     def resolve_vehicle(self, info, model):
         car = CarModel.objects.get(slug=model)
@@ -74,7 +93,13 @@ class Query(ObjectType):
             "year": years,
             "engine": car.engine.all(),
             "slug": car.slug,
-            "make": car.carmake.name,
+            "make": {
+                "id": car.carmake.id,
+                "name": car.carmake.name,
+                "slug": car.carmake.slug,
+                "country": car.carmake.country,
+                "priority": car.carmake.priority,
+            },
             "make_slug": car.carmake.slug,
             "country": car.carmake.country,
         }
@@ -91,7 +116,13 @@ class Query(ObjectType):
                     "year": years,
                     "engine": car.engine.all(),
                     "slug": car.slug,
-                    "make": car.carmake.name,
+                    "make": {
+                        "id": car.carmake.id,
+                        "name": car.carmake.name,
+                        "slug": car.carmake.slug,
+                        "country": car.carmake.country,
+                        "priority": car.carmake.priority,
+                    },
                     "make_slug": car.carmake.slug,
                     "country": car.carmake.country,
                 }
