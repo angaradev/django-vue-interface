@@ -5,27 +5,41 @@ import json, requests
 
 
 def send_json(request):
-    query = request.GET.get("q")
+    query = request.GET.get("q").lower()
     if not query:
         query = "hd78"
-    data = json.dumps({"query": {"match_all": {}}})
-    data_aggs = json.dumps(
-        {
-            "size": 0,
-            "query": {"term": {"model.name.keyword": query}},
-            "aggs": {
-                "categories": {"terms": {"field": "category.id", "size": 100}},
-                "brands": {"terms": {"field": "brand.name.keyword"}},
-                "engines": {"terms": {"field": "engine.name.keyword"}},
-                "car_models": {"terms": {"field": "model.name.keyword"}},
-            },
-        }
-    )
+    if query == "all":
+        data = json.dumps(
+            {
+                "query": {"match_all": {}},
+                "aggs": {
+                    "categories": {"terms": {"field": "category.id", "size": 100}},
+                    "brands": {"terms": {"field": "brand.name.keyword"}},
+                    "engines": {"terms": {"field": "engine.name.keyword"}},
+                    "car_models": {"terms": {"field": "model.name.keyword"}},
+                    "bages": {"terms": {"field": "bages.keyword", "size": 5}},
+                },
+            }
+        )
+    else:
+        data = json.dumps(
+            {
+                "size": 0,
+                "query": {"term": {"model.name.keyword": query}},
+                "aggs": {
+                    "categories": {"terms": {"field": "category.id", "size": 100}},
+                    "brands": {"terms": {"field": "brand.name.keyword"}},
+                    "engines": {"terms": {"field": "engine.name.keyword"}},
+                    "car_models": {"terms": {"field": "model.name.keyword"}},
+                    "bages": {"terms": {"field": "bages.keyword", "size": 5}},
+                },
+            }
+        )
 
     r = requests.get(
         "http://localhost:9200/prod_notebook/_search",
         headers={"Content-Type": "application/json"},
-        data=data_aggs,
+        data=data,
     )
     if r.status_code != 200:
         raise ValueError(f"Request cannot be proceeded Status code is: {r.status_code}")
@@ -44,8 +58,8 @@ def send_json(request):
                 print("key does not exists: ", category["key"])
             rebuilt_cats.append(
                 {
-                    "key": category["key"],
-                    "doc_count": category["doc_count"],
+                    "id": category["key"],
+                    "count": category["doc_count"],
                     "id": new_cat.id,
                     "name": new_cat.name,
                     "parent": new_cat.parent_id,

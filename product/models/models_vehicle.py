@@ -129,6 +129,7 @@ class CarModel(models.Model):
         null=True,
         blank=True,
     )
+    active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Модель Машины"

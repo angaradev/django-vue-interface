@@ -1,9 +1,20 @@
-from product.models import CarModel, CarMake
+from product.models import CarModel, CarMake, Category
 from graphene import String, ObjectType, ID, Field, Schema, List
 
 
 # connections.create_connection(hosts=["localhost:9200"], timeout=20)
-# es = Elasticsearch(["http://localhost:9200"])
+# esh = Elasticsearch(["http://localhost:9200"])
+
+
+class CategoryType(ObjectType):
+    id = ID(required=True)
+    type = String()
+    name = String(required=True)
+    slug = String(required=True)
+    image = String(required=False)
+    parent = ID(required=False)
+    count = String()
+    layout = String()
 
 
 class CarMakeType(ObjectType):
@@ -34,12 +45,52 @@ class Query(ObjectType):
     makes = List(CarMakeType)
     make = Field(CarMakeType, slug=String(required=True))
     vehicles_by_make = List(NewCarModelType, slug=String(required=True))
+    category_by_slug = Field(CategoryType, slug=String(required=True))
+    category_all = List(CategoryType)
+
+    def resolve_category_all(self, info):
+        cats = Category.objects.all()
+        lst = []
+
+        for cat in cats:
+            parent = None
+            try:
+                parent = cat.parent.id
+            except:
+                parent = None
+            lst.append(
+                {
+                    "id": cat.id,
+                    "name": cat.name,
+                    "slug": cat.slug,
+                    "parent": parent,
+                    "image": cat.image,
+                    "type": cat.type,
+                    "layout": cat.layout,
+                }
+            )
+        return lst
+
+    def resolve_category_by_slug(self, info, slug):
+        cat = Category.objects.filter(slug=slug).first()
+        try:
+            parent = cat.parent.id
+        except:
+            parent = None
+        return {
+            "id": cat.id,
+            "name": cat.name,
+            "slug": cat.slug,
+            "parent": parent,
+            "image": cat.image,
+            "type": cat.type,
+            "layout": cat.layout,
+        }
 
     def resolve_vehicles_by_make(self, info, slug):
         qs = CarModel.objects.filter(carmake__slug=slug)
         lst = []
         for car in qs:
-            print(car.slug)
             years = [car.year_from, car.year_to] if car.year_from else []
             lst.append(
                 {
@@ -79,7 +130,7 @@ class Query(ObjectType):
         return lst
 
     def resolve_make(self, info, slug):
-        make = CarMake.objects.get(slug=slug)
+        make = CarMake.objects.filter(slug=slug).first()
         return {
             "id": make.id,
             "name": make.name,
@@ -90,7 +141,7 @@ class Query(ObjectType):
         }
 
     def resolve_vehicle(self, info, slug):
-        car = CarModel.objects.get(slug=slug)
+        car = CarModel.objects.filter(slug=slug).first()
         years = [car.year_from, car.year_to] if car.year_from else []
         return {
             "id": car.id,
