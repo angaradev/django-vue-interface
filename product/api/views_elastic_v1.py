@@ -5,7 +5,6 @@ import json, requests
 
 
 def send_json(request):
-    print(print(request.META["HTTP_HOST"]))
     query = request.GET.get("q")
     if not query:
         query = "hd78"
