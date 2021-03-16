@@ -32,7 +32,7 @@ class Categories(MPTTModel):
         db_index=True,
         on_delete=models.DO_NOTHING,
     )
-    slug = models.SlugField(blank=True)
+    slug = models.SlugField(blank=True, unique=True)
 
     class Meta:
         verbose_name = "Категории"
@@ -68,7 +68,7 @@ class Category(MPTTModel):  # MPTT model here for now
         on_delete=models.DO_NOTHING,
     )
     old_group_id = models.IntegerField(blank=True)
-    slug = models.SlugField(blank=True)
+    slug = models.SlugField(blank=True, unique=True)
 
     plus = models.CharField(max_length=1000, blank=True)
     minus = models.CharField(max_length=1000, blank=True)
