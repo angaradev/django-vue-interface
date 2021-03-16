@@ -121,9 +121,6 @@ class Product(models.Model):  # Main table product
     engine = models.ManyToManyField(
         "CarEngine", related_name="car_related_engine", blank=True
     )
-    bages = models.ForeignKey(
-        ProductBages, on_delete=models.DO_NOTHING, blank=True, null=True
-    )
     rating = models.IntegerField(choices=Rating.choices, null=True, blank=True)
 
     @property
