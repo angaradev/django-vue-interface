@@ -13,12 +13,12 @@ def send_json(request):
     data_aggs = json.dumps(
         {
             "size": 0,
-            "query": {"term": {"car_model.model_name.keyword": query}},
+            "query": {"term": {"model.name.keyword": query}},
             "aggs": {
-                "categories": {"terms": {"field": "categories.cat_id", "size": 100}},
-                "brands": {"terms": {"field": "brand.brand_name.keyword"}},
-                "engines": {"terms": {"field": "engines.engine_name.keyword"}},
-                "car_models": {"terms": {"field": "car_model.model_name.keyword"}},
+                "categories": {"terms": {"field": "category.id", "size": 100}},
+                "brands": {"terms": {"field": "brand.name.keyword"}},
+                "engines": {"terms": {"field": "engine.name.keyword"}},
+                "car_models": {"terms": {"field": "model.name.keyword"}},
             },
         }
     )
