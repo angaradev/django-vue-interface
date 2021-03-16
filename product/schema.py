@@ -72,7 +72,7 @@ class Query(ObjectType):
         return lst
 
     def resolve_category_by_slug(self, info, slug):
-        cat = Category.objects.get(slug=slug)
+        cat = Category.objects.filter(slug=slug).first()
         try:
             parent = cat.parent.id
         except:
@@ -86,10 +86,6 @@ class Query(ObjectType):
             "type": cat.type,
             "layout": cat.layout,
         }
-
-    def resolve_category_by_slug(self, info, slug):
-        category = Category.objects.get(slug=slug)
-        return category
 
     def resolve_vehicles_by_make(self, info, slug):
         qs = CarModel.objects.filter(carmake__slug=slug)
@@ -134,7 +130,7 @@ class Query(ObjectType):
         return lst
 
     def resolve_make(self, info, slug):
-        make = CarMake.objects.get(slug=slug)
+        make = CarMake.objects.filter(slug=slug).first()
         return {
             "id": make.id,
             "name": make.name,
@@ -145,7 +141,7 @@ class Query(ObjectType):
         }
 
     def resolve_vehicle(self, info, slug):
-        car = CarModel.objects.get(slug=slug)
+        car = CarModel.objects.filter(slug=slug).first()
         years = [car.year_from, car.year_to] if car.year_from else []
         return {
             "id": car.id,
