@@ -5,14 +5,24 @@ from transliterate import translit
 
 
 class ProductBages(models.Model):
-    name = models.CharField(max_length=20, null=True, blank=True)
+    class BagesChoices(models.TextChoices):
+        SALE = ("SALE", "РАСПРОДАЖА")
+        NEW = ("NEW", "НОВИНКА")
+
+    name = models.CharField(
+        max_length=20, null=True, blank=True, choices=BagesChoices.choices
+    )
+    product = models.ForeignKey(
+        "Product", on_delete=models.DO_NOTHING, null=True, blank=True
+    )
 
     class Meta:
+        unique_together = ("name", "product")
         verbose_name = "Бейдж"
         verbose_name_plural = "Бейджи"
 
     def __str__(self):
-        return self.name
+        return self.product.name
 
 
 class CategoryTags(models.Model):
@@ -104,7 +114,6 @@ class ProductAttribute(models.Model):
     attribute_value = models.CharField(
         max_length=45, null=True, verbose_name="Значение атрибута"
     )
-    slug = models.SlugField(blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_date = models.DateTimeField(auto_now=True, verbose_name="Дата изменения")
     product = models.ForeignKey(
