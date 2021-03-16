@@ -13,7 +13,11 @@ class ProductBages(models.Model):
         max_length=20, null=True, blank=True, choices=BagesChoices.choices
     )
     product = models.ForeignKey(
-        "Product", on_delete=models.DO_NOTHING, null=True, blank=True
+        "Product",
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
+        related_name="bages",
     )
 
     class Meta:
@@ -22,7 +26,7 @@ class ProductBages(models.Model):
         verbose_name_plural = "Бейджи"
 
     def __str__(self):
-        return self.product.name
+        return self.name
 
 
 class CategoryTags(models.Model):
