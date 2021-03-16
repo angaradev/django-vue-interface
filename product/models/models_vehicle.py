@@ -104,7 +104,7 @@ class CarModel(models.Model):
         (LOW, "LOW"),
         (LOWEST, "LOWEST"),
     ]
-    name = models.CharField(max_length=45, blank=True)
+    name = models.CharField(max_length=45, blank=True, unique=True)
     rusname = models.CharField(max_length=50, blank=True, null=True)
     engine = models.ManyToManyField(CarEngine, blank=True, related_name="car_engine")
     carmake = models.ForeignKey(
