@@ -84,23 +84,6 @@ class Category(MPTTModel):  # MPTT model here for now
 # Product Description
 
 
-class Store(models.Model):
-    """
-    Class for handling stores
-    """
-
-    class Meta:
-        verbose_name = "Склад"
-        verbose_name_plural = "Склады"
-
-    def __str__(self):
-        return self.name
-
-    name = models.CharField(max_length=255)
-    location_city = models.CharField(max_length=50)
-    location_address = models.CharField(max_length=100)
-
-
 class Product(models.Model):  # Main table product
     class Rating(models.IntegerChoices):
         ONE_STAR = 1
@@ -153,15 +136,8 @@ class Product(models.Model):  # Main table product
             return self.name
 
     @property
-    def excerpt(self):
-        if self.product_description:
-            return (
-                "Refactor it later please ! Here is going short description for product"
-            )
-
-    # @property
-    # def description(self):
-    #     return self.product_description.text
+    def description(self):
+        return self.product_description.text
 
     @property
     def sku(self):
