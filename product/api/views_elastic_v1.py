@@ -13,7 +13,7 @@ def send_json(request):
             {
                 "query": {"match_all": {}},
                 "aggs": {
-                    "categories": {"terms": {"field": "category.id", "size": 100}},
+                    "categories": {"terms": {"field": "category.id", "size": 2000}},
                     "brands": {"terms": {"field": "brand.name.keyword"}},
                     "engines": {"terms": {"field": "engine.name.keyword"}},
                     "car_models": {"terms": {"field": "model.name.keyword"}},
@@ -27,7 +27,7 @@ def send_json(request):
                 "size": 0,
                 "query": {"term": {"model.name.keyword": query}},
                 "aggs": {
-                    "categories": {"terms": {"field": "category.id", "size": 100}},
+                    "categories": {"terms": {"field": "category.id", "size": 2000}},
                     "brands": {"terms": {"field": "brand.name.keyword"}},
                     "engines": {"terms": {"field": "engine.name.keyword"}},
                     "car_models": {"terms": {"field": "model.name.keyword"}},
@@ -65,6 +65,7 @@ def send_json(request):
                     "parent": new_cat.parent_id,
                     "layout": new_cat.layout,
                     "type": new_cat.type,
+                    "slug": new_cat.slug,
                 }
             )
         response["aggregations"]["categories"]["buckets"] = rebuilt_cats
