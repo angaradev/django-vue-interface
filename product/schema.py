@@ -44,7 +44,15 @@ class Query(ObjectType):
     makes = List(CarMakeType)
     make = Field(CarMakeType, slug=String(required=True))
     vehicles_by_make = List(NewCarModelType, slug=String(required=True))
-    categoryBySlug = Field(CategoryType, slug=String(required=True))
+    category_by_slug = Field(CategoryType, slug=String(required=True))
+    category_all = List(CategoryType)
+
+    def resolve_category_all(self, info):
+        return Category.objects.all()
+
+    def resolve_category_by_slug(self, info, slug):
+        category = Category.objects.get(slug=slug)
+        return category
 
     def resolve_category_by_slug(self, info, slug):
         category = Category.objects.get(slug=slug)
