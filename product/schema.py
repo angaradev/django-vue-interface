@@ -12,8 +12,9 @@ class CategoryType(ObjectType):
     name = String(required=True)
     slug = String(required=True)
     image = String(required=False)
-    parent = ID()
+    parent = ID(required=False)
     count = String()
+    layout = String()
 
 
 class CarMakeType(ObjectType):
@@ -48,11 +49,43 @@ class Query(ObjectType):
     category_all = List(CategoryType)
 
     def resolve_category_all(self, info):
-        return Category.objects.all()
+        cats = Category.objects.all()
+        lst = []
+
+        for cat in cats:
+            parent = None
+            try:
+                parent = cat.parent.id
+            except:
+                parent = None
+            lst.append(
+                {
+                    "id": cat.id,
+                    "name": cat.name,
+                    "slug": cat.slug,
+                    "parent": parent,
+                    "image": cat.image,
+                    "type": cat.type,
+                    "layout": cat.layout,
+                }
+            )
+        return lst
 
     def resolve_category_by_slug(self, info, slug):
-        category = Category.objects.get(slug=slug)
-        return category
+        cat = Category.objects.get(slug=slug)
+        try:
+            parent = cat.parent.id
+        except:
+            parent = None
+        return {
+            "id": cat.id,
+            "name": cat.name,
+            "slug": cat.slug,
+            "parent": parent,
+            "image": cat.image,
+            "type": cat.type,
+            "layout": cat.layout,
+        }
 
     def resolve_category_by_slug(self, info, slug):
         category = Category.objects.get(slug=slug)
@@ -62,7 +95,6 @@ class Query(ObjectType):
         qs = CarModel.objects.filter(carmake__slug=slug)
         lst = []
         for car in qs:
-            print(car.slug)
             years = [car.year_from, car.year_to] if car.year_from else []
             lst.append(
                 {

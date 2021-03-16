@@ -9,7 +9,18 @@ def send_json(request):
     if not query:
         query = "hd78"
     if query == "all":
-        data = json.dumps({"query": {"match_all": {}}})
+        data = json.dumps(
+            {
+                "query": {"match_all": {}},
+                "aggs": {
+                    "categories": {"terms": {"field": "category.id", "size": 100}},
+                    "brands": {"terms": {"field": "brand.name.keyword"}},
+                    "engines": {"terms": {"field": "engine.name.keyword"}},
+                    "car_models": {"terms": {"field": "model.name.keyword"}},
+                    "bages": {"terms": {"field": "bages.keyword", "size": 5}},
+                },
+            }
+        )
     else:
         data = json.dumps(
             {
