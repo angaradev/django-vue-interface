@@ -1,18 +1,36 @@
 from django.db.models.signals import pre_save, post_save
 from django.db import models
 from django.conf import settings
-from product.models.models import Product, Store
+from product.models.models import Product
 
 
 def get_default_store():
     try:
-        store = Store.objects.get(id=1)
+        store = Store.objects.get(id=3)
         return store
     except:
         print("No store in the database")
     return None
 
 
+class Store(models.Model):
+    """
+    Class for handling stores
+    """
+
+    class Meta:
+        verbose_name = "Склад"
+        verbose_name_plural = "Склады"
+
+    def __str__(self):
+        return self.name
+
+    name = models.CharField(max_length=255)
+    location_city = models.CharField(max_length=50)
+    location_address = models.CharField(max_length=100)
+
+
+# Probably need to delete
 class Price(models.Model):
     """
     Class handling product prices
