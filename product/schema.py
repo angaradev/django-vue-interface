@@ -1,9 +1,19 @@
-from product.models import CarModel, CarMake
+from product.models import CarModel, CarMake, Category
 from graphene import String, ObjectType, ID, Field, Schema, List
 
 
 # connections.create_connection(hosts=["localhost:9200"], timeout=20)
-# es = Elasticsearch(["http://localhost:9200"])
+# esh = Elasticsearch(["http://localhost:9200"])
+
+
+class CategoryType(ObjectType):
+    id = ID(required=True)
+    type = String()
+    name = String(required=True)
+    slug = String(required=True)
+    image = String(required=False)
+    parent = ID()
+    count = String()
 
 
 class CarMakeType(ObjectType):
@@ -34,6 +44,11 @@ class Query(ObjectType):
     makes = List(CarMakeType)
     make = Field(CarMakeType, slug=String(required=True))
     vehicles_by_make = List(NewCarModelType, slug=String(required=True))
+    categoryBySlug = Field(CategoryType, slug=String(required=True))
+
+    def resolve_category_by_slug(self, info, slug):
+        category = Category.objects.get(slug=slug)
+        return category
 
     def resolve_vehicles_by_make(self, info, slug):
         qs = CarModel.objects.filter(carmake__slug=slug)
