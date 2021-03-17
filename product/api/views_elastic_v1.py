@@ -11,6 +11,7 @@ def send_json(request):
     if query == "all":
         data = json.dumps(
             {
+                "size": 10,
                 "query": {"match_all": {}},
                 "aggs": {
                     "categories": {"terms": {"field": "category.id", "size": 2000}},
@@ -24,8 +25,8 @@ def send_json(request):
     else:
         data = json.dumps(
             {
-                "size": 0,
-                "query": {"term": {"model.name.keyword": query}},
+                "size": 10,
+                "query": {"term": {"model.slug.keyword": query}},
                 "aggs": {
                     "categories": {"terms": {"field": "category.id", "size": 2000}},
                     "brands": {"terms": {"field": "brand.name.keyword"}},
