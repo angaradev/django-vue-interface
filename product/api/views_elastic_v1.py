@@ -5,14 +5,84 @@ import json, requests
 
 
 def send_json(request):
-    query = request.GET.get("q").lower()
-    if not query:
-        query = "hd78"
-    if query == "all":
+    aggs_size = 20
+    cat_slug = None
+    query = None
+    if request.method == "GET":
+        if request.GET["q"] == "all":
+            print("\033[93m", "Attention ALL PRODUCTS REQUEST PERFORMED!", request.GET)
+        if "q" in request.GET:
+            query = request.GET["q"].lower()
+        if "cat" in request.GET:
+            cat_slug = request.GET["cat"].lower()
+
+    data = json.dumps(
+        {
+            "size": 10,
+            "query": {"match_all": {}},
+            "aggs": {
+                "unique_ids": {"terms": {"field": "id"}},
+                "categories": {"terms": {"field": "category.id", "size": aggs_size}},
+                "brands": {"terms": {"field": "brand.name.keyword"}},
+                "engines": {"terms": {"field": "engine.name.keyword"}},
+                "car_models": {"terms": {"field": "model.name.keyword"}},
+                "bages": {"terms": {"field": "bages.keyword", "size": 5}},
+            },
+        }
+    )
+
+    # If query has query and car model
+    if query and not cat_slug:
         data = json.dumps(
             {
+                "size": 10,
+                "query": {"term": {"model.slug.keyword": query}},
+                "aggs": {
+                    "unique_ids": {"terms": {"field": "id"}},
+                    "categories": {
+                        "terms": {"field": "category.id", "size": aggs_size}
+                    },
+                    "brands": {"terms": {"field": "brand.name.keyword"}},
+                    "engines": {"terms": {"field": "engine.name.keyword"}},
+                    "car_models": {"terms": {"field": "model.name.keyword"}},
+                    "bages": {"terms": {"field": "bages.keyword", "size": 5}},
+                },
+            }
+        )
+    # If query has car model and slug
+    if query and cat_slug:
+        data = json.dumps(
+            {
+                "size": 10,
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"term": {"model.slug.keyword": query}},
+                            {"term": {"category.slug.keyword": cat_slug}},
+                        ]
+                    }
+                },
+                "aggs": {
+                    "unique_ids": {"terms": {"field": "id"}},
+                    "categories": {
+                        "terms": {"field": "category.id", "size": aggs_size}
+                    },
+                    "brands": {"terms": {"field": "brand.name.keyword"}},
+                    "engines": {"terms": {"field": "engine.name.keyword"}},
+                    "car_models": {"terms": {"field": "model.name.keyword"}},
+                    "bages": {"terms": {"field": "bages.keyword", "size": 5}},
+                },
+            }
+        )
+
+    # if query has q == 'all'
+    if query == "all" and not cat_slug:
+        data = json.dumps(
+            {
+                "size": 10,
                 "query": {"match_all": {}},
                 "aggs": {
+                    "unique_ids": {"terms": {"field": "id"}},
                     "categories": {"terms": {"field": "category.id", "size": 2000}},
                     "brands": {"terms": {"field": "brand.name.keyword"}},
                     "engines": {"terms": {"field": "engine.name.keyword"}},
@@ -21,20 +91,7 @@ def send_json(request):
                 },
             }
         )
-    else:
-        data = json.dumps(
-            {
-                "size": 0,
-                "query": {"term": {"model.name.keyword": query}},
-                "aggs": {
-                    "categories": {"terms": {"field": "category.id", "size": 2000}},
-                    "brands": {"terms": {"field": "brand.name.keyword"}},
-                    "engines": {"terms": {"field": "engine.name.keyword"}},
-                    "car_models": {"terms": {"field": "model.name.keyword"}},
-                    "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                },
-            }
-        )
+    # if query has q == all and cat slug
 
     r = requests.get(
         "http://localhost:9200/prod_notebook/_search",
