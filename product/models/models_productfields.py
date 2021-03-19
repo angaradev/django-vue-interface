@@ -133,9 +133,9 @@ class ProductAttribute(models.Model):
         verbose_name = "Атрибут"
         verbose_name_plural = "Атрибуты"
 
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(translit(self.attribute_name, "ru", reverse=True))
+    # def save(self, *args, **kwargs):
+    #     if not self.slug:
+    #         self.slug = slugify(translit(self.attribute_name, "ru", reverse=True))
 
     def __str__(self):
         return self.attribute_value
