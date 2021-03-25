@@ -91,9 +91,10 @@ class Query(ObjectType):
 
     def resolve_vehicles_by_make(self, info, slug):
         qs = (
-            CarModel.objects.filter(carmake__slug=slug)
+            CarModel.objects.filter(active=True)
+            .filter(carmake__slug=slug)
             .annotate(count=Count("model_product"))
-            .order_by("priority")
+            .order_by("-priority")
         )
         lst = []
         for car in qs:
