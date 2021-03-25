@@ -1,5 +1,6 @@
 from product.models import CarModel, CarMake, Category
 from graphene import String, ObjectType, ID, Field, Schema, List
+from django.db.models import Count
 
 
 # connections.create_connection(hosts=["localhost:9200"], timeout=20)
@@ -36,6 +37,7 @@ class NewCarModelType(ObjectType):
     make = Field(CarMakeType, required=True)
     country = String(required=True)
     priority = String()
+    count = String()
 
 
 class Query(ObjectType):
@@ -88,7 +90,12 @@ class Query(ObjectType):
         }
 
     def resolve_vehicles_by_make(self, info, slug):
-        qs = CarModel.objects.filter(carmake__slug=slug)
+        qs = (
+            CarModel.objects.filter(active=True)
+            .filter(carmake__slug=slug)
+            .annotate(count=Count("model_product"))
+            .order_by("-priority")
+        )
         lst = []
         for car in qs:
             years = [car.year_from, car.year_to] if car.year_from else []
@@ -109,6 +116,7 @@ class Query(ObjectType):
                     },
                     "make_slug": car.carmake.slug,
                     "country": car.carmake.country,
+                    "count": car.count,
                 }
             )
         return lst

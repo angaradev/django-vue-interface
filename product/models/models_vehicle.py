@@ -17,25 +17,18 @@ class Country(models.Model):
 
 # Car Make class
 class CarMake(models.Model):
-
-    HIGEST = "HIGEST"
-    HIGH = "HIGH"
-    MEDUM = "MEDIUM"
-    LOW = "LOW"
-    LOWEST = "LOWEST"
-    PRIORITY = [
-        (HIGEST, "HIGEST"),
-        (HIGH, "HIGH"),
-        (MEDUM, "MEDIUM"),
-        (LOW, "LOW"),
-        (LOWEST, "LOWEST"),
-    ]
+    class Priority(models.IntegerChoices):
+        HIGEST = 5, "Higest"
+        HIGH = 4, "High"
+        MEDUM = 3, "Medium"
+        LOW = 2, "Low"
+        LOWEST = 1, "Lowest"
 
     name = models.CharField(max_length=45)
     rusname = models.CharField(max_length=50, blank=True, null=True)
     country = models.ForeignKey(Country, on_delete=models.DO_NOTHING, blank=True)
-    priority = models.CharField(
-        max_length=100, choices=PRIORITY, default=LOWEST, null=True, blank=True
+    priority = models.IntegerField(
+        choices=Priority.choices, default=Priority.LOWEST, null=True, blank=True
     )
     slug = models.SlugField(
         unique=True,
@@ -92,18 +85,13 @@ class Years(models.Model):
 
 
 class CarModel(models.Model):
-    HIGEST = "HIGEST"
-    HIGH = "HIGH"
-    MEDUM = "MEDIUM"
-    LOW = "LOW"
-    LOWEST = "LOWEST"
-    PRIORITY = [
-        (HIGEST, "HIGEST"),
-        (HIGH, "HIGH"),
-        (MEDUM, "MEDIUM"),
-        (LOW, "LOW"),
-        (LOWEST, "LOWEST"),
-    ]
+    class Priority(models.IntegerChoices):
+        HIGEST = 5, "Higest"
+        HIGH = 4, "High"
+        MEDUM = 3, "Medium"
+        LOW = 2, "Low"
+        LOWEST = 1, "Lowest"
+
     name = models.CharField(max_length=45, blank=True, unique=True)
     rusname = models.CharField(max_length=50, blank=True, null=True)
     engine = models.ManyToManyField(CarEngine, blank=True, related_name="car_engine")
@@ -111,8 +99,8 @@ class CarModel(models.Model):
         CarMake, on_delete=models.DO_NOTHING, related_name="car_model"
     )
     slug = models.CharField(max_length=45, blank=True)
-    priority = models.CharField(
-        max_length=100, choices=PRIORITY, default=LOWEST, null=True, blank=True
+    priority = models.IntegerField(
+        choices=Priority.choices, default=Priority.LOWEST, null=True, blank=True
     )
 
     year_from = models.ForeignKey(
