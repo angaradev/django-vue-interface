@@ -5,7 +5,7 @@ import json, requests
 
 
 def send_json(request):
-    aggs_size = 20
+    aggs_size = 2000
     cat_slug = None
     query = None
     makeSlug = None
