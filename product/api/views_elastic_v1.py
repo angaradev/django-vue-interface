@@ -20,7 +20,7 @@ def aggs(size):
     return aggs
 
 
-def make_query(request):
+def make_query(request, aggs, aggs_size, product_sizes=2000):
     query = []
     sub = []
     subf = []
@@ -47,27 +47,29 @@ def make_query(request):
                 else:
                     subf.append({"term": {f"{l['filter']}.slug.keyword": it}})
 
-    #   print(item[0], item[1].split(","))
     tmp = {
-        "bool": {
-            "must": [
-                *query,
-                {"bool": {"should": subf}},
-            ]
-        }
+        "size": product_sizes,
+        "query": {
+            "bool": {
+                "must": [
+                    *query,
+                    {"bool": {"should": subf}},
+                ]
+            }
+        },
+        "aggs": aggs(aggs_size),
     }
+
     pp.pprint(tmp)
 
-    with open("/home/manhee/Projects/quora/quora/test_category/sample.json", "w") as f:
-        print(tmp)
-        json.dump(tmp, f, indent=2)
-    f.close()
+    # with open("/home/manhee/Projects/quora/quora/test_category/sample.json", "w") as f:
+    #     json.dump(tmp, f, indent=2)
+    # f.close()
 
-    return tmp
+    return json.dumps(tmp)
 
 
 def send_json(request):
-    make_query(request)
     aggs_size = 2000
     product_sizes = 200
     if request.method == "GET":
@@ -80,6 +82,10 @@ def send_json(request):
         make = request.GET.get("make")
         brand = request.GET.getlist("brand")
         data = None
+
+        if model and cat and not make and len(request.GET.keys()) > 2:
+            print("IN make models and filters")
+            data = make_query(request, aggs, aggs_size, product_sizes)
 
         if model and cat and brand:
             print("In model cat and brand")
