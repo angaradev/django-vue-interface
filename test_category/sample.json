@@ -1,0 +1,63 @@
+{
+  "size": 200,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "model.slug.keyword": "hd72"
+          }
+        },
+        {
+          "term": {
+            "category.slug.keyword": "dvigatel-golovka-prokladka"
+          }
+        },
+        {
+          "bool": {
+            "should": []
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "categories": {
+      "terms": {
+        "field": "category.id",
+        "size": 2000
+      }
+    },
+    "brands": {
+      "terms": {
+        "field": "brand.name.keyword"
+      }
+    },
+    "engines": {
+      "terms": {
+        "field": "engine.name.keyword"
+      }
+    },
+    "car_models": {
+      "terms": {
+        "field": "model.name.keyword"
+      }
+    },
+    "bages": {
+      "terms": {
+        "field": "bages.keyword",
+        "size": 5
+      }
+    },
+    "min_price": {
+      "min": {
+        "field": "stocks.price"
+      }
+    },
+    "max_price": {
+      "max": {
+        "field": "stocks.price"
+      }
+    }
+  }
+}
