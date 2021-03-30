@@ -1,0 +1,42 @@
+{
+  "bool": {
+    "must": [
+      {
+        "term": {
+          "model.slug.keyword": "hd72"
+        }
+      },
+      {
+        "term": {
+          "category.slug.keyword": "zapchasti"
+        }
+      },
+      {
+        "bool": {
+          "should": [
+            {
+              "term": {
+                "brand.name.keyword": "mobis"
+              }
+            },
+            {
+              "term": {
+                "brand.name.keyword": "angara"
+              }
+            },
+            {
+              "term": {
+                "brand.name.keyword": "cr"
+              }
+            },
+            {
+              "term": {
+                "brand.name.keyword": "mando"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

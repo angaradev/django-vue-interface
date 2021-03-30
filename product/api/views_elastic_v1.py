@@ -2,6 +2,9 @@ from django.views.generic.base import TemplateView
 from django.http import JsonResponse
 from product.models import Product, Category
 import json, requests
+import pprint
+
+pp = pprint.PrettyPrinter(indent=2)
 
 
 def aggs(size):
@@ -11,18 +14,68 @@ def aggs(size):
         "engines": {"terms": {"field": "engine.name.keyword"}},
         "car_models": {"terms": {"field": "model.name.keyword"}},
         "bages": {"terms": {"field": "bages.keyword", "size": 5}},
+        "min_price": {"min": {"field": "stocks.price"}},
+        "max_price": {"max": {"field": "stocks.price"}},
     }
     return aggs
 
 
+def make_query(request):
+    query = []
+    sub = []
+    subf = []
+
+    for item in request.GET.items():
+        if str(item[0]) == "price":
+            continue
+        # must here
+        second = item[1].split(",")
+        if len(second) > 1:
+            sub.append({"filter": item[0], "items": [*second]})
+
+        # First level for
+        if item[0] == "model" or item[0] == "category":
+
+            query.append(
+                {"term": {f"{item[0]}.slug.keyword": second[0]}},
+            )
+        for l in sub:
+            print(l)
+            for it in l["items"]:
+                if l["filter"] == "brand":
+                    subf.append({"term": {f"{l['filter']}.name.keyword": it}})
+                else:
+                    subf.append({"term": {f"{l['filter']}.slug.keyword": it}})
+
+    #   print(item[0], item[1].split(","))
+    tmp = {
+        "bool": {
+            "must": [
+                *query,
+                {"bool": {"should": subf}},
+            ]
+        }
+    }
+    pp.pprint(tmp)
+
+    with open("/home/manhee/Projects/quora/quora/test_category/sample.json", "w") as f:
+        print(tmp)
+        json.dump(tmp, f, indent=2)
+    f.close()
+
+    return tmp
+
+
 def send_json(request):
+    make_query(request)
     aggs_size = 2000
     product_sizes = 200
     if request.method == "GET":
         """
         Check if search by make slug exists
         """
-        cat = request.GET.get("cat")
+
+        cat = request.GET.get("category")
         model = request.GET.get("model")
         make = request.GET.get("make")
         brand = request.GET.getlist("brand")
