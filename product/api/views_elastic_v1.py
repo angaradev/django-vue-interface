@@ -22,32 +22,28 @@ def aggs(size):
 
 def make_query(request, aggs, aggs_size, product_sizes=2000):
     query = []
-    sub = []
-    subf = []
+    boolShould = []
 
     for item in request.GET.items():
         if str(item[0]) == "price":
             continue
         # must here
         second = item[1].split(",")
-        if str(item[0]) != "category" and str(item[0]) != "model":
-            subitem = {"filter": item[0], "items": [*second]}
-            if subitem not in sub:
-                # print(subitem)
-                sub.append(subitem)
-
-        # First level for
         if item[0] == "model" or item[0] == "category":
             query.append(
                 {"term": {f"{item[0]}.slug.keyword": second[0]}},
             )
-    for l in sub:
 
-        for it in l["items"]:
-            if l["filter"] == "brand":
-                subf.append({"term": {f"{l['filter']}.name.keyword": it}})
-            else:
-                subf.append({"term": {f"{l['filter']}.name.keyword": it}})
+        inside = []  # var for collecting inner filter values
+        if str(item[0]) != "category" and str(item[0]) != "model":
+            for filVal in second:
+                lst = {"term": {f"{item[0]}.name.keyword": filVal}}
+                inside.append(lst)
+            # pp.pprint(inside)
+
+            subitem = {"bool": {"should": [x for x in inside]}}
+            boolShould.append(subitem)
+            # pp.pprint(subitem)
 
     tmp = {
         "size": product_sizes,
@@ -55,7 +51,7 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
             "bool": {
                 "must": [
                     *query,
-                    {"bool": {"must": subf}},
+                    {"bool": {"must": boolShould}},
                 ]
             }
         },
@@ -83,8 +79,6 @@ def send_json(request):
         model = request.GET.get("model")
         make = request.GET.get("make")
         data = None
-
-        print(len(request.GET))
 
         if model and cat and not make and len(request.GET) > 2:
             print("IN make models and filters")

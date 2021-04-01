@@ -17,8 +17,14 @@
           "bool": {
             "must": [
               {
-                "term": {
-                  "brand.name.keyword": "dongyang"
+                "bool": {
+                  "should": [
+                    {
+                      "term": {
+                        "brand.name.keyword": ""
+                      }
+                    }
+                  ]
                 }
               }
             ]
