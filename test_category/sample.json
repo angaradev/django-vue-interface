@@ -18,12 +18,7 @@
             "must": [
               {
                 "term": {
-                  "engine.name.keyword": ""
-                }
-              },
-              {
-                "term": {
-                  "brand.name.keyword": "pos"
+                  "brand.name.keyword": "dongyang"
                 }
               }
             ]

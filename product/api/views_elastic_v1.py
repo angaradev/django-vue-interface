@@ -30,22 +30,24 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
             continue
         # must here
         second = item[1].split(",")
-        if len(second) > 1:
-            sub.append({"filter": item[0], "items": [*second]})
+        if str(item[0]) != "category" and str(item[0]) != "model":
+            subitem = {"filter": item[0], "items": [*second]}
+            if subitem not in sub:
+                # print(subitem)
+                sub.append(subitem)
 
         # First level for
         if item[0] == "model" or item[0] == "category":
-
             query.append(
                 {"term": {f"{item[0]}.slug.keyword": second[0]}},
             )
-        for l in sub:
-            print(l)
-            for it in l["items"]:
-                if l["filter"] == "brand":
-                    subf.append({"term": {f"{l['filter']}.name.keyword": it}})
-                else:
-                    subf.append({"term": {f"{l['filter']}.slug.keyword": it}})
+    for l in sub:
+
+        for it in l["items"]:
+            if l["filter"] == "brand":
+                subf.append({"term": {f"{l['filter']}.name.keyword": it}})
+            else:
+                subf.append({"term": {f"{l['filter']}.name.keyword": it}})
 
     tmp = {
         "size": product_sizes,
@@ -53,7 +55,7 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
             "bool": {
                 "must": [
                     *query,
-                    {"bool": {"should": subf}},
+                    {"bool": {"must": subf}},
                 ]
             }
         },
@@ -80,39 +82,13 @@ def send_json(request):
         cat = request.GET.get("category")
         model = request.GET.get("model")
         make = request.GET.get("make")
-        brand = request.GET.getlist("brand")
         data = None
 
-        if model and cat and not make and len(request.GET.keys()) > 2:
+        print(len(request.GET))
+
+        if model and cat and not make and len(request.GET) > 2:
             print("IN make models and filters")
             data = make_query(request, aggs, aggs_size, product_sizes)
-
-        if model and cat and brand:
-            print("In model cat and brand")
-
-            # needs to rerfactor to helper
-            query = []
-            for item in brand:
-                query.append(
-                    {"term": {"brand.name.keyword": item.lower()}},
-                )
-
-            data = json.dumps(
-                {
-                    "size": product_sizes,
-                    "query": {
-                        "bool": {
-                            "must": [
-                                {"term": {"model.slug.keyword": model}},
-                                {"term": {"category.slug.keyword": cat}},
-                                {"bool": {"should": query}},
-                            ]
-                        }
-                    },
-                    # here goes aggs
-                    "aggs": aggs(aggs_size),
-                }
-            )
 
         if make and not model and not cat:
             print("in make not model not cat")
@@ -137,7 +113,7 @@ def send_json(request):
                 }
             )
         # If query has car model and slug
-        if model and cat and not make and not brand:
+        if model and cat and not make and len(request.GET) == 2:
             print("In model and cat")
             data = json.dumps(
                 {
