@@ -15,10 +15,15 @@
         },
         {
           "bool": {
-            "should": [
+            "must": [
               {
                 "term": {
-                  "engine.name.keyword": "\u043b\u044e\u0431\u043e\u0439"
+                  "engine.name.keyword": ""
+                }
+              },
+              {
+                "term": {
+                  "brand.name.keyword": "pos"
                 }
               }
             ]
