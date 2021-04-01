@@ -62,9 +62,9 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
 
     pp.pprint(tmp)
 
-    # with open("/home/manhee/Projects/quora/quora/test_category/sample.json", "w") as f:
-    #     json.dump(tmp, f, indent=2)
-    # f.close()
+    with open("/home/manhee/Projects/quora/quora/test_category/sample.json", "w") as f:
+        json.dump(tmp, f, indent=2)
+    f.close()
 
     return json.dumps(tmp)
 

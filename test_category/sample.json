@@ -5,12 +5,12 @@
       "must": [
         {
           "term": {
-            "model.slug.keyword": "hd72"
+            "model.slug.keyword": "hd78"
           }
         },
         {
           "term": {
-            "category.slug.keyword": "dvigatel-golovka-prokladka"
+            "category.slug.keyword": "detali-dvigatelja"
           }
         },
         {
