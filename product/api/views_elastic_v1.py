@@ -89,37 +89,13 @@ def send_json(request):
         make = request.GET.get("make")
         data = None
 
-        # if model and cat and not make and len(request.GET) and filters_chk:
-        #     print("IN make models and filters")
-        #     data = make_query(request, aggs, aggs_size, page_from, page_size)
+        if model and cat and not make and filters_chk:
+            print("IN make models and filters")
+            data = make_query(request, aggs, aggs_size, page_from, page_size)
 
-        # if make and not model and not cat:
-        #     print("in make not model not cat")
-
-        #     makeSlug = make.lower()
-        #     data = json.dumps(
-        #         {
-        #             "size": page_size,
-        #             "query": {"term": {"model.make.slug.keyword": makeSlug}},
-        #             "aggs": aggs(aggs_size),
-        #         }
-        #     )
-
-        #     # If query has query and car model
-        if model and not cat and not make and not filters_chk:
-            print("In model not cat not make")
-            print("PAGES ", page_from, page_size)
-            data = json.dumps(
-                {
-                    "from": page_from,
-                    "size": page_size,
-                    "query": {"term": {"model.slug.keyword": model}},
-                    "aggs": aggs(aggs_size),
-                }
-            )
         # If query has car model and slug
-        print(model, cat, make)
-        if model and cat and not make and not filters_chk:
+        elif model and cat and not make and not filters_chk:
+            print(model, cat, page_from, page_size)
             print("In model and cat NOT filters")
             data = json.dumps(
                 {
@@ -137,8 +113,33 @@ def send_json(request):
                 }
             )
 
+        # For model only request comment out for now
+        elif model and not cat and not make and not filters_chk:
+            print("In model Only")
+            print("PAGES ", page_from, page_size)
+            data = json.dumps(
+                {
+                    "from": page_from,
+                    "size": page_size,
+                    "query": {"term": {"model.slug.keyword": model}},
+                    "aggs": aggs(aggs_size),
+                }
+            )
+
+        # For make only request
+        elif make and not model and not cat:
+            print("in make not model not cat")
+
+            makeSlug = make.lower()
+            data = json.dumps(
+                {
+                    "size": page_size,
+                    "query": {"term": {"model.make.slug.keyword": makeSlug}},
+                    "aggs": aggs(aggs_size),
+                }
+            )
         # if query has q == 'all'
-        if model == "all" and not cat:
+        elif model == "all" and not cat:
             print("In all statement")
             data = json.dumps(
                 {
