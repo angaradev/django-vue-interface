@@ -1,16 +1,17 @@
 {
+  "from": 1,
   "size": 200,
   "query": {
     "bool": {
       "must": [
         {
           "term": {
-            "model.slug.keyword": "hd78"
+            "model.slug.keyword": "hd72"
           }
         },
         {
           "term": {
-            "category.slug.keyword": "detali-dvigatelja"
+            "category.slug.keyword": "salnik-kolenvala"
           }
         },
         {
@@ -21,7 +22,7 @@
                   "should": [
                     {
                       "term": {
-                        "brand.name.keyword": ""
+                        "filters_chk.name.keyword": "1"
                       }
                     }
                   ]

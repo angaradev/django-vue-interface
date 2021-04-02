@@ -20,7 +20,7 @@ def aggs(size):
     return aggs
 
 
-def make_query(request, aggs, aggs_size, product_sizes=2000):
+def make_query(request, aggs, aggs_size, page_from=1, page_size=200):
     query = []
     boolShould = []
 
@@ -46,7 +46,8 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
             # pp.pprint(subitem)
 
     tmp = {
-        "size": product_sizes,
+        "from": page_from,
+        "size": page_size,
         "query": {
             "bool": {
                 "must": [
@@ -58,7 +59,7 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
         "aggs": aggs(aggs_size),
     }
 
-    pp.pprint(tmp)
+    # pp.pprint(tmp)
 
     with open("/home/manhee/Projects/quora/quora/test_category/sample.json", "w") as f:
         json.dump(tmp, f, indent=2)
@@ -69,49 +70,61 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
 
 def send_json(request):
     aggs_size = 2000
-    product_sizes = 200
+    print(request.GET)
     if request.method == "GET":
         """
         Check if search by make slug exists
         """
+        page_size = request.GET.get("page_size") or 200
 
+        if request.GET.get("page_from") == "0":
+            page_from = 1
+        else:
+            page_from = request.GET.get("page_from") or 1
+
+        print(page_from, page_size)
+        filters_chk = request.GET.get("filters_chk")
         cat = request.GET.get("category")
         model = request.GET.get("model")
         make = request.GET.get("make")
         data = None
 
-        if model and cat and not make and len(request.GET) > 2:
-            print("IN make models and filters")
-            data = make_query(request, aggs, aggs_size, product_sizes)
+        # if model and cat and not make and len(request.GET) and filters_chk:
+        #     print("IN make models and filters")
+        #     data = make_query(request, aggs, aggs_size, page_from, page_size)
 
-        if make and not model and not cat:
-            print("in make not model not cat")
+        # if make and not model and not cat:
+        #     print("in make not model not cat")
 
-            makeSlug = make.lower()
-            data = json.dumps(
-                {
-                    "size": product_sizes,
-                    "query": {"term": {"model.make.slug.keyword": makeSlug}},
-                    "aggs": aggs(aggs_size),
-                }
-            )
+        #     makeSlug = make.lower()
+        #     data = json.dumps(
+        #         {
+        #             "size": page_size,
+        #             "query": {"term": {"model.make.slug.keyword": makeSlug}},
+        #             "aggs": aggs(aggs_size),
+        #         }
+        #     )
 
-            # If query has query and car model
-        if model and not cat and not make:
+        #     # If query has query and car model
+        if model and not cat and not make and not filters_chk:
             print("In model not cat not make")
+            print("PAGES ", page_from, page_size)
             data = json.dumps(
                 {
-                    "size": product_sizes,
+                    "from": page_from,
+                    "size": page_size,
                     "query": {"term": {"model.slug.keyword": model}},
                     "aggs": aggs(aggs_size),
                 }
             )
         # If query has car model and slug
-        if model and cat and not make and len(request.GET) == 2:
-            print("In model and cat")
+        print(model, cat, make)
+        if model and cat and not make and not filters_chk:
+            print("In model and cat NOT filters")
             data = json.dumps(
                 {
-                    "size": product_sizes,
+                    "from": page_from,
+                    "size": page_size,
                     "query": {
                         "bool": {
                             "must": [
@@ -129,7 +142,7 @@ def send_json(request):
             print("In all statement")
             data = json.dumps(
                 {
-                    "size": product_sizes,
+                    "size": page_size,
                     "query": {"match_all": {}},
                     "aggs": aggs(aggs_size),
                 }
