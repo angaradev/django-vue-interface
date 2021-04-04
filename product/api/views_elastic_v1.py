@@ -6,6 +6,9 @@ import pprint
 
 pp = pprint.PrettyPrinter(indent=2)
 
+main_params = ["model", "category"]
+filters_params = ["brand", "engine", "bages", "price", "image", "has_photo"]
+
 
 def aggs(size):
     aggs = {
@@ -16,16 +19,24 @@ def aggs(size):
         "bages": {"terms": {"field": "bages.keyword", "size": 5}},
         "min_price": {"min": {"field": "stocks.price"}},
         "max_price": {"max": {"field": "stocks.price"}},
+        "has_photo": {"terms": {"field": "has_photo"}},
     }
     return aggs
 
 
-def make_query(request, aggs, aggs_size, product_sizes=2000):
+def make_query(request, aggs, aggs_size, page_from=1, page_size=200):
     query = []
     boolShould = []
+    price = request.GET.get("price")
+    priceMin = 1
+    priceMax = 10000000
+    if price:
+        spl = price.split("-")
+        priceMin = spl[0]
+        priceMax = spl[1]
 
     for item in request.GET.items():
-        if str(item[0]) == "price":
+        if str(item[0]) == "page_from" or str(item[0]) == "page_size":
             continue
         # must here
         second = item[1].split(",")
@@ -37,7 +48,23 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
         inside = []  # var for collecting inner filter values
         if str(item[0]) != "category" and str(item[0]) != "model":
             for filVal in second:
-                lst = {"term": {f"{item[0]}.name.keyword": filVal}}
+                if str(item[0]) == "price":
+                    # adding range here
+                    lst = {
+                        "range": {"stocks.price": {"gte": priceMin, "lte": priceMax}}
+                    }
+
+                elif item[0] == "bages":
+                    lst = {"term": {f"{item[0]}.keyword": filVal}}
+                elif item[0] == "has_photo":
+                    phot = "false"
+                    if filVal == "0":
+                        phot = "false"
+                    else:
+                        phot = "true"
+                    lst = {"term": {"has_photo": phot}}
+                else:
+                    lst = {"term": {f"{item[0]}.name.keyword": filVal}}
                 inside.append(lst)
             # pp.pprint(inside)
 
@@ -46,7 +73,8 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
             # pp.pprint(subitem)
 
     tmp = {
-        "size": product_sizes,
+        "from": page_from,
+        "size": page_size,
         "query": {
             "bool": {
                 "must": [
@@ -58,7 +86,7 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
         "aggs": aggs(aggs_size),
     }
 
-    pp.pprint(tmp)
+    # pp.pprint(tmp)
 
     with open("/home/manhee/Projects/quora/quora/test_category/sample.json", "w") as f:
         json.dump(tmp, f, indent=2)
@@ -67,51 +95,49 @@ def make_query(request, aggs, aggs_size, product_sizes=2000):
     return json.dumps(tmp)
 
 
+# Function for checking if filters in defined list exists in qyery params
+def checFilters(filters, get):
+    flag = False
+
+    for item in get:
+        if item in filters:
+            flag = True
+            break
+    return flag
+
+
 def send_json(request):
     aggs_size = 2000
-    product_sizes = 200
     if request.method == "GET":
         """
         Check if search by make slug exists
         """
+        page_size = request.GET.get("page_size") or 200
 
+        page_from = request.GET.get("page_from") or 0 
+
+        filters_chk = request.GET.get("filters_chk")
         cat = request.GET.get("category")
         model = request.GET.get("model")
         make = request.GET.get("make")
         data = None
+        q_list = [x[0] for x in request.GET.items()]
+        filters_chk = checFilters(filters_params, q_list)
+        print(page_from, page_size)
+        print(filters_chk)
 
-        if model and cat and not make and len(request.GET) > 2:
+        if model and cat and not make and filters_chk:
             print("IN make models and filters")
-            data = make_query(request, aggs, aggs_size, product_sizes)
+            data = make_query(request, aggs, aggs_size, page_from, page_size)
 
-        if make and not model and not cat:
-            print("in make not model not cat")
-
-            makeSlug = make.lower()
+            # If query has car model and slug
+        elif model and cat and not make:
+            print(model, cat, page_from, page_size)
+            print("In model and cat NOT filters")
             data = json.dumps(
                 {
-                    "size": product_sizes,
-                    "query": {"term": {"model.make.slug.keyword": makeSlug}},
-                    "aggs": aggs(aggs_size),
-                }
-            )
-
-            # If query has query and car model
-        if model and not cat and not make:
-            print("In model not cat not make")
-            data = json.dumps(
-                {
-                    "size": product_sizes,
-                    "query": {"term": {"model.slug.keyword": model}},
-                    "aggs": aggs(aggs_size),
-                }
-            )
-        # If query has car model and slug
-        if model and cat and not make and len(request.GET) == 2:
-            print("In model and cat")
-            data = json.dumps(
-                {
-                    "size": product_sizes,
+                    "from": page_from,
+                    "size": page_size,
                     "query": {
                         "bool": {
                             "must": [
@@ -124,12 +150,37 @@ def send_json(request):
                 }
             )
 
+        # For model only request comment out for now
+        elif model and not cat and not make and not filters_chk:
+            print("In model Only")
+            print("PAGES ", page_from, page_size)
+            data = json.dumps(
+                {
+                    "from": page_from,
+                    "size": page_size,
+                    "query": {"term": {"model.slug.keyword": model}},
+                    "aggs": aggs(aggs_size),
+                }
+            )
+
+        # For make only request
+        elif make and not model and not cat:
+            print("in make not model not cat")
+
+            makeSlug = make.lower()
+            data = json.dumps(
+                {
+                    "size": page_size,
+                    "query": {"term": {"model.make.slug.keyword": makeSlug}},
+                    "aggs": aggs(aggs_size),
+                }
+            )
         # if query has q == 'all'
-        if model == "all" and not cat:
+        elif model == "all" and not cat:
             print("In all statement")
             data = json.dumps(
                 {
-                    "size": product_sizes,
+                    "size": page_size,
                     "query": {"match_all": {}},
                     "aggs": aggs(aggs_size),
                 }

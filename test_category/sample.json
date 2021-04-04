@@ -1,16 +1,17 @@
 {
-  "size": 200,
+  "from": 1,
+  "size": "20",
   "query": {
     "bool": {
       "must": [
         {
           "term": {
-            "model.slug.keyword": "hd78"
+            "model.slug.keyword": "hd72"
           }
         },
         {
           "term": {
-            "category.slug.keyword": "detali-dvigatelja"
+            "category.slug.keyword": "golovka-i-grm"
           }
         },
         {
@@ -21,7 +22,18 @@
                   "should": [
                     {
                       "term": {
-                        "brand.name.keyword": ""
+                        "brand.name.keyword": "mobis"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "term": {
+                        "engine.name.keyword": "d4al"
                       }
                     }
                   ]
@@ -69,6 +81,11 @@
     "max_price": {
       "max": {
         "field": "stocks.price"
+      }
+    },
+    "has_photo": {
+      "terms": {
+        "field": "has_photo"
       }
     }
   }
