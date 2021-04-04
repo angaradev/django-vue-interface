@@ -6,6 +6,9 @@ import pprint
 
 pp = pprint.PrettyPrinter(indent=2)
 
+main_params = ["model", "category"]
+filters_params = ["brand", "engine", "bages", "price", "image"]
+
 
 def aggs(size):
     aggs = {
@@ -23,9 +26,16 @@ def aggs(size):
 def make_query(request, aggs, aggs_size, page_from=1, page_size=200):
     query = []
     boolShould = []
+    price = request.GET.get("price")
+    priceMin = 1
+    priceMax = 10000000
+    if price:
+        spl = price.split("-")
+        priceMin = spl[0]
+        priceMax = spl[1]
 
     for item in request.GET.items():
-        if str(item[0]) == "price":
+        if str(item[0]) == "page_from" or str(item[0]) == "page_size":
             continue
         # must here
         second = item[1].split(",")
@@ -37,7 +47,16 @@ def make_query(request, aggs, aggs_size, page_from=1, page_size=200):
         inside = []  # var for collecting inner filter values
         if str(item[0]) != "category" and str(item[0]) != "model":
             for filVal in second:
-                lst = {"term": {f"{item[0]}.name.keyword": filVal}}
+                if str(item[0]) == "price":
+                    # adding range here
+                    lst = {
+                        "range": {"stocks.price": {"gte": priceMin, "lte": priceMax}}
+                    }
+
+                elif item[0] == "bages":
+                    lst = {"term": {f"{item[0]}.keyword": filVal}}
+                else:
+                    lst = {"term": {f"{item[0]}.name.keyword": filVal}}
                 inside.append(lst)
             # pp.pprint(inside)
 
@@ -68,9 +87,19 @@ def make_query(request, aggs, aggs_size, page_from=1, page_size=200):
     return json.dumps(tmp)
 
 
+# Function for checking if filters in defined list exists in qyery params
+def checFilters(filters, get):
+    flag = False
+
+    for item in get:
+        if item in filters:
+            flag = True
+            break
+    return flag
+
+
 def send_json(request):
     aggs_size = 2000
-    print(request.GET)
     if request.method == "GET":
         """
         Check if search by make slug exists
@@ -82,19 +111,22 @@ def send_json(request):
         else:
             page_from = request.GET.get("page_from") or 1
 
-        print(page_from, page_size)
         filters_chk = request.GET.get("filters_chk")
         cat = request.GET.get("category")
         model = request.GET.get("model")
         make = request.GET.get("make")
         data = None
+        q_list = [x[0] for x in request.GET.items()]
+        filters_chk = checFilters(filters_params, q_list)
+        print(page_from, page_size)
+        print(filters_chk)
 
         if model and cat and not make and filters_chk:
             print("IN make models and filters")
             data = make_query(request, aggs, aggs_size, page_from, page_size)
 
-        # If query has car model and slug
-        elif model and cat and not make and not filters_chk:
+            # If query has car model and slug
+        elif model and cat and not make:
             print(model, cat, page_from, page_size)
             print("In model and cat NOT filters")
             data = json.dumps(

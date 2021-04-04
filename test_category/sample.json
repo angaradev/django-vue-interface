@@ -1,6 +1,6 @@
 {
   "from": 1,
-  "size": 200,
+  "size": "20",
   "query": {
     "bool": {
       "must": [
@@ -11,7 +11,7 @@
         },
         {
           "term": {
-            "category.slug.keyword": "salnik-kolenvala"
+            "category.slug.keyword": "detali-dvigatelja"
           }
         },
         {
@@ -22,7 +22,21 @@
                   "should": [
                     {
                       "term": {
-                        "filters_chk.name.keyword": "1"
+                        "brand.name.keyword": "mobis"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "range": {
+                        "stocks.price": {
+                          "gte": "2823",
+                          "lte": "4804"
+                        }
                       }
                     }
                   ]
