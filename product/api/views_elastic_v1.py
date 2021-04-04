@@ -7,7 +7,7 @@ import pprint
 pp = pprint.PrettyPrinter(indent=2)
 
 main_params = ["model", "category"]
-filters_params = ["brand", "engine", "bages", "price", "image"]
+filters_params = ["brand", "engine", "bages", "price", "image", "has_photo"]
 
 
 def aggs(size):
@@ -19,6 +19,7 @@ def aggs(size):
         "bages": {"terms": {"field": "bages.keyword", "size": 5}},
         "min_price": {"min": {"field": "stocks.price"}},
         "max_price": {"max": {"field": "stocks.price"}},
+        "has_photo": {"terms": {"field": "has_photo"}},
     }
     return aggs
 
@@ -55,6 +56,13 @@ def make_query(request, aggs, aggs_size, page_from=1, page_size=200):
 
                 elif item[0] == "bages":
                     lst = {"term": {f"{item[0]}.keyword": filVal}}
+                elif item[0] == "has_photo":
+                    phot = "false"
+                    if filVal == "0":
+                        phot = "false"
+                    else:
+                        phot = "true"
+                    lst = {"term": {"has_photo": phot}}
                 else:
                     lst = {"term": {f"{item[0]}.name.keyword": filVal}}
                 inside.append(lst)
@@ -106,10 +114,7 @@ def send_json(request):
         """
         page_size = request.GET.get("page_size") or 200
 
-        if request.GET.get("page_from") == "0":
-            page_from = 1
-        else:
-            page_from = request.GET.get("page_from") or 1
+        page_from = request.GET.get("page_from") or 0 
 
         filters_chk = request.GET.get("filters_chk")
         cat = request.GET.get("category")

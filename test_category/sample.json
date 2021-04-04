@@ -11,7 +11,7 @@
         },
         {
           "term": {
-            "category.slug.keyword": "detali-dvigatelja"
+            "category.slug.keyword": "golovka-i-grm"
           }
         },
         {
@@ -32,11 +32,8 @@
                 "bool": {
                   "should": [
                     {
-                      "range": {
-                        "stocks.price": {
-                          "gte": "2823",
-                          "lte": "4804"
-                        }
+                      "term": {
+                        "engine.name.keyword": "d4al"
                       }
                     }
                   ]
@@ -84,6 +81,11 @@
     "max_price": {
       "max": {
         "field": "stocks.price"
+      }
+    },
+    "has_photo": {
+      "terms": {
+        "field": "has_photo"
       }
     }
   }
