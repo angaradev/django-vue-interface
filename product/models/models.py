@@ -117,6 +117,7 @@ class Product(models.Model):  # Main table product
     unit = models.ForeignKey(
         "Units", on_delete=models.DO_NOTHING, related_name="product_unit"
     )
+    condition = models.CharField(max_length=20, null=True, blank=True, default="new")
     active = models.BooleanField(default=True)
     engine = models.ManyToManyField(
         "CarEngine", related_name="car_related_engine", blank=True

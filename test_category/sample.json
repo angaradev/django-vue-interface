@@ -1,5 +1,5 @@
 {
-  "from": 1,
+  "from": "0",
   "size": "20",
   "query": {
     "bool": {
@@ -11,7 +11,7 @@
         },
         {
           "term": {
-            "category.slug.keyword": "golovka-i-grm"
+            "category.slug.keyword": "kolenval-i-porshnevaja-gruppa"
           }
         },
         {
@@ -22,7 +22,7 @@
                   "should": [
                     {
                       "term": {
-                        "brand.name.keyword": "mobis"
+                        "has_photo": "true"
                       }
                     }
                   ]
@@ -33,7 +33,7 @@
                   "should": [
                     {
                       "term": {
-                        "engine.name.keyword": "d4al"
+                        "brand.name.keyword": "mobis"
                       }
                     }
                   ]
