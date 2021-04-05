@@ -7,7 +7,15 @@ import pprint
 pp = pprint.PrettyPrinter(indent=2)
 
 main_params = ["model", "category"]
-filters_params = ["brand", "engine", "bages", "price", "image", "has_photo"]
+filters_params = [
+    "brand",
+    "engine",
+    "bages",
+    "price",
+    "image",
+    "has_photo",
+    "condition",
+]
 
 
 def aggs(size):
@@ -17,6 +25,7 @@ def aggs(size):
         "engines": {"terms": {"field": "engine.name.keyword"}},
         "car_models": {"terms": {"field": "model.name.keyword"}},
         "bages": {"terms": {"field": "bages.keyword", "size": 5}},
+        "condition": {"terms": {"field": "condition.keyword", "size": 5}},
         "min_price": {"min": {"field": "stocks.price"}},
         "max_price": {"max": {"field": "stocks.price"}},
         "has_photo": {"terms": {"field": "has_photo"}},
@@ -24,7 +33,7 @@ def aggs(size):
     return aggs
 
 
-def make_query(request, aggs, aggs_size, page_from=1, page_size=200):
+def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=200):
     query = []
     boolShould = []
     price = request.GET.get("price")
@@ -40,7 +49,7 @@ def make_query(request, aggs, aggs_size, page_from=1, page_size=200):
             continue
         # must here
         second = item[1].split(",")
-        if item[0] == "model" or item[0] == "category":
+        if item[0] == "model" or item[0] == "category" and category:
             query.append(
                 {"term": {f"{item[0]}.slug.keyword": second[0]}},
             )
@@ -54,7 +63,7 @@ def make_query(request, aggs, aggs_size, page_from=1, page_size=200):
                         "range": {"stocks.price": {"gte": priceMin, "lte": priceMax}}
                     }
 
-                elif item[0] == "bages":
+                elif item[0] == "bages" or item[0] == "condition":
                     lst = {"term": {f"{item[0]}.keyword": filVal}}
                 elif item[0] == "has_photo":
                     phot = "false"
@@ -114,7 +123,7 @@ def send_json(request):
         """
         page_size = request.GET.get("page_size") or 200
 
-        page_from = request.GET.get("page_from") or 0 
+        page_from = request.GET.get("page_from") or 0
 
         filters_chk = request.GET.get("filters_chk")
         cat = request.GET.get("category")
@@ -123,16 +132,13 @@ def send_json(request):
         data = None
         q_list = [x[0] for x in request.GET.items()]
         filters_chk = checFilters(filters_params, q_list)
-        print(page_from, page_size)
-        print(filters_chk)
 
-        if model and cat and not make and filters_chk:
+        if model and not make and filters_chk:
             print("IN make models and filters")
-            data = make_query(request, aggs, aggs_size, page_from, page_size)
+            data = make_query(request, aggs, aggs_size, True, page_from, page_size)
 
             # If query has car model and slug
         elif model and cat and not make:
-            print(model, cat, page_from, page_size)
             print("In model and cat NOT filters")
             data = json.dumps(
                 {
@@ -152,8 +158,7 @@ def send_json(request):
 
         # For model only request comment out for now
         elif model and not cat and not make and not filters_chk:
-            print("In model Only")
-            print("PAGES ", page_from, page_size)
+            print("In model Only not working somehow")
             data = json.dumps(
                 {
                     "from": page_from,
