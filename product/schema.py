@@ -1,5 +1,5 @@
 from product.models import CarModel, CarMake, Category, Product
-from graphene import String, ObjectType, ID, Field, Schema, List, Boolean
+from graphene import String, ObjectType, ID, Field, Schema, List, Boolean, Int
 from django.db.models import Count
 from .utils import chk_img
 
@@ -77,13 +77,17 @@ class Query(ObjectType):
     vehicles_by_make = List(NewCarModelType, slug=String(required=True))
     category_by_slug = Field(CategoryType, slug=String(required=True))
     category_all = List(CategoryType)
-    popular_products = List(PopularProductByModelType, slug=String(required=True))
+    popular_products = List(
+        PopularProductByModelType,
+        slug=String(required=True),
+        quantity=Int(required=True),
+    )
 
-    def resolve_popular_products(self, info, slug):
+    def resolve_popular_products(self, info, slug, quantity=20):
         qs = Product.objects.filter(car_model__slug=slug).filter(
             product_image__isnull=False
         )[
-            :20
+            :quantity
         ]  # Needs to add some filter by popularity
         lst = []
         for prod in qs:
