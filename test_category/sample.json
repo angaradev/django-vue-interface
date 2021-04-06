@@ -1,5 +1,5 @@
 {
-  "from": 1,
+  "from": "0",
   "size": "20",
   "query": {
     "bool": {
@@ -11,7 +11,7 @@
         },
         {
           "term": {
-            "category.slug.keyword": "golovka-i-grm"
+            "category.slug.keyword": "shiny"
           }
         },
         {
@@ -32,8 +32,11 @@
                 "bool": {
                   "should": [
                     {
-                      "term": {
-                        "engine.name.keyword": "d4al"
+                      "range": {
+                        "stocks.price": {
+                          "gte": "2066",
+                          "lte": "5827"
+                        }
                       }
                     }
                   ]
@@ -70,6 +73,12 @@
     "bages": {
       "terms": {
         "field": "bages.keyword",
+        "size": 5
+      }
+    },
+    "condition": {
+      "terms": {
+        "field": "condition.keyword",
         "size": 5
       }
     },
