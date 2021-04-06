@@ -6,7 +6,12 @@
       "must": [
         {
           "term": {
-            "model.slug.keyword": "dejli"
+            "model.slug.keyword": "hd72"
+          }
+        },
+        {
+          "term": {
+            "category.slug.keyword": "shiny"
           }
         },
         {
@@ -17,7 +22,21 @@
                   "should": [
                     {
                       "term": {
-                        "brand.name.keyword": "nissan"
+                        "brand.name.keyword": "mobis"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "range": {
+                        "stocks.price": {
+                          "gte": "2066",
+                          "lte": "5827"
+                        }
                       }
                     }
                   ]

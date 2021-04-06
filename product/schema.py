@@ -54,11 +54,18 @@ class IProductImagesType(ObjectType):
     main = Boolean(required=True)
 
 
+class ProductStocksType(ObjectType):
+    id = ID()
+    store = String(required=False)
+    price = Int(required=False)
+    availability_days = Int(required=False)
+
+
 class PopularProductByModelType(ObjectType):
     id = ID()
     slug = String(required=True)
     name = String(required=True)
-    name2 = String(required=True)
+    name2 = String(required=False)
     full_name = String(required=True)
     one_c_id = String(required=True)
     sku = String(required=True)
@@ -66,6 +73,7 @@ class PopularProductByModelType(ObjectType):
     images = List(IProductImagesType)
     cat_number = String(required=True)
     bages = String(required=True)
+    stocks = List(ProductStocksType, required=False)
 
 
 class Query(ObjectType):
@@ -84,11 +92,11 @@ class Query(ObjectType):
     )
 
     def resolve_popular_products(self, info, slug, quantity=20):
-        qs = Product.objects.filter(car_model__slug=slug).filter(
-            product_image__isnull=False
-        )[
-            :quantity
-        ]  # Needs to add some filter by popularity
+        qs = (
+            Product.objects.filter(car_model__slug=slug)
+            .filter(product_image__isnull=False)
+            .distinct()[:quantity]
+        )  # Needs to add some filter by popularity
         lst = []
         for prod in qs:
             models = [
@@ -113,6 +121,19 @@ class Query(ObjectType):
                 }
                 for x in prod.images
             ]
+            stocks = [
+                {
+                    "id": x.id,
+                    "store": {
+                        "name": x.store.name,
+                        "location_city": x.store.location_city,
+                    },
+                    "price": x.price,
+                    "quantity": x.quantity,
+                    "availability_days": x.availability_days,
+                }
+                for x in prod.product_stock.all()
+            ]
             lst.append(
                 {
                     "id": prod.id,
@@ -126,6 +147,7 @@ class Query(ObjectType):
                     "model": models,
                     "images": images,
                     "bages": bages,
+                    "stocks": stocks,
                 }
             )
 
