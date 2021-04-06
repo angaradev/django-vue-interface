@@ -6,7 +6,7 @@
       "must": [
         {
           "term": {
-            "model.slug.keyword": "dukato"
+            "model.slug.keyword": "dejli"
           }
         },
         {
@@ -17,7 +17,7 @@
                   "should": [
                     {
                       "term": {
-                        "has_photo": "true"
+                        "brand.name.keyword": "nissan"
                       }
                     }
                   ]
