@@ -6,12 +6,12 @@
       "must": [
         {
           "term": {
-            "model.slug.keyword": "hd72"
+            "model.slug.keyword": "porter1"
           }
         },
         {
           "term": {
-            "category.slug.keyword": "shiny"
+            "category.slug.keyword": "zapchasti"
           }
         },
         {
@@ -21,8 +21,11 @@
                 "bool": {
                   "should": [
                     {
-                      "term": {
-                        "brand.name.keyword": "mobis"
+                      "range": {
+                        "stocks.price": {
+                          "gte": "9",
+                          "lte": "5358"
+                        }
                       }
                     }
                   ]
@@ -32,11 +35,8 @@
                 "bool": {
                   "should": [
                     {
-                      "range": {
-                        "stocks.price": {
-                          "gte": "2066",
-                          "lte": "5827"
-                        }
+                      "term": {
+                        "brand.name.keyword": "mobis"
                       }
                     }
                   ]
