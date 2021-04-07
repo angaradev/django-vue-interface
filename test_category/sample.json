@@ -5,13 +5,11 @@
     "bool": {
       "must": [
         {
-          "term": {
-            "model.slug.keyword": "hd72"
-          }
-        },
-        {
-          "term": {
-            "category.slug.keyword": "shiny"
+          "match": {
+            "full_name": {
+              "query": "\u0444\u0430\u0440\u0430",
+              "operator": "and"
+            }
           }
         },
         {
@@ -22,21 +20,7 @@
                   "should": [
                     {
                       "term": {
-                        "brand.name.keyword": "mobis"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "bool": {
-                  "should": [
-                    {
-                      "range": {
-                        "stocks.price": {
-                          "gte": "2066",
-                          "lte": "5827"
-                        }
+                        "model.name.keyword": "\u043f\u043e\u0440\u0442\u0435\u04401"
                       }
                     }
                   ]

@@ -49,13 +49,13 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
             continue
         # must here
         second = item[1].split(",")
-        if item[0] == "model" or item[0] == "category" and category:
+        if item[0] == "search":
             query.append(
-                {"term": {f"{item[0]}.slug.keyword": second[0]}},
+                {"match": {f"full_name": {"query": second[0], "operator": "and"}}},
             )
 
         inside = []  # var for collecting inner filter values
-        if str(item[0]) != "category" and str(item[0]) != "model":
+        if str(item[0]) != "search":
             for filVal in second:
                 if str(item[0]) == "price":
                     # adding range here
@@ -63,6 +63,12 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                         "range": {"stocks.price": {"gte": priceMin, "lte": priceMax}}
                     }
 
+                elif item[0] == "category" or item[0] == "condition":
+                    lst = {"term": {f"{item[0]}.slug.keyword": filVal}}
+                elif item[0] == "car_models":
+                    lst = {"term": {"model.name.keyword": filVal}}
+                elif item[0] == "model" or item[0] == "condition":
+                    lst = {"term": {f"{item[0]}.slug.keyword": filVal}}
                 elif item[0] == "bages" or item[0] == "condition":
                     lst = {"term": {f"{item[0]}.keyword": filVal}}
                 elif item[0] == "has_photo":
@@ -79,7 +85,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
 
             subitem = {"bool": {"should": [x for x in inside]}}
             boolShould.append(subitem)
-            # pp.pprint(subitem)
+            pp.pprint(subitem)
 
     tmp = {
         "from": page_from,
@@ -134,64 +140,9 @@ def send_json(request):
         q_list = [x[0] for x in request.GET.items()]
         filters_chk = checFilters(filters_params, q_list)
 
-        if model and not make and filters_chk:
-            print("IN make models and filters")
-            data = make_query(request, aggs, aggs_size, True, page_from, page_size)
+        data = make_query(request, aggs, aggs_size, True, page_from, page_size)
 
-            # If query has car model and slug
-        elif model and cat and not make:
-            print("In model and cat NOT filters")
-            data = json.dumps(
-                {
-                    "from": page_from,
-                    "size": page_size,
-                    "query": {
-                        "bool": {
-                            "must": [
-                                {"term": {"model.slug.keyword": model}},
-                                {"term": {"category.slug.keyword": cat}},
-                            ]
-                        }
-                    },
-                    "aggs": aggs(aggs_size),
-                }
-            )
-
-        # For model only request comment out for now
-        elif model and not cat and not make and not filters_chk:
-            print("In model Only not working somehow")
-            data = json.dumps(
-                {
-                    "from": page_from,
-                    "size": page_size,
-                    "query": {"term": {"model.slug.keyword": model}},
-                    "aggs": aggs(aggs_size),
-                }
-            )
-
-        # For make only request
-        elif make and not model and not cat:
-            print("in make not model not cat")
-
-            makeSlug = make.lower()
-            data = json.dumps(
-                {
-                    "size": page_size,
-                    "query": {"term": {"model.make.slug.keyword": makeSlug}},
-                    "aggs": aggs(aggs_size),
-                }
-            )
-        # if query has q == 'all'
-        elif model == "all" and not cat:
-            print("In all statement")
-            data = json.dumps(
-                {
-                    "size": page_size,
-                    "query": {"match_all": {}},
-                    "aggs": aggs(aggs_size),
-                }
-            )
-        # if query has q == all and cat slug
+        # If query has car model and slug
 
     r = requests.get(
         "http://localhost:9200/prod_notebook/_search",
