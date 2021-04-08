@@ -66,7 +66,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                 elif item[0] == "category" or item[0] == "condition":
                     lst = {"term": {f"{item[0]}.slug.keyword": filVal}}
                 elif item[0] == "car_models":
-                    lst = {"term": {"model.name.keyword": filVal}}
+                    lst = {"term": {"model.slug.keyword": filVal}}
                 elif item[0] == "model" or item[0] == "condition":
                     lst = {"term": {f"{item[0]}.slug.keyword": filVal}}
                 elif item[0] == "bages" or item[0] == "condition":
