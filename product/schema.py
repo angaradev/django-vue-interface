@@ -66,13 +66,13 @@ class PopularProductByModelType(ObjectType):
     slug = String(required=True)
     name = String(required=True)
     name2 = String(required=False)
-    full_name = String(required=True)
-    one_c_id = String(required=True)
-    sku = String(required=True)
+    full_name = String(required=False)
+    one_c_id = String(required=False)
+    sku = String(required=False)
     model = List(NewCarModelType, required=True)
     images = List(IProductImagesType)
     cat_number = String(required=True)
-    bages = String(required=True)
+    bages = String(required=False)
     stocks = List(ProductStocksType, required=False)
 
 

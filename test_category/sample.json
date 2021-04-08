@@ -1,20 +1,24 @@
 {
-  "from": "40",
-  "size": "20",
+  "from": 0,
+  "size": 200,
   "query": {
     "bool": {
       "must": [
         {
-          "match": {
-            "full_name": {
-              "query": "\u0448\u0438\u043d\u0430",
-              "operator": "and"
-            }
-          }
-        },
-        {
           "bool": {
-            "must": []
+            "must": [
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "term": {
+                        "q.name.keyword": "\u0442\u0443\u0440\u0431\u0438\u043d\u044b"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
