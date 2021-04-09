@@ -198,7 +198,21 @@ def autocomplete(request):
         q = request.GET.get("q")
 
         # If query has car model and slug
-        query = {"query": {"prefix": {"full_name": {"value": q}}}}
+        # query = {"size": "20", "query": {"prefix": {"full_name": {"value": q}}}}
+        query = {
+            "size": 10,
+            "_source": "name",
+            "query": {
+                "match": {
+                    "name": {
+                        "query": q,
+                        "analyzer": "rebuilt_russian",
+                        "fuzziness": "auto",
+                        "operator": "and",
+                    }
+                }
+            },
+        }
 
     r = requests.get(
         "http://localhost:9200/prod_notebook/_search",

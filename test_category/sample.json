@@ -1,24 +1,21 @@
 {
-  "from": 0,
-  "size": 200,
+  "from": "0",
+  "size": "20",
   "query": {
     "bool": {
       "must": [
         {
+          "match": {
+            "full_name": {
+              "query": "\u043f\u0440\u043e\u043a\u043b\u0430\u0434\u043a\u0430 \u0442\u0443\u0440\u0431\u0438\u043d",
+              "operator": "and",
+              "fuzziness": "auto"
+            }
+          }
+        },
+        {
           "bool": {
-            "must": [
-              {
-                "bool": {
-                  "should": [
-                    {
-                      "term": {
-                        "q.name.keyword": "\u0442\u0443\u0440\u0431\u0438\u043d\u044b"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "must": []
           }
         }
       ]
