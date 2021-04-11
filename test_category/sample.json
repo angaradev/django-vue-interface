@@ -6,9 +6,10 @@
       "must": [
         {
           "match": {
-            "full_name": {
-              "query": "\u043f\u0440\u043e\u043a\u043b\u0430\u0434\u043a\u0430 \u0442\u0443\u0440\u0431\u0438\u043d",
+            "full_name_ngrams": {
+              "query": "porter",
               "operator": "and",
+              "analyzer": "rebuilt_russian",
               "fuzziness": "auto"
             }
           }

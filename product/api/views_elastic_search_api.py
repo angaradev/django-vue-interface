@@ -2,9 +2,10 @@ from django.views.generic.base import TemplateView
 from django.http import JsonResponse
 from product.models import Product, Category
 import json, requests
-import pprint
+import pprint, re
 
 pp = pprint.PrettyPrinter(indent=2)
+autocomplete_size = 14
 
 main_params = ["model", "category"]
 filters_params = [
@@ -39,6 +40,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     price = request.GET.get("price")
     priceMin = 1
     priceMax = 10000000
+    search = request.GET.get("search")
     if price:
         spl = price.split("-")
         priceMin = spl[0]
@@ -50,17 +52,46 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
         # must here
         second = item[1].split(",")
         if item[0] == "search":
-            query.append(
-                {
-                    "match": {
-                        f"full_name": {
-                            "query": second[0],
-                            "operator": "and",
-                            "fuzziness": "auto",
+            # If search is a number
+            if re.match(r"^\d+", str(search)):
+                print(search)
+
+                query.append(
+                    {
+                        "match": {
+                            "cat_number": {
+                                "query": search,
+                                "analyzer": "standard",
+                            }
+                        },
+                    }
+                )
+            # Else search is a text
+
+            else:
+                query.append(
+                    {
+                        "match": {
+                            "full_name_ngrams": {
+                                "query": second[0],
+                                "operator": "and",
+                                "analyzer": "rebuilt_russian",
+                                "fuzziness": "auto",
+                            }
                         }
                     }
-                },
-            )
+                )
+                # query.append(
+                #     {
+                #         "match": {
+                #             "full_name": {
+                #                 "query": second[0],
+                #                 "operator": "and",
+                #                 "fuzziness": "auto",
+                #             }
+                #         }
+                #     },
+                # )
 
         inside = []  # var for collecting inner filter values
         if str(item[0]) != "search":
@@ -200,8 +231,8 @@ def autocomplete(request):
         # If query has car model and slug
         # query = {"size": "20", "query": {"prefix": {"full_name": {"value": q}}}}
         query = {
-            "size": 10,
-            "_source": "name",
+            "size": autocomplete_size,
+            "_source": ["id", "name"],
             "query": {
                 "match": {
                     "name": {
@@ -213,6 +244,56 @@ def autocomplete(request):
                 }
             },
         }
+        if request.GET.get("model"):
+
+            query = {
+                "size": autocomplete_size,
+                "_source": ["id", "name"],
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"match": {"model.slug.keyword": "porter1"}},
+                            {
+                                "match": {
+                                    "name": {
+                                        "query": "помпа портер насос",
+                                        "analyzer": "rebuilt_russian",
+                                        "fuzziness": "auto",
+                                        "operator": "and",
+                                    }
+                                }
+                            },
+                        ]
+                    }
+                },
+            }
+
+    r = requests.get(
+        "http://localhost:9200/prod_notebook/_search",
+        headers={"Content-Type": "application/json"},
+        data=json.dumps(query),
+    )
+    if r.status_code != 200:
+        raise ValueError(f"Request cannot be proceeded Status code is: {r.status_code}")
+    response = r.json()
+
+    data = response
+
+    return JsonResponse(data, safe=False)
+
+
+def findNumbers(request):
+    if request.method == "GET":
+        """
+        Check if search by make slug exists
+        """
+        q = request.GET.get("q")
+
+        # If query has car model and slug
+        # query = {"size": "20", "query": {"prefix": {"full_name": {"value": q}}}}
+    query = {
+        "query": {"match": {"cat_number": {"query": q, "analyzer": "standard"}}},
+    }
 
     r = requests.get(
         "http://localhost:9200/prod_notebook/_search",

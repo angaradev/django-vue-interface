@@ -12,7 +12,11 @@ from .views import (
 )
 from product.api import views_a77
 from product.api.views_elastic_v1 import send_json
-from product.api.views_elastic_search_api import autocomplete, send_json as search_api
+from product.api.views_elastic_search_api import (
+    autocomplete,
+    findNumbers,
+    send_json as search_api,
+)
 
 router = DefaultRouter()
 router.register(r"images", ImageViewSet)
@@ -144,4 +148,5 @@ urlpatterns = [
     path("jsontest", send_json, name="send_json"),
     path("searchapi", search_api, name="searchapi"),
     path("autocomplete", autocomplete, name="autocomplete"),
+    path("findnumber", findNumbers, name="findNumbers"),
 ]
