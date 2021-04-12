@@ -6,27 +6,17 @@
       "must": [
         {
           "match": {
-            "full_name": {
-              "query": "\u0444\u0430\u0440\u0430",
-              "operator": "and"
+            "full_name_ngrams": {
+              "query": "\u043f\u0440\u043e\u043a\u043b\u0430\u0434\u043a\u0430 hd78",
+              "operator": "and",
+              "analyzer": "rebuilt_russian",
+              "fuzziness": "auto"
             }
           }
         },
         {
           "bool": {
-            "must": [
-              {
-                "bool": {
-                  "should": [
-                    {
-                      "term": {
-                        "model.name.keyword": "\u043f\u043e\u0440\u0442\u0435\u04401"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "must": []
           }
         }
       ]

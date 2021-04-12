@@ -2,9 +2,10 @@ from django.views.generic.base import TemplateView
 from django.http import JsonResponse
 from product.models import Product, Category
 import json, requests
-import pprint
+import pprint, re
 
 pp = pprint.PrettyPrinter(indent=2)
+autocomplete_size = 14
 
 main_params = ["model", "category"]
 filters_params = [
@@ -39,6 +40,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     price = request.GET.get("price")
     priceMin = 1
     priceMax = 10000000
+    search = request.GET.get("search")
     if price:
         spl = price.split("-")
         priceMin = spl[0]
@@ -50,9 +52,46 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
         # must here
         second = item[1].split(",")
         if item[0] == "search":
-            query.append(
-                {"match": {f"full_name": {"query": second[0], "operator": "and"}}},
-            )
+            # If search is a number
+            if re.match(r"^\d+", str(search)):
+                print(search)
+
+                query.append(
+                    {
+                        "match": {
+                            "cat_number": {
+                                "query": search,
+                                "analyzer": "standard",
+                            }
+                        },
+                    }
+                )
+            # Else search is a text
+
+            else:
+                query.append(
+                    {
+                        "match": {
+                            "full_name_ngrams": {
+                                "query": second[0],
+                                "operator": "and",
+                                "analyzer": "rebuilt_russian",
+                                "fuzziness": "auto",
+                            }
+                        }
+                    }
+                )
+                # query.append(
+                #     {
+                #         "match": {
+                #             "full_name": {
+                #                 "query": second[0],
+                #                 "operator": "and",
+                #                 "fuzziness": "auto",
+                #             }
+                #         }
+                #     },
+                # )
 
         inside = []  # var for collecting inner filter values
         if str(item[0]) != "search":
@@ -67,7 +106,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                     lst = {"term": {f"{item[0]}.slug.keyword": filVal}}
                 elif item[0] == "car_models":
                     lst = {"term": {"model.name.keyword": filVal}}
-                elif item[0] == "model" or item[0] == "condition":
+                elif item[0] == "condition":
                     lst = {"term": {f"{item[0]}.slug.keyword": filVal}}
                 elif item[0] == "bages" or item[0] == "condition":
                     lst = {"term": {f"{item[0]}.keyword": filVal}}
@@ -132,7 +171,6 @@ def send_json(request):
         page_from = request.GET.get("page_from") or 0
         search = request.GET.get("search") or None
 
-        filters_chk = request.GET.get("filters_chk")
         cat = request.GET.get("category")
         model = request.GET.get("model")
         make = request.GET.get("make")
@@ -183,167 +221,88 @@ def send_json(request):
     return JsonResponse(data, safe=False)
 
 
-def send_json_filters(request):
-    aggs_size = 2000
-    product_sizes = 200
-    cat_slug = None
-    query = None
-    makeSlug = None
+def autocomplete(request):
     if request.method == "GET":
         """
         Check if search by make slug exists
         """
-        if request.GET.get("makeSlug"):
+        q = request.GET.get("q")
 
-            makeSlug = request.GET.get("makeSlug")
-            makeSlug = makeSlug.lower()
-            data = json.dumps(
-                {
-                    "size": product_sizes,
-                    "query": {"term": {"model.make.slug.keyword": makeSlug}},
-                    "aggs": {
-                        "unique_ids": {"terms": {"field": "id"}},
-                        "categories": {
-                            "terms": {"field": "category.id", "size": aggs_size}
-                        },
-                        "brands": {"terms": {"field": "brand.name.keyword"}},
-                        "engines": {"terms": {"field": "engine.name.keyword"}},
-                        "car_models": {"terms": {"field": "model.name.keyword"}},
-                        "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                    },
+        # If query has car model and slug
+        # query = {"size": "20", "query": {"prefix": {"full_name": {"value": q}}}}
+        query = {
+            "size": autocomplete_size,
+            "_source": ["id", "name"],
+            "query": {
+                "match": {
+                    "name": {
+                        "query": q,
+                        "analyzer": "rebuilt_russian",
+                        "fuzziness": "auto",
+                        "operator": "and",
+                    }
                 }
-            )
+            },
+        }
+        if request.GET.get("model"):
 
-        else:
-            """
-            Here starts parts if no query by makeSlug search
-            """
-            if request.method == "GET":
-                if request.GET.get("q") == "all":
-                    print(
-                        "\033[93m",
-                        "Attention ALL PRODUCTS REQUEST PERFORMED!",
-                        request.GET,
-                    )
-                if "q" in request.GET:
-                    query = request.GET["q"].lower()
-                if "cat" in request.GET:
-                    cat_slug = request.GET["cat"].lower()
-
-            data = json.dumps(
-                {
-                    "size": product_sizes,
-                    "query": {"match_all": {}},
-                    "aggs": {
-                        "unique_ids": {"terms": {"field": "id"}},
-                        "categories": {
-                            "terms": {"field": "category.id", "size": aggs_size}
-                        },
-                        "brands": {"terms": {"field": "brand.name.keyword"}},
-                        "engines": {"terms": {"field": "engine.name.keyword"}},
-                        "car_models": {"terms": {"field": "model.name.keyword"}},
-                        "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                    },
-                }
-            )
-
-            # If query has query and car model
-            if query and not cat_slug:
-                data = json.dumps(
-                    {
-                        "size": product_sizes,
-                        "query": {"term": {"model.slug.keyword": query}},
-                        "aggs": {
-                            "unique_ids": {"terms": {"field": "id"}},
-                            "categories": {
-                                "terms": {"field": "category.id", "size": aggs_size}
+            query = {
+                "size": autocomplete_size,
+                "_source": ["id", "name"],
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"match": {"model.slug.keyword": "porter1"}},
+                            {
+                                "match": {
+                                    "name": {
+                                        "query": "помпа портер насос",
+                                        "analyzer": "rebuilt_russian",
+                                        "fuzziness": "auto",
+                                        "operator": "and",
+                                    }
+                                }
                             },
-                            "brands": {"terms": {"field": "brand.name.keyword"}},
-                            "engines": {"terms": {"field": "engine.name.keyword"}},
-                            "car_models": {"terms": {"field": "model.name.keyword"}},
-                            "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                        },
+                        ]
                     }
-                )
-            # If query has car model and slug
-            if query and cat_slug:
-                data = json.dumps(
-                    {
-                        "size": product_sizes,
-                        "query": {
-                            "bool": {
-                                "must": [
-                                    {"term": {"model.slug.keyword": query}},
-                                    {"term": {"category.slug.keyword": cat_slug}},
-                                ]
-                            }
-                        },
-                        "aggs": {
-                            "unique_ids": {"terms": {"field": "id"}},
-                            "categories": {
-                                "terms": {"field": "category.id", "size": aggs_size}
-                            },
-                            "brands": {"terms": {"field": "brand.name.keyword"}},
-                            "engines": {"terms": {"field": "engine.name.keyword"}},
-                            "car_models": {"terms": {"field": "model.name.keyword"}},
-                            "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                        },
-                    }
-                )
-
-            # if query has q == 'all'
-            if query == "all" and not cat_slug:
-                data = json.dumps(
-                    {
-                        "size": product_sizes,
-                        "query": {"match_all": {}},
-                        "aggs": {
-                            "unique_ids": {"terms": {"field": "id"}},
-                            "categories": {
-                                "terms": {"field": "category.id", "size": 2000}
-                            },
-                            "brands": {"terms": {"field": "brand.name.keyword"}},
-                            "engines": {"terms": {"field": "engine.name.keyword"}},
-                            "car_models": {"terms": {"field": "model.name.keyword"}},
-                            "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                        },
-                    }
-                )
-            # if query has q == all and cat slug
+                },
+            }
 
     r = requests.get(
         "http://localhost:9200/prod_notebook/_search",
         headers={"Content-Type": "application/json"},
-        data=data,
+        data=json.dumps(query),
     )
     if r.status_code != 200:
         raise ValueError(f"Request cannot be proceeded Status code is: {r.status_code}")
     response = r.json()
 
-    # Cheking if aggregation exist in the query
-    if "aggregations" in response:
-        categories = response["aggregations"]["categories"]["buckets"]
-        rebuilt_cats = []
-        for category in categories:
-            new_cat = None
-            try:
-                new_cat = Category.objects.get(id=category["key"])
-            except Exception as e:
-                print("Error in replace categories in elasticsearc", e)
-                print("key does not exists: ", category["key"])
-            rebuilt_cats.append(
-                {
-                    "id": category["key"],
-                    "count": category["doc_count"],
-                    "id": new_cat.id,
-                    "name": new_cat.name,
-                    "parent": new_cat.parent_id,
-                    "layout": new_cat.layout,
-                    "type": new_cat.type,
-                    "slug": new_cat.slug,
-                }
-            )
-        response["aggregations"]["categories"]["buckets"] = rebuilt_cats
+    data = response
+
+    return JsonResponse(data, safe=False)
+
+
+def findNumbers(request):
+    if request.method == "GET":
+        """
+        Check if search by make slug exists
+        """
+        q = request.GET.get("q")
+
+        # If query has car model and slug
+        # query = {"size": "20", "query": {"prefix": {"full_name": {"value": q}}}}
+    query = {
+        "query": {"match": {"cat_number": {"query": q, "analyzer": "standard"}}},
+    }
+
+    r = requests.get(
+        "http://localhost:9200/prod_notebook/_search",
+        headers={"Content-Type": "application/json"},
+        data=json.dumps(query),
+    )
+    if r.status_code != 200:
+        raise ValueError(f"Request cannot be proceeded Status code is: {r.status_code}")
+    response = r.json()
 
     data = response
 
