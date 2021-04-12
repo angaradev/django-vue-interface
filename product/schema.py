@@ -26,6 +26,7 @@ class CarMakeType(ObjectType):
     slug = String(required=True)
     country = String(required=True)
     priority = String()
+    image = String(required=False)
 
 
 class NewCarModelType(ObjectType):
@@ -39,6 +40,7 @@ class NewCarModelType(ObjectType):
     country = String(required=True)
     priority = String()
     count = String()
+    image = String(required=False)
 
 
 class IProductImagesType(ObjectType):
@@ -104,6 +106,7 @@ class Query(ObjectType):
                     "id": x.id,
                     "slug": x.slug,
                     "model": x.name,
+                    "image": x.image.url if x.image else None,
                     "make": {"slug": x.carmake.slug, "name": x.carmake.name},
                 }
                 for x in prod.car_model.all()
@@ -211,6 +214,7 @@ class Query(ObjectType):
                     "engine": car.engine.all(),
                     "slug": car.slug,
                     "priority": car.priority,
+                    "image": car.image.url if car.image else None,
                     "make": {
                         "id": car.carmake.id,
                         "name": car.carmake.name,
@@ -237,6 +241,7 @@ class Query(ObjectType):
                     "slug": make.slug,
                     "country": make.country.country,
                     "priority": make.priority,
+                    "image": make.image.url if make.image else None,
                 }
             )
         return lst
@@ -250,6 +255,7 @@ class Query(ObjectType):
             "slug": make.slug,
             "country": make.country.country,
             "priority": make.priority,
+            "image": make.image.url if make.image else None,
         }
 
     def resolve_vehicle(self, info, slug):
@@ -263,6 +269,7 @@ class Query(ObjectType):
             "engine": car.engine.all(),
             "slug": car.slug,
             "priority": car.priority,
+            "image": car.image.url if car.image else None,
             "make": {
                 "id": car.carmake.id,
                 "name": car.carmake.name,
@@ -288,6 +295,7 @@ class Query(ObjectType):
                     "engine": car.engine.all(),
                     "slug": car.slug,
                     "priority": car.priority,
+                    "image": car.image.url if car.image else None,
                     "make": {
                         "id": car.carmake.id,
                         "name": car.carmake.name,
