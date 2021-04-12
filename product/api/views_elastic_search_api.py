@@ -41,12 +41,15 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     priceMin = 1
     priceMax = 10000000
     search = request.GET.get("search")
+    sort_price = request.GET.get("sort_price") or "asc"
     if price:
         spl = price.split("-")
         priceMin = spl[0]
         priceMax = spl[1]
 
     for item in request.GET.items():
+        if item[0] == "sort_price":
+            continue
         if str(item[0]) == "page_from" or str(item[0]) == "page_size":
             continue
         # must here
@@ -129,6 +132,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     tmp = {
         "from": page_from,
         "size": page_size,
+        "sort": [{"stocks.price": {"order": sort_price}}],
         "query": {
             "bool": {
                 "must": [
