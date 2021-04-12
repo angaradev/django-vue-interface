@@ -7,7 +7,7 @@
         {
           "match": {
             "full_name_ngrams": {
-              "query": "\u043f\u0440\u043e\u043a\u043b\u0430\u0434\u043a\u0430 hd78",
+              "query": "porter",
               "operator": "and",
               "analyzer": "rebuilt_russian",
               "fuzziness": "auto"
