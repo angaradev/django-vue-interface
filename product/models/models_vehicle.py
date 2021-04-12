@@ -2,10 +2,12 @@ from django.utils.text import slugify
 from transliterate import translit
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 # Class Country
 class Country(models.Model):
     country = models.CharField(max_length=45)
+    image = models.ImageField(upload_to=settings.CAR_IMAGES, blank=True, null=True)
 
     class Meta:
         verbose_name = "Страна"
@@ -35,6 +37,7 @@ class CarMake(models.Model):
         null=True,
         blank=True,
     )
+    image = models.ImageField(upload_to=settings.CAR_IMAGES, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -56,6 +59,7 @@ class CarEngine(models.Model):
         null=True,
         blank=True,
     )
+    image = models.ImageField(upload_to=settings.CAR_IMAGES, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -118,6 +122,7 @@ class CarModel(models.Model):
         blank=True,
     )
     active = models.BooleanField(default=True)
+    image = models.ImageField(upload_to=settings.CAR_IMAGES, blank=True, null=True)
 
     class Meta:
         verbose_name = "Модель Машины"
