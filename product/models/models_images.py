@@ -8,6 +8,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 # Custom path to upload images
 def img_path(instance, filename, *args, **kwargs):
     path = os.path.join(
+        "parts",
         str(instance.product.cat_number),
         str(instance.product.brand).replace(" ", "_"),
         filename,
@@ -17,6 +18,7 @@ def img_path(instance, filename, *args, **kwargs):
 
 def img_path_tmb(instance, filename, *args, **kwargs):
     path = os.path.join(
+        "parts",
         str(instance.product.cat_number),
         str(instance.product.brand).replace(" ", "_"),
         "tmb",

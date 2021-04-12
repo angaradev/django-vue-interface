@@ -27,6 +27,7 @@ ALLOWED_HOSTS = [
 
 # Default images folder for blog posts and categories
 BLOG_IMAGES = "blog/images"
+CAR_IMAGES = "images/cars"
 
 # Default Author for blog articles
 DEFAULT_AUTHOR = "Team of AngaraParts"
