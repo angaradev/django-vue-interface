@@ -4,7 +4,7 @@ from product.utils import categorizer_split
 
 # from product.utils import categorizer
 from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
-import os
+import os, random
 from brands.models import BrandsDict
 from product.utils import unique_slug_generator, get_youtube_id
 from django.db.models.signals import pre_save, post_save
@@ -135,6 +135,15 @@ class Product(models.Model):  # Main table product
 
     @property
     def description(self):
+        return self.product_description.text
+
+    @property
+    def reviews(self):
+        r = [1, 2, 3, 4, 5]
+        return random.choices(r)
+
+    @property
+    def excerpt(self):
         return self.product_description.text
 
     @property

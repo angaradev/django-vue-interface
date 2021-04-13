@@ -4,6 +4,7 @@ from product.models import Product
 def resolve_poduct(self, info, slug):
 
     prod = Product.objects.get(slug=slug)
+    print(prod)
     cats = [
         {
             "id": x.id,
@@ -67,7 +68,7 @@ def resolve_poduct(self, info, slug):
         for x in prod.product_stock.all()
     ]
 
-    return {
+    returnProduct = {
         "id": prod.id,
         "slug": prod.slug,
         "name": prod.name,
@@ -104,3 +105,5 @@ def resolve_poduct(self, info, slug):
         "reviews": prod.reviews,
         "condition": prod.condition,
     }
+    print(returnProduct)
+    return returnProduct

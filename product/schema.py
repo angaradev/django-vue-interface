@@ -362,7 +362,8 @@ class Query(ObjectType):
 
         return lst
 
-    def resolve_poduct(self, info, slug):
+    def resolve_product(self, info, slug):
+        print(slug)
 
         prod = Product.objects.get(slug=slug)
         cats = [
@@ -370,7 +371,6 @@ class Query(ObjectType):
                 "id": x.id,
                 "name": x.name,
                 "slug": x.slug,
-                "image": x.image.url if x.image else None,
                 "parent": x.parent.id,
             }
             for x in prod.category.all()
@@ -428,7 +428,7 @@ class Query(ObjectType):
             for x in prod.product_stock.all()
         ]
 
-        return {
+        returnProduct = {
             "id": prod.id,
             "slug": prod.slug,
             "name": prod.name,
@@ -444,7 +444,7 @@ class Query(ObjectType):
             "brand": {
                 "id": prod.brand.id,
                 "slug": prod.brand.slug,
-                "name": prod.brand.name,
+                "name": prod.brand.brand,
                 "country": prod.brand.country,
                 "image": prod.brand.image,
             },
@@ -465,6 +465,7 @@ class Query(ObjectType):
             "reviews": prod.reviews,
             "condition": prod.condition,
         }
+        return returnProduct
 
 
 schema = Schema(query=Query)
