@@ -86,6 +86,17 @@ class BrandType(ObjectType):
     image = String(required=False)
 
 
+class EngineType(ObjectType):
+    id = ID()
+    name = String(required=False)
+    image = String(required=False)
+
+
+class AttributesType(ObjectType):
+    name = String(required=True)
+    value = String(required=True)
+
+
 class ProductType(ObjectType):
     id = ID()
     slug = String(required=True)
@@ -103,14 +114,14 @@ class ProductType(ObjectType):
     related = List(String)
     category = List(CategoryType)
     model = List(NewCarModelType, required=True)
-    engine = List(Field)
+    engine = List(EngineType)
     excerpt = String(required=False)
     description = String(required=False)
     created_date = Date(required=False)
     updated_date = Date(required=False)
     has_photo = Boolean(required=True)
     images = List(IProductImagesType, required=True)
-    attributes = List(Field)
+    attributes = List(AttributesType)
     stocks = List(ProductStocksType, required=False)
     bages = List(String, required=False)
     reviews = Int(required=False)
