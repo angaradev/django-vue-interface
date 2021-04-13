@@ -158,7 +158,7 @@ def send_json(request):
             )
 
         # For model only request comment out for now
-        elif model and not cat and not make and not filters_chk:
+        elif model and model != "all" and not cat and not make and not filters_chk:
             print("In model Only not working somehow")
             data = json.dumps(
                 {
