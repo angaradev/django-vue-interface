@@ -23,7 +23,19 @@
         },
         {
           "bool": {
-            "must": []
+            "must": [
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "term": {
+                        "model.name.keyword": "\u043f\u043e\u0440\u0442\u0435\u04401"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

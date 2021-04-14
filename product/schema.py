@@ -1,5 +1,5 @@
 from product.models import CarModel, CarMake, Category, Product
-from graphene import String, ObjectType, ID, Field, Schema, List, Boolean, Int
+from graphene import String, ObjectType, Date, ID, Field, Schema, List, Boolean, Int
 from django.db.models import Count
 from .utils import chk_img
 
@@ -78,6 +78,57 @@ class PopularProductByModelType(ObjectType):
     stocks = List(ProductStocksType, required=False)
 
 
+class BrandType(ObjectType):
+    id = ID()
+    slug = String(required=True)
+    name = String(required=True)
+    country = String(required=False)
+    image = String(required=False)
+
+
+class EngineType(ObjectType):
+    id = ID()
+    name = String(required=False)
+    image = String(required=False)
+
+
+class AttributesType(ObjectType):
+    name = String(required=True)
+    value = String(required=True)
+
+
+class ProductType(ObjectType):
+    id = ID()
+    slug = String(required=True)
+    name = String(required=True)
+    name2 = String(required=False)
+    full_name = String(required=False)
+    one_c_id = String(required=True)
+    sku = String(required=False)
+    active = Boolean(required=False)
+    unit = String(required=False)
+    cat_number = String(required=True)
+    oem_number = String(required=False)
+    partNumber = String(required=False)
+    brand = Field(BrandType, required=True)
+    related = List(String)
+    category = List(CategoryType)
+    model = List(NewCarModelType, required=True)
+    engine = List(EngineType)
+    excerpt = String(required=False)
+    description = String(required=False)
+    created_date = Date(required=False)
+    updated_date = Date(required=False)
+    has_photo = Boolean(required=True)
+    images = List(IProductImagesType, required=True)
+    attributes = List(AttributesType)
+    stocks = List(ProductStocksType, required=False)
+    bages = List(String, required=False)
+    reviews = Int(required=False)
+    video = List(String)
+    condition = String(required=False)
+
+
 class Query(ObjectType):
 
     vehicle = Field(NewCarModelType, slug=String())
@@ -92,6 +143,7 @@ class Query(ObjectType):
         slug=String(required=True),
         quantity=Int(required=True),
     )
+    product = Field(ProductType, slug=String(required=True))
 
     def resolve_popular_products(self, info, slug, quantity=20):
         qs = (
@@ -309,6 +361,111 @@ class Query(ObjectType):
             )
 
         return lst
+
+    def resolve_product(self, info, slug):
+        print(slug)
+
+        prod = Product.objects.get(slug=slug)
+        cats = [
+            {
+                "id": x.id,
+                "name": x.name,
+                "slug": x.slug,
+                "parent": x.parent.id,
+            }
+            for x in prod.category.all()
+        ]
+
+        models = [
+            {
+                "id": x.id,
+                "slug": x.slug,
+                "name": x.name,
+                "priority": x.priority,
+                "image": x.image.url if x.image else None,
+                "rusname": x.rusname,
+                "make": {
+                    "slug": x.carmake.slug,
+                    "name": x.carmake.name,
+                    "id": x.carmake.id,
+                    "country": x.carmake.country,
+                },
+            }
+            for x in prod.car_model.all()
+        ]
+        engines = [
+            {
+                "id": x.id,
+                "name": x.name,
+                "image": x.image.url if x.image else None,
+            }
+            for x in prod.engine.all()
+        ]
+        images = [
+            {
+                "img150": x.img150.url if x.img150 else None,
+                "img245": x.img245.url if x.img245 else None,
+                "img500": x.img500.url if x.img500 else None,
+                "img800": x.img800.url if x.img800 else None,
+                "img150x150": x.img150x150.url if x.img150x150 else None,
+                "img245x245": x.img245.url if x.img245x245 else None,
+                "img500x500": x.img500x500 if x.img500x500 else None,
+                "img800x800": x.img800x800 if x.img800x800 else None,
+                "main": x.main,
+            }
+            for x in prod.images.all()
+        ]
+        attrs = [
+            {"name": x.attribute_name.name, "value": x.attribute_value}
+            for x in prod.product_attribute.all()
+        ]
+        stocks = [
+            {
+                "price": x.price,
+                "quantity": x.quantity,
+                "store": {"id": x.store.id, "name": x.store.name},
+            }
+            for x in prod.product_stock.all()
+        ]
+
+        returnProduct = {
+            "id": prod.id,
+            "slug": prod.slug,
+            "name": prod.name,
+            "name2": prod.name2,
+            "full_name": prod.full_name,
+            "one_c_id": prod.one_c_id,
+            "sku": prod.sku,
+            "active": prod.active,
+            "uint": prod.unit,
+            "cat_number": prod.cat_number,
+            "oem_number": prod.oem_number,
+            "partNumber": prod.partNumber,
+            "brand": {
+                "id": prod.brand.id,
+                "slug": prod.brand.slug,
+                "name": prod.brand.brand,
+                "country": prod.brand.country,
+                "image": prod.brand.image,
+            },
+            "related": [x.id for x in prod.related.all()],
+            "category": cats,
+            "model": models,
+            "engines": engines,
+            "excerpt": prod.excerpt,
+            "description": prod.description,
+            "created_date": prod.created_date,
+            "updated_date": prod.updated_date,
+            "has_photo": prod.have_photo,
+            "images": images,
+            "videoa": [x.url for x in prod.product_video.all()],
+            "attributes": attrs,
+            "stocks": stocks,
+            "bages": [{"bage": x.name} for x in prod.bages.all()],
+            "reviews": prod.reviews,
+            "condition": prod.condition,
+        }
+        return returnProduct
 
 
 schema = Schema(query=Query)
