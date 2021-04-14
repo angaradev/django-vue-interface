@@ -1,24 +1,17 @@
 {
   "from": "0",
   "size": "20",
-  "sort": [
-    {
-      "stocks.price": {
-        "order": "asc"
-      }
-    }
-  ],
   "query": {
     "bool": {
       "must": [
         {
-          "match": {
-            "full_name_ngrams": {
-              "query": "\u043f\u0440\u043e\u043a\u043b\u0430\u0434\u043a\u0430 hd",
-              "operator": "and",
-              "analyzer": "rebuilt_russian",
-              "fuzziness": "auto"
-            }
+          "term": {
+            "model.slug.keyword": "porter1"
+          }
+        },
+        {
+          "term": {
+            "category.slug.keyword": "korobka-peredach-i-zapchasti"
           }
         },
         {
@@ -29,7 +22,7 @@
                   "should": [
                     {
                       "term": {
-                        "model.name.keyword": "\u043f\u043e\u0440\u0442\u0435\u04401"
+                        "has_photo": "true"
                       }
                     }
                   ]

@@ -135,16 +135,19 @@ class Product(models.Model):  # Main table product
 
     @property
     def description(self):
-        return self.product_description.text
-
-    @property
-    def reviews(self):
-        r = [1, 2, 3, 4, 5]
-        return random.choices(r)
+        try:
+            return self.product_description.text is not None
+        except:
+            return ""
 
     @property
     def excerpt(self):
-        return self.product_description.text
+        try:
+            if self.product_description:
+                spl = self.product_description.text.split(".")[:5]
+                return (".").join(spl)
+        except:
+            return ""
 
     @property
     def sku(self):
