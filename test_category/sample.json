@@ -6,12 +6,12 @@
       "must": [
         {
           "term": {
-            "model.slug.keyword": "porter1"
+            "model.slug.keyword": "hd78"
           }
         },
         {
           "term": {
-            "category.slug.keyword": "korobka-peredach-i-zapchasti"
+            "category.slug.keyword": "elektrooborudovanie"
           }
         },
         {

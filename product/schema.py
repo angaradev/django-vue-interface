@@ -103,14 +103,14 @@ class ProductType(ObjectType):
     name = String(required=True)
     name2 = String(required=False)
     full_name = String(required=False)
-    one_c_id = String(required=True)
+    one_c_id = String(required=False)
     sku = String(required=False)
     active = Boolean(required=False)
     unit = String(required=False)
-    cat_number = String(required=True)
+    cat_number = String(required=False)
     oem_number = String(required=False)
     partNumber = String(required=False)
-    brand = Field(BrandType, required=True)
+    brand = Field(BrandType, required=False)
     related = List(String)
     category = List(CategoryType)
     model = List(NewCarModelType, required=False)
@@ -380,6 +380,7 @@ class Query(ObjectType):
                 "id": x.id,
                 "slug": x.slug,
                 "name": x.name,
+                "model": x.name,
                 "priority": x.priority,
                 "image": x.image.url if x.image else None,
                 "rusname": x.rusname,
