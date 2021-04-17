@@ -98,6 +98,12 @@ class ProductRating(models.Model):
         "product", on_delete=models.DO_NOTHING, null=True, blank=True
     )
 
+    class Meta:
+        verbose_name = "Рейтинг"
+
+    def __str__(self):
+        return self.product.name
+
 
 class Product(models.Model):  # Main table product
 
