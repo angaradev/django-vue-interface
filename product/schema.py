@@ -451,7 +451,7 @@ class Query(ObjectType):
             "related": [x.id for x in prod.related.all()],
             "category": cats,
             "model": models,
-            "engines": engines,
+            "engine": engines,
             "excerpt": prod.excerpt,
             "description": prod.description,
             "created_date": prod.created_date,

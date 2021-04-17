@@ -6,12 +6,12 @@
       "must": [
         {
           "term": {
-            "model.slug.keyword": "hd78"
+            "model.slug.keyword": "porter2"
           }
         },
         {
           "term": {
-            "category.slug.keyword": "elektrooborudovanie"
+            "category.slug.keyword": "podveska"
           }
         },
         {

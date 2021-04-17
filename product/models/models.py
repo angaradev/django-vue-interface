@@ -82,15 +82,24 @@ class Category(MPTTModel):  # MPTT model here for now
 
 
 # Product Description
-
-
-class Product(models.Model):  # Main table product
+class ProductRating(models.Model):
     class Rating(models.IntegerChoices):
         ONE_STAR = 1
         TWO_STARS = 2
         THREE_STARS = 3
         FOUR_STARS = 4
         FIVE_STARS = 5
+
+    score = models.IntegerField(
+        choices=Rating.choices, null=True, blank=True, default=0
+    )
+    quantity = models.IntegerField(null=True, blank=True, default=0)
+    product = models.OneToOneField(
+        "product", on_delete=models.DO_NOTHING, null=True, blank=True
+    )
+
+
+class Product(models.Model):  # Main table product
 
     name = models.CharField(max_length=255)
     name2 = models.CharField(max_length=255, null=True, blank=True)
@@ -122,7 +131,6 @@ class Product(models.Model):  # Main table product
     engine = models.ManyToManyField(
         "CarEngine", related_name="car_related_engine", blank=True
     )
-    rating = models.IntegerField(choices=Rating.choices, null=True, blank=True)
 
     @property
     def full_name(self):
@@ -136,7 +144,8 @@ class Product(models.Model):  # Main table product
     @property
     def description(self):
         try:
-            return self.product_description.text is not None
+            print(self.product_description.text)
+            return self.product_description.text
         except:
             return ""
 
