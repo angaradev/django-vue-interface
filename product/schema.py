@@ -31,7 +31,7 @@ class CarMakeType(ObjectType):
 
 class NewCarModelType(ObjectType):
     id = ID()
-    model = String(required=True)
+    model = String(required=False)
     rusname = String()
     year = List(String, required=True)
     engine = List(String, required=True)
@@ -45,15 +45,15 @@ class NewCarModelType(ObjectType):
 
 class IProductImagesType(ObjectType):
     id = ID()
-    img150 = String(required=True)
-    img245 = String(required=True)
-    img500 = String(required=True)
-    img800 = String(required=True)
-    img245x245 = String(required=True)
-    img150x150 = String(required=True)
-    img500x500 = String(required=True)
-    img800x800 = String(required=True)
-    main = Boolean(required=True)
+    img150 = String(required=False)
+    img245 = String(required=False)
+    img500 = String(required=False)
+    img800 = String(required=False)
+    img245x245 = String(required=False)
+    img150x150 = String(required=False)
+    img500x500 = String(required=False)
+    img800x800 = String(required=False)
+    main = Boolean(required=False)
 
 
 class ProductStocksType(ObjectType):
@@ -97,34 +97,39 @@ class AttributesType(ObjectType):
     value = String(required=True)
 
 
+class RatingType(ObjectType):
+    score = String()
+    quantity = String()
+
+
 class ProductType(ObjectType):
     id = ID()
     slug = String(required=True)
     name = String(required=True)
     name2 = String(required=False)
     full_name = String(required=False)
-    one_c_id = String(required=True)
+    one_c_id = String(required=False)
     sku = String(required=False)
     active = Boolean(required=False)
     unit = String(required=False)
-    cat_number = String(required=True)
+    cat_number = String(required=False)
     oem_number = String(required=False)
     partNumber = String(required=False)
-    brand = Field(BrandType, required=True)
+    brand = Field(BrandType, required=False)
     related = List(String)
     category = List(CategoryType)
-    model = List(NewCarModelType, required=True)
+    model = List(NewCarModelType, required=False)
     engine = List(EngineType)
     excerpt = String(required=False)
     description = String(required=False)
     created_date = Date(required=False)
     updated_date = Date(required=False)
     has_photo = Boolean(required=True)
-    images = List(IProductImagesType, required=True)
+    images = List(IProductImagesType, required=False)
     attributes = List(AttributesType)
     stocks = List(ProductStocksType, required=False)
     bages = List(String, required=False)
-    reviews = Int(required=False)
+    rating = Field(RatingType, required=False)
     video = List(String)
     condition = String(required=False)
 
@@ -363,7 +368,6 @@ class Query(ObjectType):
         return lst
 
     def resolve_product(self, info, slug):
-        print(slug)
 
         prod = Product.objects.get(slug=slug)
         cats = [
@@ -381,6 +385,7 @@ class Query(ObjectType):
                 "id": x.id,
                 "slug": x.slug,
                 "name": x.name,
+                "model": x.name,
                 "priority": x.priority,
                 "image": x.image.url if x.image else None,
                 "rusname": x.rusname,
@@ -451,18 +456,18 @@ class Query(ObjectType):
             "related": [x.id for x in prod.related.all()],
             "category": cats,
             "model": models,
-            "engines": engines,
+            "engine": engines,
             "excerpt": prod.excerpt,
             "description": prod.description,
             "created_date": prod.created_date,
             "updated_date": prod.updated_date,
             "has_photo": prod.have_photo,
             "images": images,
-            "videoa": [x.url for x in prod.product_video.all()],
+            "video": [x.url for x in prod.product_video.all()],
             "attributes": attrs,
             "stocks": stocks,
             "bages": [{"bage": x.name} for x in prod.bages.all()],
-            "reviews": prod.reviews,
+            "rating": {"score": prod.rating.score, "quantity": prod.rating.quantity},
             "condition": prod.condition,
         }
         return returnProduct

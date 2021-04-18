@@ -186,7 +186,7 @@ def send_json(request):
             print("In all statement")
             data = json.dumps(
                 {
-                    "size": page_size,
+                    "size": 10000,
                     "query": {"match_all": {}},
                     "aggs": aggs(aggs_size),
                 }

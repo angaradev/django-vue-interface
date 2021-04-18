@@ -82,15 +82,35 @@ class Category(MPTTModel):  # MPTT model here for now
 
 
 # Product Description
-
-
-class Product(models.Model):  # Main table product
+class ProductRating(models.Model):
     class Rating(models.IntegerChoices):
         ONE_STAR = 1
         TWO_STARS = 2
         THREE_STARS = 3
         FOUR_STARS = 4
         FIVE_STARS = 5
+
+    score = models.IntegerField(
+        choices=Rating.choices, null=True, blank=True, default=0
+    )
+    quantity = models.IntegerField(null=True, blank=True, default=0)
+    product = models.ForeignKey(
+        "product",
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+        related_name="product_rating",
+    )
+
+    class Meta:
+        verbose_name = "Рейтинг"
+        verbose_name_plural = "Рейтинги"
+
+    def __str__(self):
+        return str(f"{self.product.name} id: {self.product.id}")
+
+
+class Product(models.Model):  # Main table product
 
     name = models.CharField(max_length=255)
     name2 = models.CharField(max_length=255, null=True, blank=True)
@@ -122,7 +142,6 @@ class Product(models.Model):  # Main table product
     engine = models.ManyToManyField(
         "CarEngine", related_name="car_related_engine", blank=True
     )
-    rating = models.IntegerField(choices=Rating.choices, null=True, blank=True)
 
     @property
     def full_name(self):
@@ -135,16 +154,20 @@ class Product(models.Model):  # Main table product
 
     @property
     def description(self):
-        return self.product_description.text
-
-    @property
-    def reviews(self):
-        r = [1, 2, 3, 4, 5]
-        return random.choices(r)
+        try:
+            print(self.product_description.text)
+            return self.product_description.text
+        except:
+            return ""
 
     @property
     def excerpt(self):
-        return self.product_description.text
+        try:
+            if self.product_description:
+                spl = self.product_description.text.split(".")[:5]
+                return (".").join(spl)
+        except:
+            return ""
 
     @property
     def sku(self):
