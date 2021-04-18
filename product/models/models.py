@@ -94,12 +94,20 @@ class ProductRating(models.Model):
         choices=Rating.choices, null=True, blank=True, default=0
     )
     quantity = models.IntegerField(null=True, blank=True, default=0)
+    product = models.ForeignKey(
+        "product",
+        on_delete=models.DO_NOTHING,
+        blank=True,
+        null=True,
+        related_name="product_rating",
+    )
 
     class Meta:
         verbose_name = "Рейтинг"
+        verbose_name_plural = "Рейтинги"
 
     def __str__(self):
-        return str(self.score)
+        return str(f"{self.product.name} id: {self.product.id}")
 
 
 class Product(models.Model):  # Main table product
@@ -134,10 +142,6 @@ class Product(models.Model):  # Main table product
     engine = models.ManyToManyField(
         "CarEngine", related_name="car_related_engine", blank=True
     )
-    rating = models.ForeignKey(
-        ProductRating, on_delete=models.DO_NOTHING, blank=True, null=True
-    )
-    ratingQuantity = models.IntegerField(null=True, blank=True, default=0)
 
     @property
     def full_name(self):
