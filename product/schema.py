@@ -1,5 +1,17 @@
+from users.models import AutoUser
 from product.models import CarModel, CarMake, Category, Product
-from graphene import String, ObjectType, Date, ID, Field, Schema, List, Boolean, Int
+from graphene import (
+    String,
+    ObjectType,
+    Date,
+    ID,
+    Field,
+    Schema,
+    List,
+    Boolean,
+    Int,
+    Mutation,
+)
 from django.db.models import Count
 from .utils import chk_img
 
@@ -102,6 +114,12 @@ class RatingType(ObjectType):
     autouser = String()
 
 
+class AutoUserType(ObjectType):
+    userId = String()
+    created_date = Date()
+    updated_date = Date()
+
+
 class ProductType(ObjectType):
     id = ID()
     slug = String(required=True)
@@ -132,6 +150,22 @@ class ProductType(ObjectType):
     rating = List(RatingType, required=False)
     video = List(String)
     condition = String(required=False)
+
+
+class createAutoUserMutation(Mutation):
+    class Arguments:
+        userId = String()
+
+    ok = Boolean()
+    user = Field(AutoUserType)
+
+    def mutate(root, info, userId):
+        user, ok = AutoUser.objects.update_or_create(userId=userId)
+        return createAutoUserMutation(user)
+
+
+class Mutation(ObjectType):
+    createAutoUser = createAutoUserMutation.Field()
 
 
 class Query(ObjectType):
@@ -478,4 +512,4 @@ class Query(ObjectType):
         return returnProduct
 
 
-schema = Schema(query=Query)
+schema = Schema(query=Query, mutation=Mutation)
