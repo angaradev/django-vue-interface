@@ -97,6 +97,11 @@ class AttributesType(ObjectType):
     value = String(required=True)
 
 
+class RatingType(ObjectType):
+    score = String()
+    quantity = String()
+
+
 class ProductType(ObjectType):
     id = ID()
     slug = String(required=True)
@@ -124,7 +129,7 @@ class ProductType(ObjectType):
     attributes = List(AttributesType)
     stocks = List(ProductStocksType, required=False)
     bages = List(String, required=False)
-    rating = Int(required=False)
+    rating = Field(RatingType, required=False)
     video = List(String)
     condition = String(required=False)
 
@@ -462,7 +467,7 @@ class Query(ObjectType):
             "attributes": attrs,
             "stocks": stocks,
             "bages": [{"bage": x.name} for x in prod.bages.all()],
-            "rating": prod.rating,
+            "rating": {"score": prod.rating.score, "quantity": prod.rating.quantity},
             "condition": prod.condition,
         }
         return returnProduct
