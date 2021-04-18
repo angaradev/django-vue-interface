@@ -27,6 +27,17 @@ class ratingAvgType(ObjectType):
     ratingAvg = Int()
 
 
+def ratingAvg(productId):
+    try:
+        product = Product.objects.get(id=productId)
+        qs = ProductRating.objects.filter(product=product).aggregate(
+            avg_score=Avg("score")
+        )
+        return math.ceil(qs["avg_score"])
+    except Exception as e:
+        return None
+
+
 class Query(ObjectType):
 
     vehicle = Field(NewCarModelType, slug=String())
@@ -44,18 +55,6 @@ class Query(ObjectType):
     product = Field(ProductType, slug=String(required=True))
     autouser = Field(AutoUserType, userId=String(required=True))
     rating = Field(RatingType, productId=Int(), userId=String())
-    ratingAvg = Field(ratingAvgType, productId=Int())
-
-    def resolve_ratingAvg(self, info, productId):
-        try:
-            product = Product.objects.get(id=productId)
-            qs = ProductRating.objects.filter(product=product).aggregate(
-                avg_score=Avg("score")
-            )
-            return {"ratingAvg": math.ceil(qs["avg_score"])}
-        except Exception as e:
-            print("Resolve ratings avg", e)
-            return None
 
     def resolve_rating(self, info, productId, userId):
         try:
@@ -356,13 +355,6 @@ class Query(ObjectType):
             for x in prod.product_stock.all()
         ]
 
-        rating = []
-        for x in prod.product_rating.all():
-            try:
-                rating.append({"score": x.score, "autouser": x.autoUser.userId})
-            except:
-                rating.append({"score": x.score, "autouser": None})
-
         returnProduct = {
             "id": prod.id,
             "slug": prod.slug,
@@ -397,7 +389,7 @@ class Query(ObjectType):
             "attributes": attrs,
             "stocks": stocks,
             "bages": [{"bage": x.name} for x in prod.bages.all()],
-            "rating": rating,
+            "rating": ratingAvg(prod.id),
             "condition": prod.condition,
         }
         return returnProduct
