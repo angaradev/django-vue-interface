@@ -1,5 +1,18 @@
+from users.models import AutoUser
 from product.models import CarModel, CarMake, Category, Product
-from graphene import String, ObjectType, Date, ID, Field, Schema, List, Boolean, Int
+from graphene import (
+    String,
+    ObjectType,
+    Date,
+    ID,
+    Field,
+    Schema,
+    List,
+    Boolean,
+    Int,
+    Mutation,
+    DateTime,
+)
 from django.db.models import Count
 from .utils import chk_img
 
@@ -99,7 +112,13 @@ class AttributesType(ObjectType):
 
 class RatingType(ObjectType):
     score = String()
-    quantity = String()
+    autouser = String()
+
+
+class AutoUserType(ObjectType):
+    userId = String()
+    createdDate = DateTime()
+    updatedDate = DateTime()
 
 
 class ProductType(ObjectType):
@@ -129,9 +148,27 @@ class ProductType(ObjectType):
     attributes = List(AttributesType)
     stocks = List(ProductStocksType, required=False)
     bages = List(String, required=False)
-    rating = Field(RatingType, required=False)
+    rating = List(RatingType, required=False)
     video = List(String)
     condition = String(required=False)
+
+
+class createAutoUserMutation(Mutation):
+    class Arguments:
+        userId = String()
+
+    ok = Boolean()
+    user = Field(AutoUserType)
+
+    def mutate(root, info, userId):
+        print(userId)
+        user, ok = AutoUser.objects.update_or_create(userId=userId)
+
+        return createAutoUserMutation(user=user)
+
+
+class Mutation(ObjectType):
+    createAutoUser = createAutoUserMutation.Field()
 
 
 class Query(ObjectType):
@@ -149,6 +186,15 @@ class Query(ObjectType):
         quantity=Int(required=True),
     )
     product = Field(ProductType, slug=String(required=True))
+    autouser = Field(AutoUserType, userId=String(required=True))
+
+    def resolve_autouser(self, info, userId):
+        qs = AutoUser.objects.get(userId=userId)
+        return {
+            "userId": qs.userId,
+            "createdDate": qs.created_date,
+            "updatedDate": qs.updated_date,
+        }
 
     def resolve_popular_products(self, info, slug, quantity=20):
         qs = (
@@ -433,6 +479,13 @@ class Query(ObjectType):
             for x in prod.product_stock.all()
         ]
 
+        rating = []
+        for x in prod.product_rating.all():
+            try:
+                rating.append({"score": x.score, "autouser": x.autoUser.userId})
+            except:
+                rating.append({"score": x.score, "autouser": None})
+
         returnProduct = {
             "id": prod.id,
             "slug": prod.slug,
@@ -467,10 +520,10 @@ class Query(ObjectType):
             "attributes": attrs,
             "stocks": stocks,
             "bages": [{"bage": x.name} for x in prod.bages.all()],
-            "rating": {"score": prod.rating.score, "quantity": prod.rating.quantity},
+            "rating": rating,
             "condition": prod.condition,
         }
         return returnProduct
 
 
-schema = Schema(query=Query)
+schema = Schema(query=Query, mutation=Mutation)
