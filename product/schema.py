@@ -11,6 +11,7 @@ from graphene import (
     Boolean,
     Int,
     Mutation,
+    DateTime,
 )
 from django.db.models import Count
 from .utils import chk_img
@@ -116,8 +117,8 @@ class RatingType(ObjectType):
 
 class AutoUserType(ObjectType):
     userId = String()
-    created_date = Date()
-    updated_date = Date()
+    createdDate = DateTime()
+    updatedDate = DateTime()
 
 
 class ProductType(ObjectType):
@@ -160,8 +161,10 @@ class createAutoUserMutation(Mutation):
     user = Field(AutoUserType)
 
     def mutate(root, info, userId):
+        print(userId)
         user, ok = AutoUser.objects.update_or_create(userId=userId)
-        return createAutoUserMutation(user)
+
+        return createAutoUserMutation(user=user)
 
 
 class Mutation(ObjectType):
@@ -183,6 +186,15 @@ class Query(ObjectType):
         quantity=Int(required=True),
     )
     product = Field(ProductType, slug=String(required=True))
+    autouser = Field(AutoUserType, userId=String(required=True))
+
+    def resolve_autouser(self, info, userId):
+        qs = AutoUser.objects.get(userId=userId)
+        return {
+            "userId": qs.userId,
+            "createdDate": qs.created_date,
+            "updatedDate": qs.updated_date,
+        }
 
     def resolve_popular_products(self, info, slug, quantity=20):
         qs = (
@@ -466,11 +478,13 @@ class Query(ObjectType):
             }
             for x in prod.product_stock.all()
         ]
-        rating = [
-            {"score": x.score, "autouser": x.autoUser.userId}
-            for x in prod.product_rating.all()
-        ]
-        print(rating)
+
+        rating = []
+        for x in prod.product_rating.all():
+            try:
+                rating.append({"score": x.score, "autouser": x.autoUser.userId})
+            except:
+                rating.append({"score": x.score, "autouser": None})
 
         returnProduct = {
             "id": prod.id,
