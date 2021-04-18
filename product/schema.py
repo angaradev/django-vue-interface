@@ -1,3 +1,4 @@
+from product.models.models import ProductRating
 from users.models import AutoUser
 from product.models import CarModel, CarMake, Category, Product
 from graphene import (
@@ -38,6 +39,12 @@ class Query(ObjectType):
     )
     product = Field(ProductType, slug=String(required=True))
     autouser = Field(AutoUserType, userId=String(required=True))
+    rating = Field(RatingType, productId=Int(), userId=String())
+
+    def resolve_rating(self, info, productId, userId):
+        product = Product.objects.get(id=productId)
+        qs = ProductRating.objects.get(product=product, autoUser__userId=userId)
+        return qs
 
     def resolve_autouser(self, info, userId):
         qs = AutoUser.objects.get(userId=userId)

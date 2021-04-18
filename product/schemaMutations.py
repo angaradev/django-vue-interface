@@ -13,12 +13,22 @@ class createRatingsMutation(Mutation):
     rating = Field(RatingType)
 
     def mutate(root, info, score, productId, userId):
-        product = Product.objects.get(id=productId)
-        rating, created = ProductRating.objects.update_or_create(
-            score=score, product=product, autoUser__userId=userId
-        )
+        rating = None
+        try:
+            product = Product.objects.get(id=productId)
+            autouser = AutoUser.objects.get(userId=userId)
+            rating = ProductRating.objects.get(product=product, autoUser=autouser)
+            rating.score = score
+            rating.save()
+        except:
+            try:
+                product = Product.objects.get(id=productId)
+                autouser = AutoUser.objects.get(userId=userId)
+                rating = ProductRating(product=product, autoUser=autouser, score=score)
+                rating.save()
+            except:
+                print("Rating does not exists")
 
-        qs = ProductRating.objects.get
         return createRatingsMutation(rating=rating)
 
 
