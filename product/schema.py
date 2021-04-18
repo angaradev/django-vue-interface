@@ -42,9 +42,12 @@ class Query(ObjectType):
     rating = Field(RatingType, productId=Int(), userId=String())
 
     def resolve_rating(self, info, productId, userId):
-        product = Product.objects.get(id=productId)
-        qs = ProductRating.objects.get(product=product, autoUser__userId=userId)
-        return qs
+        try:
+            product = Product.objects.get(id=productId)
+            qs = ProductRating.objects.get(product=product, autoUser__userId=userId)
+            return qs
+        except:
+            return None
 
     def resolve_autouser(self, info, userId):
         qs = AutoUser.objects.get(userId=userId)
