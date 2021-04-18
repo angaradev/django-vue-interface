@@ -99,7 +99,7 @@ class AttributesType(ObjectType):
 
 class RatingType(ObjectType):
     score = String()
-    quantity = String()
+    autouser = String()
 
 
 class ProductType(ObjectType):
@@ -129,7 +129,7 @@ class ProductType(ObjectType):
     attributes = List(AttributesType)
     stocks = List(ProductStocksType, required=False)
     bages = List(String, required=False)
-    rating = Field(RatingType, required=False)
+    rating = List(RatingType, required=False)
     video = List(String)
     condition = String(required=False)
 
@@ -432,6 +432,11 @@ class Query(ObjectType):
             }
             for x in prod.product_stock.all()
         ]
+        rating = [
+            {"score": x.score, "autouser": x.autoUser.userId}
+            for x in prod.product_rating.all()
+        ]
+        print(rating)
 
         returnProduct = {
             "id": prod.id,
@@ -467,7 +472,7 @@ class Query(ObjectType):
             "attributes": attrs,
             "stocks": stocks,
             "bages": [{"bage": x.name} for x in prod.bages.all()],
-            "rating": {"score": prod.rating.score, "quantity": prod.rating.quantity},
+            "rating": rating,
             "condition": prod.condition,
         }
         return returnProduct

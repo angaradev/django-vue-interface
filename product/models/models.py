@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from users.models import AutoUser
 from product.utils import categorizer_split
 
 # from product.utils import categorizer
@@ -101,8 +102,16 @@ class ProductRating(models.Model):
         null=True,
         related_name="product_rating",
     )
+    autoUser = models.ForeignKey(
+        AutoUser,
+        on_delete=models.DO_NOTHING,
+        null=True,
+        blank=True,
+        related_name="autouser_rating",
+    )
 
     class Meta:
+        unique_together = ("product", "autoUser")
         verbose_name = "Рейтинг"
         verbose_name_plural = "Рейтинги"
 
@@ -155,7 +164,6 @@ class Product(models.Model):  # Main table product
     @property
     def description(self):
         try:
-            print(self.product_description.text)
             return self.product_description.text
         except:
             return ""
