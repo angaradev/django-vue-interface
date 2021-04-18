@@ -1,4 +1,6 @@
 from product.models.models import ProductRating
+import math
+from django.db.models import Avg
 from users.models import AutoUser
 from product.models import CarModel, CarMake, Category, Product
 from graphene import (
@@ -21,6 +23,8 @@ from .schemaMutations import Mutation
 
 # connections.create_connection(hosts=["localhost:9200"], timeout=20)
 # esh = Elasticsearch(["http://localhost:9200"])
+class ratingAvgType(ObjectType):
+    ratingAvg = Int()
 
 
 class Query(ObjectType):
@@ -40,6 +44,18 @@ class Query(ObjectType):
     product = Field(ProductType, slug=String(required=True))
     autouser = Field(AutoUserType, userId=String(required=True))
     rating = Field(RatingType, productId=Int(), userId=String())
+    ratingAvg = Field(ratingAvgType, productId=Int())
+
+    def resolve_ratingAvg(self, info, productId):
+        try:
+            product = Product.objects.get(id=productId)
+            qs = ProductRating.objects.filter(product=product).aggregate(
+                avg_score=Avg("score")
+            )
+            return {"ratingAvg": math.ceil(qs["avg_score"])}
+        except Exception as e:
+            print("Resolve ratings avg", e)
+            return None
 
     def resolve_rating(self, info, productId, userId):
         try:
