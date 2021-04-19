@@ -1,3 +1,6 @@
+from product.models.models import ProductRating
+import math
+from django.db.models import Avg
 from users.models import AutoUser
 from product.models import CarModel, CarMake, Category, Product
 from graphene import (
@@ -10,165 +13,30 @@ from graphene import (
     List,
     Boolean,
     Int,
-    Mutation,
     DateTime,
 )
 from django.db.models import Count
 from .utils import chk_img
+from .schemaTypes import *
+from .schemaMutations import Mutation
 
 
 # connections.create_connection(hosts=["localhost:9200"], timeout=20)
 # esh = Elasticsearch(["http://localhost:9200"])
+class ratingAvgType(ObjectType):
+    ratingAvg = Int()
 
 
-class CategoryType(ObjectType):
-    id = ID(required=True)
-    type = String()
-    name = String(required=True)
-    slug = String(required=True)
-    image = String(required=False)
-    parent = ID(required=False)
-    count = String()
-    layout = String()
+def ratingAvg(productId):
+    try:
+        product = Product.objects.get(id=productId)
+        qs = ProductRating.objects.filter(product=product)
+        avg = qs.aggregate(avg_score=Avg("score"))
+        count = qs.count()
 
-
-class CarMakeType(ObjectType):
-    id = ID(required=True)
-    name = String(required=True)
-    rusname = String()
-    slug = String(required=True)
-    country = String(required=True)
-    priority = String()
-    image = String(required=False)
-
-
-class NewCarModelType(ObjectType):
-    id = ID()
-    model = String(required=False)
-    rusname = String()
-    year = List(String, required=True)
-    engine = List(String, required=True)
-    slug = String(required=True)
-    make = Field(CarMakeType, required=True)
-    country = String(required=True)
-    priority = String()
-    count = String()
-    image = String(required=False)
-
-
-class IProductImagesType(ObjectType):
-    id = ID()
-    img150 = String(required=False)
-    img245 = String(required=False)
-    img500 = String(required=False)
-    img800 = String(required=False)
-    img245x245 = String(required=False)
-    img150x150 = String(required=False)
-    img500x500 = String(required=False)
-    img800x800 = String(required=False)
-    main = Boolean(required=False)
-
-
-class ProductStocksType(ObjectType):
-    id = ID()
-    store = String(required=False)
-    price = Int(required=False)
-    availability_days = Int(required=False)
-
-
-class PopularProductByModelType(ObjectType):
-    id = ID()
-    slug = String(required=True)
-    name = String(required=True)
-    name2 = String(required=False)
-    full_name = String(required=False)
-    one_c_id = String(required=False)
-    sku = String(required=False)
-    model = List(NewCarModelType, required=True)
-    images = List(IProductImagesType)
-    cat_number = String(required=True)
-    bages = String(required=False)
-    stocks = List(ProductStocksType, required=False)
-
-
-class BrandType(ObjectType):
-    id = ID()
-    slug = String(required=True)
-    name = String(required=True)
-    country = String(required=False)
-    image = String(required=False)
-
-
-class EngineType(ObjectType):
-    id = ID()
-    name = String(required=False)
-    image = String(required=False)
-
-
-class AttributesType(ObjectType):
-    name = String(required=True)
-    value = String(required=True)
-
-
-class RatingType(ObjectType):
-    score = String()
-    autouser = String()
-
-
-class AutoUserType(ObjectType):
-    userId = String()
-    createdDate = DateTime()
-    updatedDate = DateTime()
-
-
-class ProductType(ObjectType):
-    id = ID()
-    slug = String(required=True)
-    name = String(required=True)
-    name2 = String(required=False)
-    full_name = String(required=False)
-    one_c_id = String(required=False)
-    sku = String(required=False)
-    active = Boolean(required=False)
-    unit = String(required=False)
-    cat_number = String(required=False)
-    oem_number = String(required=False)
-    partNumber = String(required=False)
-    brand = Field(BrandType, required=False)
-    related = List(String)
-    category = List(CategoryType)
-    model = List(NewCarModelType, required=False)
-    engine = List(EngineType)
-    excerpt = String(required=False)
-    description = String(required=False)
-    created_date = Date(required=False)
-    updated_date = Date(required=False)
-    has_photo = Boolean(required=True)
-    images = List(IProductImagesType, required=False)
-    attributes = List(AttributesType)
-    stocks = List(ProductStocksType, required=False)
-    bages = List(String, required=False)
-    rating = List(RatingType, required=False)
-    video = List(String)
-    condition = String(required=False)
-
-
-class createAutoUserMutation(Mutation):
-    class Arguments:
-        userId = String()
-
-    ok = Boolean()
-    user = Field(AutoUserType)
-
-    def mutate(root, info, userId):
-        print(userId)
-        user, ok = AutoUser.objects.update_or_create(userId=userId)
-
-        return createAutoUserMutation(user=user)
-
-
-class Mutation(ObjectType):
-    createAutoUser = createAutoUserMutation.Field()
+        return math.ceil(avg["avg_score"]), count
+    except Exception as e:
+        return None, None
 
 
 class Query(ObjectType):
@@ -187,6 +55,15 @@ class Query(ObjectType):
     )
     product = Field(ProductType, slug=String(required=True))
     autouser = Field(AutoUserType, userId=String(required=True))
+    rating = Field(RatingType, productId=Int(), userId=String())
+
+    def resolve_rating(self, info, productId, userId):
+        try:
+            product = Product.objects.get(id=productId)
+            qs = ProductRating.objects.get(product=product, autoUser__userId=userId)
+            return qs
+        except:
+            return None
 
     def resolve_autouser(self, info, userId):
         qs = AutoUser.objects.get(userId=userId)
@@ -479,13 +356,6 @@ class Query(ObjectType):
             for x in prod.product_stock.all()
         ]
 
-        rating = []
-        for x in prod.product_rating.all():
-            try:
-                rating.append({"score": x.score, "autouser": x.autoUser.userId})
-            except:
-                rating.append({"score": x.score, "autouser": None})
-
         returnProduct = {
             "id": prod.id,
             "slug": prod.slug,
@@ -520,7 +390,8 @@ class Query(ObjectType):
             "attributes": attrs,
             "stocks": stocks,
             "bages": [{"bage": x.name} for x in prod.bages.all()],
-            "rating": rating,
+            "rating": ratingAvg(prod.id)[0],
+            "ratingCount": ratingAvg(prod.id)[1],
             "condition": prod.condition,
         }
         return returnProduct
