@@ -30,12 +30,13 @@ class ratingAvgType(ObjectType):
 def ratingAvg(productId):
     try:
         product = Product.objects.get(id=productId)
-        qs = ProductRating.objects.filter(product=product).aggregate(
-            avg_score=Avg("score")
-        )
-        return math.ceil(qs["avg_score"])
+        qs = ProductRating.objects.filter(product=product)
+        avg = qs.aggregate(avg_score=Avg("score"))
+        count = qs.count()
+
+        return math.ceil(avg["avg_score"]), count
     except Exception as e:
-        return None
+        return None, None
 
 
 class Query(ObjectType):
@@ -389,7 +390,8 @@ class Query(ObjectType):
             "attributes": attrs,
             "stocks": stocks,
             "bages": [{"bage": x.name} for x in prod.bages.all()],
-            "rating": ratingAvg(prod.id),
+            "rating": ratingAvg(prod.id)[0],
+            "ratingCount": ratingAvg(prod.id)[1],
             "condition": prod.condition,
         }
         return returnProduct

@@ -6,12 +6,12 @@
       "must": [
         {
           "term": {
-            "model.slug.keyword": "porter2"
+            "model.slug.keyword": "porter1"
           }
         },
         {
           "term": {
-            "category.slug.keyword": "podveska"
+            "category.slug.keyword": "transmissija"
           }
         },
         {

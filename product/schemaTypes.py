@@ -146,5 +146,6 @@ class ProductType(ObjectType):
     stocks = List(ProductStocksType, required=False)
     bages = List(String, required=False)
     rating = Int()
+    ratingCount = Int()
     video = List(String)
     condition = String(required=False)
