@@ -118,6 +118,11 @@ class AutoUserType(ObjectType):
     updatedDate = DateTime()
 
 
+class GetRatingType(ObjectType):
+    rating = Int()
+    ratingCount = Int()
+
+
 class ProductType(ObjectType):
     id = ID()
     slug = String(required=True)
