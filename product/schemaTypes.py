@@ -89,8 +89,8 @@ class PopularProductByModelType(ObjectType):
 
 class BrandType(ObjectType):
     id = ID()
-    slug = String(required=True)
-    name = String(required=True)
+    slug = String(required=False)
+    name = String(required=False)
     country = String(required=False)
     image = String(required=False)
 
@@ -102,8 +102,8 @@ class EngineType(ObjectType):
 
 
 class AttributesType(ObjectType):
-    name = String(required=True)
-    value = String(required=True)
+    name = String(required=False)
+    value = String(required=False)
 
 
 class RatingType(ObjectType):
