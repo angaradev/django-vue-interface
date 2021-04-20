@@ -57,6 +57,11 @@ class Query(ObjectType):
     autouser = Field(AutoUserType, userId=String(required=True))
     rating = Field(RatingType, productId=Int(), userId=String())
     productRating = Field(GetRatingType, productId=Int())
+    analogs = List(ProductType, catNumber=String(), productId=Int())
+
+    def resolve_analogs(self, info, catNumber, productId):
+        qs = Product.objects.filter(cat_number=catNumber).exclude(id=productId)
+        return qs
 
     def resolve_productRating(self, info, productId):
         try:
@@ -64,7 +69,7 @@ class Query(ObjectType):
             rating = ProductRating.objects.filter(product=product)
             count = rating.count()
             avg = rating.aggregate(avg_score=Avg("score"))
-            return {"rating": avg['avg_score'], "ratingCount": count}
+            return {"rating": avg["avg_score"], "ratingCount": count}
 
         except:
             return {"rating": None, "ratingCoung": None}
