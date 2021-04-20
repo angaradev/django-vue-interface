@@ -1,6 +1,7 @@
 from product.models.models import ProductRating
 import math
-from django.db.models import Avg
+from functools import reduce
+from django.db.models import Avg, Q
 from users.models import AutoUser
 from product.models import CarModel, CarMake, Category, Product
 from graphene import (
@@ -19,6 +20,7 @@ from django.db.models import Count
 from .utils import chk_img
 from .schemaTypes import *
 from .schemaMutations import Mutation
+from .utils import stemmer
 
 
 # connections.create_connection(hosts=["localhost:9200"], timeout=20)
@@ -53,11 +55,68 @@ class Query(ObjectType):
         slug=String(required=True),
         quantity=Int(required=True),
     )
+    similarProducts = List(ProductType, slug=String(required=True), quantity=Int())
     product = Field(ProductType, slug=String(required=True))
     autouser = Field(AutoUserType, userId=String(required=True))
     rating = Field(RatingType, productId=Int(), userId=String())
     productRating = Field(GetRatingType, productId=Int())
     analogs = List(ProductType, catNumber=String(), productId=Int())
+
+    def resolve_similarProducts(self, info, slug, quantity):
+        try:
+            product = Product.objects.get(slug=slug)
+            searchWords = stemmer(product.name)
+            query = reduce(
+                lambda q, value: q & Q(name__icontains=value), searchWords[:1], Q()
+            )
+            models = [x.slug for x in product.car_model.all()]
+
+            similar = (
+                Product.objects.filter(car_model__slug__in=models)
+                .filter(query)
+                .exclude(id=product.id)[:quantity]
+            )
+            returnProductList = []
+            for prod in similar:
+                stocks = [
+                    {
+                        "price": x.price,
+                        "quantity": x.quantity,
+                        "store": {"id": x.store.id, "name": x.store.name},
+                    }
+                    for x in prod.product_stock.all()
+                ]
+                returnProduct = {
+                    "id": prod.id,
+                    "slug": prod.slug,
+                    "name": prod.name,
+                    "name2": prod.name2,
+                    "full_name": prod.full_name,
+                    "one_c_id": prod.one_c_id,
+                    "sku": prod.sku,
+                    "active": prod.active,
+                    "uint": prod.unit,
+                    "cat_number": prod.cat_number,
+                    "oem_number": prod.oem_number,
+                    "partNumber": prod.partNumber,
+                    "brand": {
+                        "id": prod.brand.id,
+                        "slug": prod.brand.slug,
+                        "name": prod.brand.brand,
+                        "country": prod.brand.country,
+                        "image": prod.brand.image,
+                    },
+                    "stocks": stocks,
+                    "bages": prod.bages,
+                    "rating": ratingAvg(prod.id)[0],
+                    "ratingCount": ratingAvg(prod.id)[1],
+                    "condition": prod.condition,
+                }
+                returnProductList.append(returnProduct)
+            return returnProductList
+        except Exception as e:
+            print(e)
+            return []
 
     def resolve_analogs(self, info, catNumber, productId):
         qs = Product.objects.filter(cat_number=catNumber).exclude(id=productId)

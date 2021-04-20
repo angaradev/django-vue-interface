@@ -3,6 +3,7 @@ from transliterate import translit
 import re
 import os
 from PIL import Image, ImageOps
+from .stemer import Porter
 
 
 def chk_img(img):
@@ -121,3 +122,12 @@ def image_resizer(img, size):  # Image resizer for saving to bd different sizes
 def delete_file(path):  # Deleting Files from disk
     if os.path.isfile(path):
         os.remove(path)
+
+
+def stemmer(string):
+    words = string.split(" ")
+    s = Porter()
+    stems = []
+    for word in words:
+        stems.append(s.stem(word))
+    return stems
