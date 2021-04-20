@@ -52,7 +52,7 @@ class Query(ObjectType):
     category_all = List(CategoryType)
     popular_products = List(
         PopularProductByModelType,
-        slug=String(required=True),
+        slugs=List(String),
         quantity=Int(required=True),
     )
     similarProducts = List(ProductType, slug=String(required=True), quantity=Int())
@@ -78,6 +78,32 @@ class Query(ObjectType):
             )
             returnProductList = []
             for prod in similar:
+                models = [
+                    {
+                        "id": x.id,
+                        "slug": x.slug,
+                        "name": x.name,
+                        "model": x.name,
+                        "priority": x.priority,
+                        "image": x.image.url if x.image else None,
+                        "rusname": x.rusname,
+                        "make": {
+                            "slug": x.carmake.slug,
+                            "name": x.carmake.name,
+                            "id": x.carmake.id,
+                            "country": x.carmake.country,
+                        },
+                    }
+                    for x in prod.car_model.all()
+                ]
+                engines = [
+                    {
+                        "id": x.id,
+                        "name": x.name,
+                        "image": x.image.url if x.image else None,
+                    }
+                    for x in prod.engine.all()
+                ]
                 stocks = [
                     {
                         "price": x.price,
@@ -85,6 +111,20 @@ class Query(ObjectType):
                         "store": {"id": x.store.id, "name": x.store.name},
                     }
                     for x in prod.product_stock.all()
+                ]
+                images = [
+                    {
+                        "img150": x.img150.url if x.img150 else None,
+                        "img245": x.img245.url if x.img245 else None,
+                        "img500": x.img500.url if x.img500 else None,
+                        "img800": x.img800.url if x.img800 else None,
+                        "img150x150": x.img150x150.url if x.img150x150 else None,
+                        "img245x245": x.img245.url if x.img245x245 else None,
+                        "img500x500": x.img500x500 if x.img500x500 else None,
+                        "img800x800": x.img800x800 if x.img800x800 else None,
+                        "main": x.main,
+                    }
+                    for x in prod.images.all()
                 ]
                 returnProduct = {
                     "id": prod.id,
@@ -98,6 +138,7 @@ class Query(ObjectType):
                     "uint": prod.unit,
                     "cat_number": prod.cat_number,
                     "oem_number": prod.oem_number,
+                    "images": images,
                     "partNumber": prod.partNumber,
                     "brand": {
                         "id": prod.brand.id,
@@ -111,6 +152,8 @@ class Query(ObjectType):
                     "rating": ratingAvg(prod.id)[0],
                     "ratingCount": ratingAvg(prod.id)[1],
                     "condition": prod.condition,
+                    "model": models,
+                    "engine": engines,
                 }
                 returnProductList.append(returnProduct)
             return returnProductList
@@ -186,9 +229,9 @@ class Query(ObjectType):
             "updatedDate": qs.updated_date,
         }
 
-    def resolve_popular_products(self, info, slug, quantity=20):
+    def resolve_popular_products(self, info, slugs, quantity=20):
         qs = (
-            Product.objects.filter(car_model__slug=slug)
+            Product.objects.filter(car_model__slug__in=slugs)
             .filter(product_image__isnull=False)
             .distinct()[:quantity]
         )  # Needs to add some filter by popularity
