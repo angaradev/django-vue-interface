@@ -124,6 +124,18 @@ class GetRatingType(ObjectType):
     ratingCount = Int()
 
 
+class RelatedProductType(ObjectType):
+    id = ID()
+    name = String(required=True)
+    slug = String(required=True)
+    one_c_id = String(required=False)
+    cat_number = String(required=False)
+    model = List(NewCarModelType, required=False)
+    stocks = List(ProductStocksType, required=False)
+    images = List(IProductImagesType, required=False)
+    brand = Field(BrandType)
+
+
 class ProductType(ObjectType):
     id = ID()
     slug = String(required=True)
@@ -138,7 +150,7 @@ class ProductType(ObjectType):
     oem_number = String(required=False)
     partNumber = String(required=False)
     brand = Field(BrandType, required=False)
-    related = List(String)
+    related = List(RelatedProductType)
     category = List(CategoryType)
     model = List(NewCarModelType, required=False)
     engine = List(EngineType)

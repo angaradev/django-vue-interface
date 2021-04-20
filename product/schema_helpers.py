@@ -79,6 +79,66 @@ def makeProduct(prod):
         }
         for x in prod.product_stock.all()
     ]
+    related = [
+        {
+            "slug": x.slug,
+            "name": x.name,
+            "id": x.id,
+            "one_c_id": x.one_c_id,
+            "cat_number": x.cat_number,
+            "model": [
+                {
+                    "id": x.id,
+                    "slug": x.slug,
+                    "name": x.name,
+                    "model": x.name,
+                    "priority": x.priority,
+                    "image": x.image.url if x.image else None,
+                    "rusname": x.rusname,
+                    "make": {
+                        "slug": x.carmake.slug,
+                        "name": x.carmake.name,
+                        "id": x.carmake.id,
+                        "country": x.carmake.country,
+                    },
+                }
+                for x in x.car_model.all()
+            ],
+            "stocks": [
+                {
+                    "price": x.price,
+                    "quantity": x.quantity,
+                    "store": {"id": x.store.id, "name": x.store.name},
+                }
+                for x in x.product_stock.all()
+            ],
+            "images": [
+                {
+                    "img150": x.img150.url if x.img150 else None,
+                    "img245": x.img245.url if x.img245 else None,
+                    "img500": x.img500.url if x.img500 else None,
+                    "img800": x.img800.url if x.img800 else None,
+                    "img150x150": x.img150x150.url if x.img150x150 else None,
+                    "img245x245": x.img245.url if x.img245x245 else None,
+                    "img500x500": x.img500x500 if x.img500x500 else None,
+                    "img800x800": x.img800x800 if x.img800x800 else None,
+                    "main": x.main,
+                }
+                for x in x.images.all()
+            ],
+            "brand": {x.brand.brand},
+        }
+        for x in prod.related.all()
+    ]
+
+    # id = ID()
+    # name = String(required=True)
+    # slug = String(required=True)
+    # one_c_id = String(required=False)
+    # cat_number = String(required=False)
+    # model = List(NewCarModelType, required=False)
+    # stocks = List(ProductStocksType, required=False)
+    # images = List(IProductImagesType, required=False)
 
     returnProduct = {
         "id": prod.id,
@@ -100,7 +160,7 @@ def makeProduct(prod):
             "country": prod.brand.country,
             "image": prod.brand.image,
         },
-        "related": [x.id for x in prod.related.all()],
+        "related": related,  # [x.id for x in prod.related.all()],
         "category": cats,
         "model": models,
         "engine": engines,
