@@ -72,6 +72,14 @@ class ProductStocksType(ObjectType):
     availability_days = Int(required=False)
 
 
+class BrandType(ObjectType):
+    id = ID()
+    slug = String(required=False)
+    name = String(required=False)
+    country = String(required=False)
+    image = String(required=False)
+
+
 class PopularProductByModelType(ObjectType):
     id = ID()
     slug = String(required=True)
@@ -85,14 +93,7 @@ class PopularProductByModelType(ObjectType):
     cat_number = String(required=True)
     bages = List(String, required=False)
     stocks = List(ProductStocksType, required=False)
-
-
-class BrandType(ObjectType):
-    id = ID()
-    slug = String(required=False)
-    name = String(required=False)
-    country = String(required=False)
-    image = String(required=False)
+    brand = Field(BrandType)
 
 
 class EngineType(ObjectType):

@@ -61,7 +61,44 @@ class Query(ObjectType):
 
     def resolve_analogs(self, info, catNumber, productId):
         qs = Product.objects.filter(cat_number=catNumber).exclude(id=productId)
-        return qs
+        returnProductList = []
+        for prod in qs:
+            stocks = [
+                {
+                    "price": x.price,
+                    "quantity": x.quantity,
+                    "store": {"id": x.store.id, "name": x.store.name},
+                }
+                for x in prod.product_stock.all()
+            ]
+            returnProduct = {
+                "id": prod.id,
+                "slug": prod.slug,
+                "name": prod.name,
+                "name2": prod.name2,
+                "full_name": prod.full_name,
+                "one_c_id": prod.one_c_id,
+                "sku": prod.sku,
+                "active": prod.active,
+                "uint": prod.unit,
+                "cat_number": prod.cat_number,
+                "oem_number": prod.oem_number,
+                "partNumber": prod.partNumber,
+                "brand": {
+                    "id": prod.brand.id,
+                    "slug": prod.brand.slug,
+                    "name": prod.brand.brand,
+                    "country": prod.brand.country,
+                    "image": prod.brand.image,
+                },
+                "stocks": stocks,
+                "bages": prod.bages,
+                "rating": ratingAvg(prod.id)[0],
+                "ratingCount": ratingAvg(prod.id)[1],
+                "condition": prod.condition,
+            }
+            returnProductList.append(returnProduct)
+        return returnProductList
 
     def resolve_productRating(self, info, productId):
         try:
@@ -147,6 +184,7 @@ class Query(ObjectType):
                     "images": images,
                     "bages": prod.bages,
                     "stocks": stocks,
+                    "brand": {"name": prod.brand.brand, "conuntry": prod.brand.country},
                 }
             )
 
