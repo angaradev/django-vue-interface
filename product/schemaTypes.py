@@ -83,7 +83,7 @@ class PopularProductByModelType(ObjectType):
     model = List(NewCarModelType, required=True)
     images = List(IProductImagesType)
     cat_number = String(required=True)
-    bages = String(required=False)
+    bages = List(String, required=False)
     stocks = List(ProductStocksType, required=False)
 
 

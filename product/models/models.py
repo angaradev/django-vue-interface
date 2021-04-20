@@ -153,6 +153,13 @@ class Product(models.Model):  # Main table product
     )
 
     @property
+    def bages(self):
+        if self.product_bages:
+            return [x.name for x in self.product_bages.all()]
+        else:
+            return []
+
+    @property
     def full_name(self):
         if self.name2:
             cars = [x.name for x in self.car_model.all()]

@@ -108,7 +108,6 @@ class Query(ObjectType):
                 }
                 for x in prod.car_model.all()
             ]
-            bages = [{"name": x.name} for x in prod.bages.all()]
             images = [
                 {
                     "img150x150": chk_img(x.img150x150),
@@ -146,7 +145,7 @@ class Query(ObjectType):
                     "cat_number": prod.cat_number,
                     "model": models,
                     "images": images,
-                    "bages": bages,
+                    "bages": prod.bages,
                     "stocks": stocks,
                 }
             )
@@ -406,7 +405,7 @@ class Query(ObjectType):
             "video": [x.url for x in prod.product_video.all()],
             "attributes": attrs,
             "stocks": stocks,
-            "bages": [{"bage": x.name} for x in prod.bages.all()],
+            "bages": prod.bages,
             "rating": ratingAvg(prod.id)[0],
             "ratingCount": ratingAvg(prod.id)[1],
             "condition": prod.condition,
