@@ -21,6 +21,7 @@ from .utils import chk_img
 from .schemaTypes import *
 from .schemaMutations import Mutation
 from .utils import stemmer
+from .schema_helpers import makeProduct
 
 
 # connections.create_connection(hosts=["localhost:9200"], timeout=20)
@@ -78,84 +79,7 @@ class Query(ObjectType):
             )
             returnProductList = []
             for prod in similar:
-                models = [
-                    {
-                        "id": x.id,
-                        "slug": x.slug,
-                        "name": x.name,
-                        "model": x.name,
-                        "priority": x.priority,
-                        "image": x.image.url if x.image else None,
-                        "rusname": x.rusname,
-                        "make": {
-                            "slug": x.carmake.slug,
-                            "name": x.carmake.name,
-                            "id": x.carmake.id,
-                            "country": x.carmake.country,
-                        },
-                    }
-                    for x in prod.car_model.all()
-                ]
-                engines = [
-                    {
-                        "id": x.id,
-                        "name": x.name,
-                        "image": x.image.url if x.image else None,
-                    }
-                    for x in prod.engine.all()
-                ]
-                stocks = [
-                    {
-                        "price": x.price,
-                        "quantity": x.quantity,
-                        "store": {"id": x.store.id, "name": x.store.name},
-                    }
-                    for x in prod.product_stock.all()
-                ]
-                images = [
-                    {
-                        "img150": x.img150.url if x.img150 else None,
-                        "img245": x.img245.url if x.img245 else None,
-                        "img500": x.img500.url if x.img500 else None,
-                        "img800": x.img800.url if x.img800 else None,
-                        "img150x150": x.img150x150.url if x.img150x150 else None,
-                        "img245x245": x.img245.url if x.img245x245 else None,
-                        "img500x500": x.img500x500 if x.img500x500 else None,
-                        "img800x800": x.img800x800 if x.img800x800 else None,
-                        "main": x.main,
-                    }
-                    for x in prod.images.all()
-                ]
-                returnProduct = {
-                    "id": prod.id,
-                    "slug": prod.slug,
-                    "name": prod.name,
-                    "name2": prod.name2,
-                    "full_name": prod.full_name,
-                    "one_c_id": prod.one_c_id,
-                    "sku": prod.sku,
-                    "active": prod.active,
-                    "uint": prod.unit,
-                    "cat_number": prod.cat_number,
-                    "oem_number": prod.oem_number,
-                    "images": images,
-                    "partNumber": prod.partNumber,
-                    "brand": {
-                        "id": prod.brand.id,
-                        "slug": prod.brand.slug,
-                        "name": prod.brand.brand,
-                        "country": prod.brand.country,
-                        "image": prod.brand.image,
-                    },
-                    "stocks": stocks,
-                    "bages": prod.bages,
-                    "rating": ratingAvg(prod.id)[0],
-                    "ratingCount": ratingAvg(prod.id)[1],
-                    "condition": prod.condition,
-                    "model": models,
-                    "engine": engines,
-                }
-                returnProductList.append(returnProduct)
+                returnProductList.append(makeProduct(prod))
             return returnProductList
         except Exception as e:
             print(e)
@@ -165,41 +89,7 @@ class Query(ObjectType):
         qs = Product.objects.filter(cat_number=catNumber).exclude(id=productId)
         returnProductList = []
         for prod in qs:
-            stocks = [
-                {
-                    "price": x.price,
-                    "quantity": x.quantity,
-                    "store": {"id": x.store.id, "name": x.store.name},
-                }
-                for x in prod.product_stock.all()
-            ]
-            returnProduct = {
-                "id": prod.id,
-                "slug": prod.slug,
-                "name": prod.name,
-                "name2": prod.name2,
-                "full_name": prod.full_name,
-                "one_c_id": prod.one_c_id,
-                "sku": prod.sku,
-                "active": prod.active,
-                "uint": prod.unit,
-                "cat_number": prod.cat_number,
-                "oem_number": prod.oem_number,
-                "partNumber": prod.partNumber,
-                "brand": {
-                    "id": prod.brand.id,
-                    "slug": prod.brand.slug,
-                    "name": prod.brand.brand,
-                    "country": prod.brand.country,
-                    "image": prod.brand.image,
-                },
-                "stocks": stocks,
-                "bages": prod.bages,
-                "rating": ratingAvg(prod.id)[0],
-                "ratingCount": ratingAvg(prod.id)[1],
-                "condition": prod.condition,
-            }
-            returnProductList.append(returnProduct)
+            returnProductList.append(makeProduct(prod))
         return returnProductList
 
     def resolve_productRating(self, info, productId):
@@ -237,58 +127,7 @@ class Query(ObjectType):
         )  # Needs to add some filter by popularity
         lst = []
         for prod in qs:
-            models = [
-                {
-                    "id": x.id,
-                    "slug": x.slug,
-                    "model": x.name,
-                    "image": x.image.url if x.image else None,
-                    "make": {"slug": x.carmake.slug, "name": x.carmake.name},
-                }
-                for x in prod.car_model.all()
-            ]
-            images = [
-                {
-                    "img150x150": chk_img(x.img150x150),
-                    "img245x245": chk_img(x.img245x245),
-                    "img500x500": chk_img(x.img500x500),
-                    "img150": chk_img(x.img500),
-                    "img245": chk_img(x.img245),
-                    "img500": chk_img(x.img500),
-                    "main": x.main,
-                }
-                for x in prod.images
-            ]
-            stocks = [
-                {
-                    "id": x.id,
-                    "store": {
-                        "name": x.store.name,
-                        "location_city": x.store.location_city,
-                    },
-                    "price": x.price,
-                    "quantity": x.quantity,
-                    "availability_days": x.availability_days,
-                }
-                for x in prod.product_stock.all()
-            ]
-            lst.append(
-                {
-                    "id": prod.id,
-                    "name": prod.name,
-                    "slug": prod.slug,
-                    "name2": prod.name2,
-                    "full_name": prod.full_name,
-                    "one_c_id": prod.one_c_id,
-                    "sku": prod.sku,
-                    "cat_number": prod.cat_number,
-                    "model": models,
-                    "images": images,
-                    "bages": prod.bages,
-                    "stocks": stocks,
-                    "brand": {"name": prod.brand.brand, "conuntry": prod.brand.country},
-                }
-            )
+            lst.append(makeProduct(prod))
 
         return lst
 
@@ -449,108 +288,7 @@ class Query(ObjectType):
     def resolve_product(self, info, slug):
 
         prod = Product.objects.get(slug=slug)
-        cats = [
-            {
-                "id": x.id,
-                "name": x.name,
-                "slug": x.slug,
-                "parent": x.parent.id,
-            }
-            for x in prod.category.all()
-        ]
-
-        models = [
-            {
-                "id": x.id,
-                "slug": x.slug,
-                "name": x.name,
-                "model": x.name,
-                "priority": x.priority,
-                "image": x.image.url if x.image else None,
-                "rusname": x.rusname,
-                "make": {
-                    "slug": x.carmake.slug,
-                    "name": x.carmake.name,
-                    "id": x.carmake.id,
-                    "country": x.carmake.country,
-                },
-            }
-            for x in prod.car_model.all()
-        ]
-        engines = [
-            {
-                "id": x.id,
-                "name": x.name,
-                "image": x.image.url if x.image else None,
-            }
-            for x in prod.engine.all()
-        ]
-        images = [
-            {
-                "img150": x.img150.url if x.img150 else None,
-                "img245": x.img245.url if x.img245 else None,
-                "img500": x.img500.url if x.img500 else None,
-                "img800": x.img800.url if x.img800 else None,
-                "img150x150": x.img150x150.url if x.img150x150 else None,
-                "img245x245": x.img245.url if x.img245x245 else None,
-                "img500x500": x.img500x500 if x.img500x500 else None,
-                "img800x800": x.img800x800 if x.img800x800 else None,
-                "main": x.main,
-            }
-            for x in prod.images.all()
-        ]
-        attrs = [
-            {"name": x.attribute_name.name, "value": x.attribute_value}
-            for x in prod.product_attribute.all()
-        ]
-        stocks = [
-            {
-                "price": x.price,
-                "quantity": x.quantity,
-                "store": {"id": x.store.id, "name": x.store.name},
-            }
-            for x in prod.product_stock.all()
-        ]
-
-        returnProduct = {
-            "id": prod.id,
-            "slug": prod.slug,
-            "name": prod.name,
-            "name2": prod.name2,
-            "full_name": prod.full_name,
-            "one_c_id": prod.one_c_id,
-            "sku": prod.sku,
-            "active": prod.active,
-            "uint": prod.unit,
-            "cat_number": prod.cat_number,
-            "oem_number": prod.oem_number,
-            "partNumber": prod.partNumber,
-            "brand": {
-                "id": prod.brand.id,
-                "slug": prod.brand.slug,
-                "name": prod.brand.brand,
-                "country": prod.brand.country,
-                "image": prod.brand.image,
-            },
-            "related": [x.id for x in prod.related.all()],
-            "category": cats,
-            "model": models,
-            "engine": engines,
-            "excerpt": prod.excerpt,
-            "description": prod.description,
-            "created_date": prod.created_date,
-            "updated_date": prod.updated_date,
-            "has_photo": prod.have_photo,
-            "images": images,
-            "video": [x.url for x in prod.product_video.all()],
-            "attributes": attrs,
-            "stocks": stocks,
-            "bages": prod.bages,
-            "rating": ratingAvg(prod.id)[0],
-            "ratingCount": ratingAvg(prod.id)[1],
-            "condition": prod.condition,
-        }
-        return returnProduct
+        return makeProduct(prod)
 
 
 schema = Schema(query=Query, mutation=Mutation)
