@@ -57,11 +57,23 @@ class Query(ObjectType):
         quantity=Int(required=True),
     )
     similarProducts = List(ProductType, slug=String(required=True), quantity=Int())
+    togetherProduct = List(ProductType, slug=String(required=True))
     product = Field(ProductType, slug=String(required=True))
     autouser = Field(AutoUserType, userId=String(required=True))
     rating = Field(RatingType, productId=Int(), userId=String())
     productRating = Field(GetRatingType, productId=Int())
     analogs = List(ProductType, catNumber=String(), productId=Int())
+
+    def resolve_togetherProduct(self, info, slug):
+        try:
+            product = Product.objects.get(slug=slug)
+            returnProduct = []
+            for related in product.related.all():
+                returnProduct.append(makeProduct(related))
+            return returnProduct
+        except Exception as e:
+            print("Error in get together products", e)
+            return []
 
     def resolve_similarProducts(self, info, slug, quantity):
         try:
@@ -86,11 +98,16 @@ class Query(ObjectType):
             return []
 
     def resolve_analogs(self, info, catNumber, productId):
-        qs = Product.objects.filter(cat_number=catNumber).exclude(id=productId)
-        returnProductList = []
-        for prod in qs:
-            returnProductList.append(makeProduct(prod))
-        return returnProductList
+        try:
+
+            qs = Product.objects.filter(cat_number=catNumber).exclude(id=productId)
+            returnProductList = []
+            for prod in qs:
+                returnProductList.append(makeProduct(prod))
+            return returnProductList
+        except Exception as e:
+            print("Error in resolve analogs", e)
+            return []
 
     def resolve_productRating(self, info, productId):
         try:
@@ -120,16 +137,19 @@ class Query(ObjectType):
         }
 
     def resolve_popular_products(self, info, slugs, quantity=20):
-        qs = (
-            Product.objects.filter(car_model__slug__in=slugs)
-            .filter(product_image__isnull=False)
-            .distinct()[:quantity]
-        )  # Needs to add some filter by popularity
-        lst = []
-        for prod in qs:
-            lst.append(makeProduct(prod))
-
-        return lst
+        try:
+            qs = (
+                Product.objects.filter(car_model__slug__in=slugs)
+                .filter(product_image__isnull=False)
+                .distinct()[:quantity]
+            )  # Needs to add some filter by popularity
+            lst = []
+            for prod in qs:
+                lst.append(makeProduct(prod))
+            return lst
+        except Exception as e:
+            print("Error in resolve_popular_products", e)
+            return []
 
     def resolve_category_all(self, info):
         cats = Category.objects.all()
