@@ -72,6 +72,14 @@ class ProductStocksType(ObjectType):
     availability_days = Int(required=False)
 
 
+class BrandType(ObjectType):
+    id = ID()
+    slug = String(required=False)
+    name = String(required=False)
+    country = String(required=False)
+    image = String(required=False)
+
+
 class PopularProductByModelType(ObjectType):
     id = ID()
     slug = String(required=True)
@@ -83,16 +91,9 @@ class PopularProductByModelType(ObjectType):
     model = List(NewCarModelType, required=True)
     images = List(IProductImagesType)
     cat_number = String(required=True)
-    bages = String(required=False)
+    bages = List(String, required=False)
     stocks = List(ProductStocksType, required=False)
-
-
-class BrandType(ObjectType):
-    id = ID()
-    slug = String(required=True)
-    name = String(required=True)
-    country = String(required=False)
-    image = String(required=False)
+    brand = Field(BrandType)
 
 
 class EngineType(ObjectType):
@@ -102,8 +103,8 @@ class EngineType(ObjectType):
 
 
 class AttributesType(ObjectType):
-    name = String(required=True)
-    value = String(required=True)
+    name = String(required=False)
+    value = String(required=False)
 
 
 class RatingType(ObjectType):
@@ -116,6 +117,11 @@ class AutoUserType(ObjectType):
     userId = String()
     createdDate = DateTime()
     updatedDate = DateTime()
+
+
+class GetRatingType(ObjectType):
+    rating = Int()
+    ratingCount = Int()
 
 
 class ProductType(ObjectType):

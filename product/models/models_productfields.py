@@ -17,7 +17,7 @@ class ProductBages(models.Model):
         on_delete=models.DO_NOTHING,
         null=True,
         blank=True,
-        related_name="bages",
+        related_name="product_bages",
     )
 
     class Meta:
