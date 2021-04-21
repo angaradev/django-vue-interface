@@ -56,23 +56,28 @@ def makeProduct(prod):
         }
         for x in prod.engine.all()
     ]
-    images = [
-        {
-            "img150": x.img150.url if x.img150 else None,
-            "img245": x.img245.url if x.img245 else None,
-            "img500": x.img500.url if x.img500 else None,
-            "img800": x.img800.url if x.img800 else None,
-            "img150x150": x.img150x150.url if x.img150x150 else None,
-            "img245x245": x.img245.url if x.img245x245 else None,
-            "img500x500": x.img500x500 if x.img500x500 else None,
-            "img800x800": x.img800x800 if x.img800x800 else None,
-            "main": x.main,
-            "dimension": {"width": x.img800.width, "height": x.img800.height}
-            if x.img800
-            else None,
-        }
-        for x in prod.images.all()
-    ]
+
+    images = []
+    for x in prod.images.all():
+        try:
+            images.append(
+                {
+                    "img150": x.img150.url if x.img150 else None,
+                    "img245": x.img245.url if x.img245 else None,
+                    "img500": x.img500.url if x.img500 else None,
+                    "img800": x.img800.url if x.img800 else None,
+                    "img150x150": x.img150x150.url if x.img150x150 else None,
+                    "img245x245": x.img245.url if x.img245x245 else None,
+                    "img500x500": x.img500x500 if x.img500x500 else None,
+                    "img800x800": x.img800x800 if x.img800x800 else None,
+                    "main": x.main,
+                    "dimension": {"width": x.img800.width, "height": x.img800.height}
+                    if x.img800
+                    else None,
+                }
+            )
+        except Exception as e:
+            print("Error in product images schema_helpers line 80", e)
     attrs = [
         {"name": x.attribute_name.name, "value": x.attribute_value}
         for x in prod.product_attribute.all()
