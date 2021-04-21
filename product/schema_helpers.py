@@ -1,6 +1,9 @@
 import math
+from pprint import PrettyPrinter
 from django.db.models import Avg, Q
 from .models import Product, ProductRating
+
+pp = PrettyPrinter(indent=2)
 
 
 def ratingAvg(productId):
@@ -64,9 +67,13 @@ def makeProduct(prod):
             "img500x500": x.img500x500 if x.img500x500 else None,
             "img800x800": x.img800x800 if x.img800x800 else None,
             "main": x.main,
+            "dimension": {"width": x.img800.width, "height": x.img800.height}
+            if x.img800
+            else None,
         }
         for x in prod.images.all()
     ]
+    pp.pprint(images[0])
     attrs = [
         {"name": x.attribute_name.name, "value": x.attribute_value}
         for x in prod.product_attribute.all()

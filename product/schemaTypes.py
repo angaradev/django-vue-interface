@@ -52,6 +52,11 @@ class NewCarModelType(ObjectType):
     image = String(required=False)
 
 
+class ImageDimensionType(ObjectType):
+    width = Int()
+    height = Int()
+
+
 class IProductImagesType(ObjectType):
     id = ID()
     img150 = String(required=False)
@@ -63,6 +68,7 @@ class IProductImagesType(ObjectType):
     img500x500 = String(required=False)
     img800x800 = String(required=False)
     main = Boolean(required=False)
+    dimension = Field(ImageDimensionType)
 
 
 class ProductStocksType(ObjectType):

@@ -1,17 +1,24 @@
 {
   "from": "0",
   "size": "20",
+  "sort": [
+    {
+      "stocks.price": {
+        "order": "asc"
+      }
+    }
+  ],
   "query": {
     "bool": {
       "must": [
         {
-          "term": {
-            "model.slug.keyword": "porter1"
-          }
-        },
-        {
-          "term": {
-            "category.slug.keyword": "detali-dvigatelja"
+          "match": {
+            "full_name_ngrams": {
+              "query": "\u0441\u0442\u0430\u0440\u0442\u0435\u0440",
+              "operator": "and",
+              "analyzer": "rebuilt_russian",
+              "fuzziness": "auto"
+            }
           }
         },
         {
@@ -22,7 +29,7 @@
                   "should": [
                     {
                       "term": {
-                        "has_photo": "true"
+                        "model.name.keyword": "\u043f\u043e\u0440\u0442\u0435\u04401"
                       }
                     }
                   ]
