@@ -73,7 +73,6 @@ def makeProduct(prod):
         }
         for x in prod.images.all()
     ]
-    pp.pprint(images[0])
     attrs = [
         {"name": x.attribute_name.name, "value": x.attribute_value}
         for x in prod.product_attribute.all()
