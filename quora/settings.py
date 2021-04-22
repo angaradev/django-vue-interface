@@ -18,6 +18,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "192.168.0.107",
+    "192.168.0.109",
     "192.168.0.24",
     "dnobaka.ru",
     "localhost",
