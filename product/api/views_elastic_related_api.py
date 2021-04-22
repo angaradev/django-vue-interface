@@ -22,7 +22,6 @@ def similar(request):
             # If query has car model and slug
             query = {
                 "size": 20,
-                "_source": ["id", "name"],
                 "query": {
                     "bool": {
                         "must": [
