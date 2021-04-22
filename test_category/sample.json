@@ -6,12 +6,12 @@
       "must": [
         {
           "term": {
-            "model.slug.keyword": "porter2"
+            "model.slug.keyword": "porter1"
           }
         },
         {
           "term": {
-            "category.slug.keyword": "toplivnaja-sistema"
+            "category.slug.keyword": "transmissija"
           }
         },
         {
