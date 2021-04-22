@@ -1,34 +1,29 @@
 {
   "from": "0",
   "size": "20",
+  "sort": [
+    {
+      "stocks.price": {
+        "order": "asc"
+      }
+    }
+  ],
   "query": {
     "bool": {
       "must": [
         {
-          "term": {
-            "model.slug.keyword": "porter1"
-          }
-        },
-        {
-          "term": {
-            "category.slug.keyword": "transmissija"
+          "match": {
+            "full_name_ngrams": {
+              "query": "porter",
+              "operator": "and",
+              "analyzer": "rebuilt_russian",
+              "fuzziness": "auto"
+            }
           }
         },
         {
           "bool": {
-            "must": [
-              {
-                "bool": {
-                  "should": [
-                    {
-                      "term": {
-                        "has_photo": "true"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "must": []
           }
         }
       ]

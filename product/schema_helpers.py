@@ -1,5 +1,6 @@
 import math
 from pprint import PrettyPrinter
+from product.models.models import Category
 from django.db.models import Avg, Q
 from .models import Product, ProductRating
 
@@ -29,6 +30,12 @@ def makeProduct(prod):
         }
         for x in prod.category.all()
     ]
+
+    breads = []
+    for cat in cats:
+        brad = Category.objects.get(id=cat["id"]).get_ancestors(include_self=True)
+        some = [{"slug": x.slug, "name": x.name} for x in brad]
+        breads.append(some)
 
     models = [
         {
@@ -188,5 +195,6 @@ def makeProduct(prod):
         "rating": ratingAvg(prod.id)[0],
         "ratingCount": ratingAvg(prod.id)[1],
         "condition": prod.condition,
+        "breads": breads,
     }
     return returnProduct

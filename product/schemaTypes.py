@@ -142,6 +142,11 @@ class RelatedProductType(ObjectType):
     brand = Field(BrandType)
 
 
+class BreadCrumbsType(ObjectType):
+    slug = String()
+    name = String()
+
+
 class ProductType(ObjectType):
     id = ID()
     slug = String(required=True)
@@ -173,3 +178,4 @@ class ProductType(ObjectType):
     ratingCount = Int()
     video = List(String)
     condition = String(required=False)
+    breads = List(List(BreadCrumbsType))
