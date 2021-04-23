@@ -44,7 +44,7 @@ urlpatterns = [
     path("blog/", include("blog.urls")),
     path("vasyainterface/", include("vasya_interface.urls")),
     path("companypages/", include("company_pages.urls")),
-    # path("ckeditor/", include("ckeditor_uploader.urls")),
+    path("ckeditor/", include("ckeditor_uploader.urls")),
     # path("testcategory/", include("test_category.urls")),
     path("react/", React.as_view(), name="react"),
     re_path(r"^(?:react.*)/$", React.as_view(), name="react-router"),
