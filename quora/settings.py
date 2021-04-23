@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     "test_category",
     "vasya_interface",
     "graphene_django",
+    "company_pages",
 ]
 
 MIDDLEWARE = [
@@ -185,6 +186,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 MEDIA_URL = "/media/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+CKEDITOR_BASEPATH = os.path.join(STATIC_ROOT, "ckeditor")
 
 
 # django crispy forms
