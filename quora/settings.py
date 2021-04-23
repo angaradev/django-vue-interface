@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "rest_auth",
     "rest_auth.registration",
     "crispy_forms",
+    "ckeditor",
     "webpack_loader",
     "bootstrap_pagination",
     "users",

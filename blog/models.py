@@ -1,6 +1,8 @@
 from django.db import models
 from product.models import Category
 from django.conf import settings
+from ckeditor.fields import RichTextField
+from product.models import Category
 
 
 class Categories(models.Model):
@@ -8,8 +10,8 @@ class Categories(models.Model):
     slug = models.SlugField(unique=True)
 
     class Meta:
-        verbose_name = 'Категоиря Блога'
-        verbose_name_plural = 'Категории Блога'
+        verbose_name = "Категоиря Блога"
+        verbose_name_plural = "Категории Блога"
 
     def __str__(self):
         return self.name
@@ -18,22 +20,21 @@ class Categories(models.Model):
 class Post(models.Model):
 
     title = models.CharField(max_length=255)
-    text = models.TextField()
+    text = RichTextField(null=True, blank=True)
     image = models.ImageField(upload_to=settings.BLOG_IMAGES)
-    categories = models.ManyToManyField(
-        'Categories', related_name='blog_categories')
+    parts_category = models.ManyToManyField(Category, related_name="parts_categories")
+    categories = models.ManyToManyField("Categories", related_name="blog_categories")
     date = models.DateField(auto_now_add=True)
-    parts_category = models.ManyToManyField(
-        Category, related_name='parts_categories')
     slug = models.SlugField(unique=True)
     author = models.CharField(max_length=100, default=settings.DEFAULT_AUTHOR)
 
     class Meta:
-        verbose_name = 'Пост'
-        verbose_name_plural = 'Посты'
+        verbose_name = "Пост"
+        verbose_name_plural = "Посты"
 
     def __str__(self):
         return self.title
+
 
 # id: 2,
 #     title: 'Logic Is The Study Of Reasoning And Argument Part 2',
