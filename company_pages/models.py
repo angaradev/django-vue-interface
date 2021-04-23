@@ -8,9 +8,9 @@ class CompanyPages(models.Model):
 
     title = models.CharField(max_length=255)
 
-    textHtml = RichTextField(blank=True, null=True)
+    textHTML = RichTextField(blank=True, null=True)
     text = models.TextField(blank=True, null=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, null=True, blank=True)
 
     class Meta:
         verbose_name = "Страницa Компании"
@@ -20,5 +20,5 @@ class CompanyPages(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(translit(self.title))
+        self.slug = slugify(translit(self.title, "ru", reversed=True))
         super().save(*args, **kwargs)

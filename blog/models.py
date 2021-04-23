@@ -38,7 +38,7 @@ class Post(models.Model):
         return self.title
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(translit(self.title))
+        self.slug = slugify(translit(self.title, "ru", reversed=True))
         super().save(*args, **kwargs)
 
 
