@@ -5,6 +5,7 @@ from ckeditor.fields import RichTextField
 from product.models import Category
 from transliterate import translit
 from django.utils.text import slugify
+from ckeditor_uploader.fields import RichTextUploadingField
 
 
 class Categories(models.Model):
@@ -22,7 +23,7 @@ class Categories(models.Model):
 class Post(models.Model):
 
     title = models.CharField(max_length=255)
-    text = RichTextField(null=True, blank=True)
+    text = RichTextUploadingField(null=True, blank=True)
     image = models.ImageField(upload_to=settings.BLOG_IMAGES)
     parts_category = models.ManyToManyField(Category, related_name="parts_categories")
     categories = models.ManyToManyField("Categories", related_name="blog_categories")
