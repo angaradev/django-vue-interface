@@ -34,10 +34,12 @@ class PostType(ObjectType):
     slug = String()
     image = String()
     title = String()
-    textHTML = String()
+    excerpt = String()
     text = String()
     partsCategory = List(CategoryType)
     category = List(CategoryType)
+    date = Date()
+    author = String()
 
 
 class Query(ObjectType):
@@ -56,12 +58,19 @@ class Query(ObjectType):
 
     def resolve_post(self, info, slug):
         post = Post.objects.get(slug=slug)
+        print(info.context.build_absolute_uri(post.image.url))
         print(post.image.url)
         ret = {
+            "slug": post.slug,
             "id": post.id,
-            "image": post.image.url if post.image else None,
+            "image": info.context.build_absolute_uri(post.image.url)
+            if post.image
+            else None,
             "title": post.title,
+            "excerpt": post.excerpt,
             "text": post.text,
+            "date": post.date,
+            "author": post.author,
             "partsCategory": [
                 {
                     "slug": x.slug,
@@ -80,10 +89,14 @@ class Query(ObjectType):
         posts = []
         for post in qs:
             ret = {
+                "slug": post.slug,
                 "id": post.id,
                 "image": post.image.url if post.image else None,
                 "title": post.title,
+                "excerpt": post.excerpt,
                 "text": post.text,
+                "date": post.date,
+                "author": post.author,
                 "partsCategory": [
                     {
                         "slug": x.slug,
