@@ -11,3 +11,6 @@ class CompanyPages(models.Model):
     class Meta:
         verbose_name = "Страницa Компании"
         verbose_name_plural = "Страницы Компании"
+
+    def __str__(self):
+        return self.title
