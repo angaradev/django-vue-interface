@@ -24,7 +24,7 @@ class Post(models.Model):
 
     title = models.CharField(max_length=255)
     text = RichTextUploadingField(null=True, blank=True)
-    excerpt = RichTextUploadingField(null=True, blank=True)
+    excerpt = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to=settings.BLOG_IMAGES)
     parts_category = models.ManyToManyField(Category, related_name="parts_categories")
     categories = models.ManyToManyField("Categories", related_name="blog_categories")

@@ -34,10 +34,12 @@ class PostType(ObjectType):
     slug = String()
     image = String()
     title = String()
-    textHTML = String()
+    excerpt = String()
     text = String()
     partsCategory = List(CategoryType)
     category = List(CategoryType)
+    date = Date()
+    author = String()
 
 
 class Query(ObjectType):
@@ -65,7 +67,10 @@ class Query(ObjectType):
             if post.image
             else None,
             "title": post.title,
+            "excerpt": post.excerpt,
             "text": post.text,
+            "date": post.date,
+            "author": post.author,
             "partsCategory": [
                 {
                     "slug": x.slug,
@@ -88,7 +93,10 @@ class Query(ObjectType):
                 "id": post.id,
                 "image": post.image.url if post.image else None,
                 "title": post.title,
+                "excerpt": post.excerpt,
                 "text": post.text,
+                "date": post.date,
+                "author": post.author,
                 "partsCategory": [
                     {
                         "slug": x.slug,
