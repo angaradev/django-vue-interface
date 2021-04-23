@@ -3,6 +3,8 @@ from product.models import Category
 from django.conf import settings
 from ckeditor.fields import RichTextField
 from product.models import Category
+from transliterate import translit
+from django.utils.text import slugify
 
 
 class Categories(models.Model):
@@ -34,6 +36,10 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(translit(self.title))
+        super().save(*args, **kwargs)
 
 
 # id: 2,
