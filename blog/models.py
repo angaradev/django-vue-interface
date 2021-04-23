@@ -29,7 +29,7 @@ class Post(models.Model):
     parts_category = models.ManyToManyField(Category, related_name="parts_categories")
     categories = models.ManyToManyField("Categories", related_name="blog_categories")
     date = models.DateField(auto_now_add=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     author = models.CharField(max_length=100, default=settings.DEFAULT_AUTHOR)
 
     class Meta:
