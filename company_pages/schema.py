@@ -27,7 +27,6 @@ class PageType(ObjectType):
 class CategoryType(ObjectType):
     slug = String()
     name = String()
-    image = String()
 
 
 class PostType(ObjectType):
@@ -56,10 +55,48 @@ class Query(ObjectType):
         return qs
 
     def resolve_post(self, info, slug):
-        return Post.object.get(slug=slug)
+        post = Post.objects.get(slug=slug)
+        print(post.image.url)
+        ret = {
+            "id": post.id,
+            "image": post.image.url if post.image else None,
+            "title": post.title,
+            "text": post.text,
+            "partsCategory": [
+                {
+                    "slug": x.slug,
+                    "name": x.name,
+                }
+                for x in post.parts_category.all()
+            ],
+            "category": [
+                {"slug": x.slug, "name": x.name} for x in post.categories.all()
+            ],
+        }
+        return ret
 
     def resolve_posts(self, info):
-        return Post.object.all()
+        qs = Post.objects.all()
+        posts = []
+        for post in qs:
+            ret = {
+                "id": post.id,
+                "image": post.image.url if post.image else None,
+                "title": post.title,
+                "text": post.text,
+                "partsCategory": [
+                    {
+                        "slug": x.slug,
+                        "name": x.name,
+                    }
+                    for x in post.parts_category.all()
+                ],
+                "category": [
+                    {"slug": x.slug, "name": x.name} for x in post.categories.all()
+                ],
+            }
+            posts.append(ret)
+        return posts
 
 
 schema = Schema(query=Query)
