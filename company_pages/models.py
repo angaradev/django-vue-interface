@@ -1,5 +1,6 @@
 from django.db import models
 from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 from transliterate import translit
 from django.utils.text import slugify
 
@@ -8,7 +9,7 @@ class CompanyPages(models.Model):
 
     title = models.CharField(max_length=255)
 
-    textHTML = RichTextField(blank=True, null=True)
+    textHTML = RichTextUploadingField(blank=True, null=True)
     text = models.TextField(blank=True, null=True)
     slug = models.SlugField(unique=True, null=True, blank=True)
 
