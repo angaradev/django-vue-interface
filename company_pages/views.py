@@ -1,7 +1,7 @@
 def about(request):
 
     context = {}
-    return (response, context)
+    return (request, context)
 
 
 # Create your views here.

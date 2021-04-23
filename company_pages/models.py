@@ -1,3 +1,9 @@
 from django.db import models
+from ckeditor.fields import RichTextField
 
-# Create your models here.
+
+class CompanyPages(models.Model):
+
+    title = models.CharField(max_length=255)
+    textHtml = RichTextField(blank=True, null=True)
+    text = models.TextField(blank=True, null=True)

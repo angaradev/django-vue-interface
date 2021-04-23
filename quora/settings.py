@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "rest_auth.registration",
     "crispy_forms",
     "ckeditor",
+    "ckeditor_uploader",
     "webpack_loader",
     "bootstrap_pagination",
     "users",
@@ -187,7 +188,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
 CKEDITOR_BASEPATH = os.path.join(STATIC_ROOT, "ckeditor")
-
+CKEDITOR_UPLOAD_PATH = "ckeditor/uploads/"
 
 # django crispy forms
 CRISPY_TEMPLATE_PACK = "bootstrap4"
