@@ -103,7 +103,7 @@ class Query(ObjectType):
         posts = None
         f = pageFrom - 1
         t = pageTo - 1
-        if slug == "all":
+        if slug == "vse-kategorii":
             posts = Post.objects.all()[f:t]
             print(posts)
         else:
