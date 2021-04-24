@@ -29,6 +29,11 @@ class CategoryType(ObjectType):
     name = String()
 
 
+class Car(ObjectType):
+    slug = String()
+    name = String()
+
+
 class PostType(ObjectType):
     id = ID()
     slug = String()
@@ -40,6 +45,7 @@ class PostType(ObjectType):
     category = List(CategoryType)
     date = Date()
     author = String()
+    car = List(Car)
 
 
 class Query(ObjectType):
@@ -49,7 +55,7 @@ class Query(ObjectType):
     posts = List(PostType)
     categories = List(CategoryType)
 
-    def resolve_partsCategory(self, info):
+    def resolve_categories(self, info):
         return Categories.objects.all()
 
     def resolve_page(self, info, slug):
@@ -85,6 +91,7 @@ class Query(ObjectType):
             "category": [
                 {"slug": x.slug, "name": x.name} for x in post.categories.all()
             ],
+            "car": [{"slug": x.slug, "name": x.name} for x in post.car.all()],
         }
         return ret
 

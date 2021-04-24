@@ -2,7 +2,7 @@ from django.db import models
 from product.models import Category
 from django.conf import settings
 from ckeditor.fields import RichTextField
-from product.models import Category
+from product.models import Category, CarModel
 from transliterate import translit
 from django.utils.text import slugify
 from ckeditor_uploader.fields import RichTextUploadingField
@@ -13,7 +13,7 @@ class Categories(models.Model):
     slug = models.SlugField(unique=True, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(translit(self.title, "ru", reversed=True))
+        self.slug = slugify(translit(self.name, "ru", reversed=True))
         super().save(*args, **kwargs)
 
     class Meta:
@@ -35,6 +35,7 @@ class Post(models.Model):
     date = models.DateField(auto_now_add=True)
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     author = models.CharField(max_length=100, default=settings.DEFAULT_AUTHOR)
+    car = models.ManyToManyField(CarModel, related_name="post_car")
 
     class Meta:
         verbose_name = "Пост"
