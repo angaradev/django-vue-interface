@@ -1,6 +1,7 @@
 from company_pages.models import CompanyPages
 from django.db.models import Count
 from blog.models import Post, Categories
+from product.schemaTypes import NewCarModelType
 
 from graphene import (
     String,
@@ -31,11 +32,6 @@ class CategoryType(ObjectType):
     posts_count = Int()
 
 
-class Car(ObjectType):
-    slug = String()
-    name = String()
-
-
 class PostType(ObjectType):
     id = ID()
     slug = String()
@@ -47,10 +43,29 @@ class PostType(ObjectType):
     category = List(CategoryType)
     date = Date()
     author = String()
-    car = List(Car)
+    car = List(NewCarModelType)
 
 
 def makePost(post):
+
+    models = [
+        {
+            "id": x.id,
+            "slug": x.slug,
+            "name": x.name,
+            "model": x.name,
+            "priority": x.priority,
+            "image": x.image.url if x.image else None,
+            "rusname": x.rusname,
+            "make": {
+                "slug": x.carmake.slug,
+                "name": x.carmake.name,
+                "id": x.carmake.id,
+                "country": x.carmake.country,
+            },
+        }
+        for x in post.car.all()
+    ]
 
     ret = {
         "slug": post.slug,
@@ -69,7 +84,7 @@ def makePost(post):
             for x in post.parts_category.all()
         ],
         "category": [{"slug": x.slug, "name": x.name} for x in post.categories.all()],
-        "car": [{"slug": x.slug, "name": x.name} for x in post.car.all()],
+        "car": models,
     }
     return ret
 
