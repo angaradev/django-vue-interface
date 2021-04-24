@@ -80,6 +80,7 @@ class Query(ObjectType):
     post = Field(PostType, slug=String())
     posts = List(PostType)
     categories = List(CategoryType)
+    totalPosts = Int()
     postsByCategory = List(
         PostType,
         slug=String(required=True),
@@ -87,8 +88,16 @@ class Query(ObjectType):
         pageTo=Int(required=True),
     )
 
+    def resolve_totalPosts(self, info):
+        qs = Post.objects.all()
+        return qs.count()
+
     def resolve_categories(self, info):
-        qs = Categories.objects.all().annotate(posts_count=Count("blog_categories"))
+        qs = (
+            Categories.objects.all()
+            .annotate(posts_count=Count("blog_categories"))
+            .order_by("-priority")
+        )
         return qs
 
     def resolve_page(self, info, slug):
@@ -101,11 +110,10 @@ class Query(ObjectType):
 
     def resolve_postsByCategory(self, info, slug, pageFrom, pageTo):
         posts = None
-        f = pageFrom - 1
-        t = pageTo - 1
+        f = pageFrom
+        t = pageTo
         if slug == "vse-kategorii":
             posts = Post.objects.all()[f:t]
-            print(posts)
         else:
             posts = Post.objects.filter(categories__slug=slug)[f:t]
         ret = []
@@ -115,8 +123,6 @@ class Query(ObjectType):
 
     def resolve_post(self, info, slug):
         post = Post.objects.get(slug=slug)
-        print(info.context.build_absolute_uri(post.image.url))
-        print(post.image.url)
         ret = makePost(post)
         return ret
 
