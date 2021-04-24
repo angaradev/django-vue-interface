@@ -10,7 +10,11 @@ from ckeditor_uploader.fields import RichTextUploadingField
 
 class Categories(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(translit(self.title, "ru", reversed=True))
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Категоиря Блога"

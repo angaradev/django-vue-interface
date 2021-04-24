@@ -47,6 +47,10 @@ class Query(ObjectType):
     pages = List(PageType)
     post = Field(PostType, slug=String())
     posts = List(PostType)
+    categories = List(CategoryType)
+
+    def resolve_partsCategory(self, info):
+        return Categories.objects.all()
 
     def resolve_page(self, info, slug):
         qs = CompanyPages.objects.get(slug=slug)

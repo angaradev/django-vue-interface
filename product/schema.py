@@ -100,7 +100,11 @@ class Query(ObjectType):
     def resolve_analogs(self, info, catNumber, productId):
         try:
 
-            qs = Product.objects.filter(cat_number=catNumber).exclude(id=productId)
+            qs = (
+                Product.objects.filter(cat_number=catNumber)
+                .exclude(id=productId)
+                .distinct()
+            )
             returnProductList = []
             for prod in qs:
                 returnProductList.append(makeProduct(prod))
