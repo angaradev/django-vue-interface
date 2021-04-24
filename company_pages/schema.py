@@ -1,4 +1,5 @@
 from company_pages.models import CompanyPages
+from django.db.models import Count
 from blog.models import Post, Categories
 
 from graphene import (
@@ -27,6 +28,7 @@ class PageType(ObjectType):
 class CategoryType(ObjectType):
     slug = String()
     name = String()
+    posts_count = Int()
 
 
 class Car(ObjectType):
@@ -78,10 +80,16 @@ class Query(ObjectType):
     post = Field(PostType, slug=String())
     posts = List(PostType)
     categories = List(CategoryType)
-    postsByCategory = List(PostType, slug=String())
+    postsByCategory = List(
+        PostType,
+        slug=String(required=True),
+        pageFrom=Int(required=True),
+        pageTo=Int(required=True),
+    )
 
     def resolve_categories(self, info):
-        return Categories.objects.all()
+        qs = Categories.objects.all().annotate(posts_count=Count("blog_categories"))
+        return qs
 
     def resolve_page(self, info, slug):
         qs = CompanyPages.objects.get(slug=slug)
@@ -91,8 +99,15 @@ class Query(ObjectType):
         qs = CompanyPages.objects.all()
         return qs
 
-    def resolve_postsByCategory(self, info, slug):
-        posts = Post.objects.filter(categories__slug=slug)
+    def resolve_postsByCategory(self, info, slug, pageFrom, pageTo):
+        posts = None
+        f = pageFrom - 1
+        t = pageTo - 1
+        if slug == "all":
+            posts = Post.objects.all()[f:t]
+            print(posts)
+        else:
+            posts = Post.objects.filter(categories__slug=slug)[f:t]
         ret = []
         for post in posts:
             ret.append(makePost(post))
