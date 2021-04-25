@@ -129,11 +129,13 @@ class Query(ObjectType):
         totalQuery = Q(query | queryTitle)
         qs = Post.objects.filter(totalQuery)[pageFrom:pageTo]
 
-        if qs.count() == 0:
-            qs = Post.objects.all()[:20]
+        genQs = Post.objects.all()
+        totalCount = genQs.count()
 
-        totalCount = Post.objects.all().count()
         count = Post.objects.filter(totalQuery).count()
+        if qs.count() == 0:
+            qs = genQs[pageFrom:pageTo]
+            count = 100
         ret = []
         for post in qs:
             newPost = makePost(post)
