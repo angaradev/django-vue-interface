@@ -1,7 +1,11 @@
 from company_pages.models import CompanyPages
-from django.db.models import Count
+from django.db.models import Count, Q
 from blog.models import Post, Categories
 from product.schemaTypes import NewCarModelType
+from functools import reduce
+from product.utils import stemmer
+from operator import or_
+
 
 from graphene import (
     String,
@@ -27,6 +31,7 @@ class PageType(ObjectType):
 
 
 class CategoryType(ObjectType):
+    id = ID()
     slug = String()
     name = String()
     posts_count = Int()
@@ -66,6 +71,16 @@ def makePost(post):
         }
         for x in post.car.all()
     ]
+    partsCategory = [
+        {
+            "id": x.id,
+            "slug": x.slug,
+            "name": x.name,
+        }
+        for x in post.parts_category.all()
+    ]
+    if len(partsCategory) == 0:
+        partsCategory = []
 
     ret = {
         "slug": post.slug,
@@ -76,13 +91,7 @@ def makePost(post):
         "text": post.text,
         "date": post.date,
         "author": post.author,
-        "partsCategory": [
-            {
-                "slug": x.slug,
-                "name": x.name,
-            }
-            for x in post.parts_category.all()
-        ],
+        "partsCategory": partsCategory,
         "category": [{"slug": x.slug, "name": x.name} for x in post.categories.all()],
         "car": models,
     }
@@ -102,6 +111,19 @@ class Query(ObjectType):
         pageFrom=Int(required=True),
         pageTo=Int(required=True),
     )
+    postsSearch = List(PostType, search=String(required=True))
+
+    def resolve_postsSearch(self, info, search):
+        searchWords = stemmer(search)
+        query = reduce(lambda q, value: q | Q(text__icontains=value), searchWords, Q())
+        queryTitle = reduce(or_, (Q(title__icontains=value) for value in searchWords))
+        totalQuery = Q(query | queryTitle)
+        tmp = Q(title__icontains="трактор") | Q(title__icontains="зеркал")
+        qs = Post.objects.filter(totalQuery)
+        ret = []
+        for post in qs:
+            ret.append(makePost(post))
+        return ret
 
     def resolve_totalPosts(self, info):
         qs = Post.objects.all()
