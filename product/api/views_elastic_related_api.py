@@ -64,6 +64,9 @@ def similar(request):
 
 
 def latest(request):
+    """
+    Endpoint return latest by created date filtering by price range and has photos
+    """
     if request.method == "GET":
         q = request.GET.get("q")
         model = request.GET.get("model")
@@ -77,7 +80,14 @@ def latest(request):
             # If query has car model and slug
             query = {
                 "size": limit,
-                "query": {"match_all": {}},
+                "query": {
+                    "bool": {
+                        "must": [
+                            {"exists": {"field": "images"}},
+                            {"range": {"stocks.price": {"gte": 5000, "lte": 10000}}},
+                        ]
+                    }
+                },
             }
             data = json.dumps(query)
 
