@@ -111,15 +111,20 @@ class Query(ObjectType):
         pageFrom=Int(required=True),
         pageTo=Int(required=True),
     )
-    postsSearch = List(PostType, search=String(required=True))
+    postsSearch = List(
+        PostType,
+        search=String(required=True),
+        pageFrom=Int(required=True),
+        pageTo=Int(required=True),
+    )
 
-    def resolve_postsSearch(self, info, search):
+    def resolve_postsSearch(self, info, search, pageFrom, pageTo):
         searchWords = stemmer(search)
         query = reduce(lambda q, value: q | Q(text__icontains=value), searchWords, Q())
         queryTitle = reduce(or_, (Q(title__icontains=value) for value in searchWords))
         totalQuery = Q(query | queryTitle)
-        tmp = Q(title__icontains="трактор") | Q(title__icontains="зеркал")
-        qs = Post.objects.filter(totalQuery)
+        qs = Post.objects.filter(totalQuery)[pageFrom, pageTo]
+        print(qs)
         ret = []
         for post in qs:
             ret.append(makePost(post))
