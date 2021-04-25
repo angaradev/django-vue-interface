@@ -49,6 +49,7 @@ class PostType(ObjectType):
     date = Date()
     author = String()
     car = List(NewCarModelType)
+    totalCount = Int()
 
 
 def makePost(post):
@@ -123,11 +124,14 @@ class Query(ObjectType):
         query = reduce(lambda q, value: q | Q(text__icontains=value), searchWords, Q())
         queryTitle = reduce(or_, (Q(title__icontains=value) for value in searchWords))
         totalQuery = Q(query | queryTitle)
-        qs = Post.objects.filter(totalQuery)[pageFrom, pageTo]
+        qs = Post.objects.filter(totalQuery)[pageFrom:pageTo]
+        totalCount = Post.objects.all().count()
         print(qs)
         ret = []
         for post in qs:
-            ret.append(makePost(post))
+            newPost = makePost(post)
+            newPost["totalCount"] = totalCount
+            ret.append(newPost)
         return ret
 
     def resolve_totalPosts(self, info):
