@@ -93,7 +93,9 @@ def makePost(post):
         "date": post.date,
         "author": post.author,
         "partsCategory": partsCategory,
-        "category": [{"slug": x.slug, "name": x.name} for x in post.categories.all()],
+        "category": [
+            {"id": x.id, "slug": x.slug, "name": x.name} for x in post.categories.all()
+        ],
         "car": models,
     }
     return ret
@@ -125,12 +127,18 @@ class Query(ObjectType):
         queryTitle = reduce(or_, (Q(title__icontains=value) for value in searchWords))
         totalQuery = Q(query | queryTitle)
         qs = Post.objects.filter(totalQuery)[pageFrom:pageTo]
+
+        if qs.count() == 0:
+            qs.Post.objects.all()[:20]
+
         totalCount = Post.objects.all().count()
+        count = qs.count()
         print(qs)
         ret = []
         for post in qs:
             newPost = makePost(post)
             newPost["totalCount"] = totalCount
+            newPost["count"] = count
             ret.append(newPost)
         return ret
 
