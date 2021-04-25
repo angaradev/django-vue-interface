@@ -50,6 +50,7 @@ class PostType(ObjectType):
     author = String()
     car = List(NewCarModelType)
     totalCount = Int()
+    count = Int()
 
 
 def makePost(post):
@@ -129,11 +130,10 @@ class Query(ObjectType):
         qs = Post.objects.filter(totalQuery)[pageFrom:pageTo]
 
         if qs.count() == 0:
-            qs.Post.objects.all()[:20]
+            qs = Post.objects.all()[:20]
 
         totalCount = Post.objects.all().count()
-        count = qs.count()
-        print(qs)
+        count = Post.objects.filter(totalQuery).count()
         ret = []
         for post in qs:
             newPost = makePost(post)
