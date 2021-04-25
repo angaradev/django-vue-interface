@@ -1,7 +1,11 @@
 from company_pages.models import CompanyPages
-from django.db.models import Count
+from django.db.models import Count, Q
 from blog.models import Post, Categories
 from product.schemaTypes import NewCarModelType
+from functools import reduce
+from product.utils import stemmer
+from operator import or_
+
 
 from graphene import (
     String,
@@ -27,6 +31,7 @@ class PageType(ObjectType):
 
 
 class CategoryType(ObjectType):
+    id = ID()
     slug = String()
     name = String()
     posts_count = Int()
@@ -44,6 +49,8 @@ class PostType(ObjectType):
     date = Date()
     author = String()
     car = List(NewCarModelType)
+    totalCount = Int()
+    count = Int()
 
 
 def makePost(post):
@@ -66,6 +73,16 @@ def makePost(post):
         }
         for x in post.car.all()
     ]
+    partsCategory = [
+        {
+            "id": x.id,
+            "slug": x.slug,
+            "name": x.name,
+        }
+        for x in post.parts_category.all()
+    ]
+    if len(partsCategory) == 0:
+        partsCategory = []
 
     ret = {
         "slug": post.slug,
@@ -76,14 +93,10 @@ def makePost(post):
         "text": post.text,
         "date": post.date,
         "author": post.author,
-        "partsCategory": [
-            {
-                "slug": x.slug,
-                "name": x.name,
-            }
-            for x in post.parts_category.all()
+        "partsCategory": partsCategory,
+        "category": [
+            {"id": x.id, "slug": x.slug, "name": x.name} for x in post.categories.all()
         ],
-        "category": [{"slug": x.slug, "name": x.name} for x in post.categories.all()],
         "car": models,
     }
     return ret
@@ -93,7 +106,7 @@ class Query(ObjectType):
     page = Field(PageType, slug=String())
     pages = List(PageType)
     post = Field(PostType, slug=String())
-    posts = List(PostType)
+    posts = List(PostType, limit=Int())
     categories = List(CategoryType)
     totalPosts = Int()
     postsByCategory = List(
@@ -102,6 +115,36 @@ class Query(ObjectType):
         pageFrom=Int(required=True),
         pageTo=Int(required=True),
     )
+    postsSearch = List(
+        PostType,
+        search=String(required=True),
+        pageFrom=Int(required=True),
+        pageTo=Int(required=True),
+    )
+
+    def resolve_postsSearch(self, info, search, pageFrom, pageTo):
+        searchWords = stemmer(search)
+        print(searchWords)
+        query = reduce(lambda q, value: q | Q(text__icontains=value), searchWords, Q())
+        queryTitle = reduce(or_, (Q(title__icontains=value) for value in searchWords))
+        totalQuery = Q(query | queryTitle)
+        qs = Post.objects.filter(totalQuery)[pageFrom:pageTo]
+
+        genQs = Post.objects.all()
+        totalCount = genQs.count()
+
+        count = Post.objects.filter(totalQuery).count()
+        if count == 0:
+            qs = genQs[pageFrom:pageTo]
+            count = 100
+        print(qs)
+        ret = []
+        for post in qs:
+            newPost = makePost(post)
+            newPost["totalCount"] = totalCount
+            newPost["count"] = count
+            ret.append(newPost)
+        return ret
 
     def resolve_totalPosts(self, info):
         qs = Post.objects.all()
@@ -141,8 +184,10 @@ class Query(ObjectType):
         ret = makePost(post)
         return ret
 
-    def resolve_posts(self, info):
+    def resolve_posts(self, info, limit):
         qs = Post.objects.all()
+        if limit != 0:
+            qs = Post.objects.all()[:limit]
         posts = []
         for post in qs:
             ret = makePost(post)

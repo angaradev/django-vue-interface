@@ -63,6 +63,14 @@ class Query(ObjectType):
     rating = Field(RatingType, productId=Int(), userId=String())
     productRating = Field(GetRatingType, productId=Int())
     analogs = List(ProductType, catNumber=String(), productId=Int())
+    latestProducts = List(ProductType, limit=Int())
+
+    def resolve_latestProducts(self, info, limit):
+        qs = Product.objects.all().order_by("-created_date")[:limit]
+        ret = []
+        for prod in qs:
+            ret.append(makeProduct(prod))
+        return ret
 
     def resolve_togetherProduct(self, info, slug):
         try:

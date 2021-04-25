@@ -17,7 +17,7 @@ from product.api.views_elastic_search_api import (
     findNumbers,
     send_json as search_api,
 )
-from product.api.views_elastic_related_api import similar
+from product.api.views_elastic_related_api import similar, latest
 
 router = DefaultRouter()
 router.register(r"images", ImageViewSet)
@@ -151,4 +151,5 @@ urlpatterns = [
     path("autocomplete", autocomplete, name="autocomplete"),
     path("findnumber", findNumbers, name="findNumbers"),
     path("similar", similar, name="similar"),
+    path("latest", latest, name="latest"),
 ]

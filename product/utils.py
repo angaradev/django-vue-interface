@@ -125,6 +125,9 @@ def delete_file(path):  # Deleting Files from disk
 
 
 def stemmer(string):
+    """
+    Returns array of stems for search
+    """
     words = string.split(" ")
     s = Porter()
     stems = []
