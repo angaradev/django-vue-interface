@@ -106,7 +106,7 @@ class Query(ObjectType):
     page = Field(PageType, slug=String())
     pages = List(PageType)
     post = Field(PostType, slug=String())
-    posts = List(PostType)
+    posts = List(PostType, limit=Int())
     categories = List(CategoryType)
     totalPosts = Int()
     postsByCategory = List(
@@ -180,8 +180,10 @@ class Query(ObjectType):
         ret = makePost(post)
         return ret
 
-    def resolve_posts(self, info):
+    def resolve_posts(self, info, limit):
         qs = Post.objects.all()
+        if limit != 0:
+            qs = Post.objects.all()[:limit]
         posts = []
         for post in qs:
             ret = makePost(post)
