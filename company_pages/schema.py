@@ -181,7 +181,9 @@ class Query(ObjectType):
 
     def resolve_post(self, info, slug):
         post = Post.objects.get(slug=slug)
+        totalCount = Post.objects.all().count()
         ret = makePost(post)
+        ret["totalCount"] = totalCount
         return ret
 
     def resolve_posts(self, info, limit):
