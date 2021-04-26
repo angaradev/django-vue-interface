@@ -140,7 +140,8 @@ def byTag(request):
                                         "operator": "or",
                                     }
                                 }
-                            }
+                            },
+                            # {"exists": {"field": "images"}},
                         ]
                     }
                 },
