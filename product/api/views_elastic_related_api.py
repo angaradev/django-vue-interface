@@ -128,7 +128,6 @@ def byTag(request):
             # If query has car model and slug
             query = {
                 "size": limit,
-                "_source": ["id", "name"],
                 "query": {
                     "bool": {
                         "must": [
