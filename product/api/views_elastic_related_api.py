@@ -110,3 +110,60 @@ def latest(request):
 
     else:
         raise Exception({"Cannot poceed the request, params are suck"})
+
+
+def byTag(request):
+    """
+    Endpoint return latest by created date filtering by price range and has photos
+    """
+    if request.method == "GET":
+        q = request.GET.get("q")
+        limit = request.GET.get("limit") or 20
+        """
+        Check if search by make slug exists
+        """
+
+        if q:
+
+            # If query has car model and slug
+            query = {
+                "size": limit,
+                "_source": ["id", "name"],
+                "query": {
+                    "bool": {
+                        "must": [
+                            {
+                                "match": {
+                                    "name": {
+                                        "query": q,
+                                        "analyzer": "rebuilt_russian",
+                                        "fuzziness": "auto",
+                                        "operator": "or",
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+            }
+            data = json.dumps(query)
+
+        r = requests.get(
+            "http://localhost:9200/prod_notebook/_search",
+            headers={"Content-Type": "application/json"},
+            data=data,
+        )
+        if r.status_code != 200:
+            raise ValueError(
+                f"Request cannot be proceeded Status code is: {r.status_code}"
+            )
+        response = r.json()
+
+        # Cheking if aggregation exist in the query
+
+        data = response
+
+        return JsonResponse(data, safe=False)
+
+    else:
+        raise Exception({"Cannot poceed the request, params are suck"})
