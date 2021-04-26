@@ -51,6 +51,7 @@ class PostType(ObjectType):
     car = List(NewCarModelType)
     totalCount = Int()
     count = Int()
+    tags = List(String)
 
 
 def makePost(post):
@@ -98,6 +99,7 @@ def makePost(post):
             {"id": x.id, "slug": x.slug, "name": x.name} for x in post.categories.all()
         ],
         "car": models,
+        "tags": [x for x in post.tags.all()],
     }
     return ret
 
@@ -181,7 +183,9 @@ class Query(ObjectType):
 
     def resolve_post(self, info, slug):
         post = Post.objects.get(slug=slug)
+        totalCount = Post.objects.all().count()
         ret = makePost(post)
+        ret["totalCount"] = totalCount
         return ret
 
     def resolve_posts(self, info, limit):

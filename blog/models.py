@@ -6,6 +6,7 @@ from product.models import Category, CarModel
 from transliterate import translit
 from django.utils.text import slugify
 from ckeditor_uploader.fields import RichTextUploadingField
+from taggit.managers import TaggableManager
 
 
 class Categories(models.Model):
@@ -46,6 +47,7 @@ class Post(models.Model):
     slug = models.SlugField(max_length=255, unique=True, null=True, blank=True)
     author = models.CharField(max_length=100, default=settings.DEFAULT_AUTHOR)
     car = models.ManyToManyField(CarModel, related_name="post_car")
+    tags = TaggableManager()
 
     class Meta:
         verbose_name = "Пост"

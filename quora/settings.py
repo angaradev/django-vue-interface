@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "vasya_interface",
     "graphene_django",
     "company_pages",
+    "taggit",
 ]
 
 MIDDLEWARE = [
