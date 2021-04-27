@@ -84,6 +84,12 @@ def makePost(post):
     ]
     if len(partsCategory) == 0:
         partsCategory = []
+    tags = []
+    try:
+        for x in post.categories.all():
+            tags.append(x)
+    except Exception as e:
+        print("No tags or something", e)
 
     ret = {
         "slug": post.slug,
@@ -99,7 +105,7 @@ def makePost(post):
             {"id": x.id, "slug": x.slug, "name": x.name} for x in post.categories.all()
         ],
         "car": models,
-        "tags": [x for x in post.tags.all()],
+        "tags": tags,
     }
     return ret
 
@@ -123,6 +129,7 @@ class Query(ObjectType):
         pageFrom=Int(required=True),
         pageTo=Int(required=True),
     )
+    postsByCar = List(PostType, model=String(required=True), limit=Int(required=True))
 
     def resolve_postsSearch(self, info, search, pageFrom, pageTo):
         searchWords = stemmer(search)
@@ -147,6 +154,17 @@ class Query(ObjectType):
             newPost["count"] = count
             ret.append(newPost)
         return ret
+
+    def resolve_postsByCar(self, info, model, limit):
+        try:
+            qs = Post.objects.filter(car__slug=model).order_by("-date")[:limit]
+            ret = []
+            for post in qs:
+                ret.append(makePost(post))
+            return ret
+        except Exception as e:
+            print("Probably no posts in post by model slug", e)
+            return []
 
     def resolve_totalPosts(self, info):
         qs = Post.objects.all()
