@@ -6,12 +6,12 @@
       "must": [
         {
           "term": {
-            "model.slug.keyword": "porter2"
+            "model.slug.keyword": "hd78"
           }
         },
         {
           "term": {
-            "category.slug.keyword": "filtry"
+            "category.slug.keyword": "detali-dvigatelja"
           }
         },
         {

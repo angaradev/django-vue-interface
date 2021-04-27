@@ -191,7 +191,7 @@ class Query(ObjectType):
     def resolve_posts(self, info, limit):
         qs = Post.objects.all()
         if limit != 0:
-            qs = Post.objects.all()[:limit]
+            qs = Post.objects.all().order_by("-date")[:limit]
         posts = []
         for post in qs:
             ret = makePost(post)
