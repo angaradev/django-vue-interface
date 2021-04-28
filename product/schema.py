@@ -319,8 +319,11 @@ class Query(ObjectType):
 
     def resolve_product(self, info, slug):
 
-        prod = Product.objects.get(slug=slug)
-        return makeProduct(prod)
+        try:
+            prod = Product.objects.get(slug=slug)
+            return makeProduct(prod)
+        except Exception as e:
+            print("Product not found in GraphQl product/schema line 326", e)
 
 
 schema = Schema(query=Query, mutation=Mutation)

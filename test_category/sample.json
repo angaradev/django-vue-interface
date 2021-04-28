@@ -1,5 +1,5 @@
 {
-  "from": "20",
+  "from": "0",
   "size": "20",
   "sort": [
     {
@@ -14,7 +14,7 @@
         {
           "match": {
             "full_name_ngrams": {
-              "query": "\u043c\u0430\u0441\u043b\u043e",
+              "query": "\u0444\u0438\u043b\u044c\u0442\u0440 \u043c\u0430\u0441\u043b\u044f\u043d\u044b\u0439",
               "operator": "and",
               "analyzer": "rebuilt_russian",
               "fuzziness": "auto"
