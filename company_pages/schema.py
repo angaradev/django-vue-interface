@@ -133,7 +133,6 @@ class Query(ObjectType):
 
     def resolve_postsSearch(self, info, search, pageFrom, pageTo):
         searchWords = stemmer(search)
-        print(searchWords)
         query = reduce(lambda q, value: q | Q(text__icontains=value), searchWords, Q())
         queryTitle = reduce(or_, (Q(title__icontains=value) for value in searchWords))
         totalQuery = Q(query | queryTitle)
@@ -146,7 +145,6 @@ class Query(ObjectType):
         if count == 0:
             qs = genQs[pageFrom:pageTo]
             count = 100
-        print(qs)
         ret = []
         for post in qs:
             newPost = makePost(post)
