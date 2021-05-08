@@ -49,6 +49,7 @@ class Query(ObjectType):
     makes = List(CarMakeType)
     make = Field(CarMakeType, slug=String(required=True))
     vehicles_by_make = List(NewCarModelType, slug=String(required=True))
+    vehicles_by_priority = List(NewCarModelType, priority=Int(required=True))
     category_by_slug = Field(CategoryType, slug=String(required=True))
     category_all = List(CategoryType)
     popular_products = List(
@@ -232,6 +233,38 @@ class Query(ObjectType):
                     "make_slug": car.carmake.slug,
                     "country": car.carmake.country,
                     "count": car.count,
+                }
+            )
+        return lst
+
+    def resolve_vehicles_by_priority(self, info, priority):
+        qs = (
+            CarModel.objects.filter(active=True)
+            .filter(priority__gte=priority)
+            .order_by("-priority")
+        )
+        lst = []
+        for car in qs:
+            years = [car.year_from, car.year_to] if car.year_from else []
+            lst.append(
+                {
+                    "id": car.id,
+                    "model": car.name,
+                    "rusname": car.rusname,
+                    "year": years,
+                    "engine": car.engine.all(),
+                    "slug": car.slug,
+                    "priority": car.priority,
+                    "image": car.image.url if car.image else None,
+                    "make": {
+                        "id": car.carmake.id,
+                        "name": car.carmake.name,
+                        "slug": car.carmake.slug,
+                        "country": car.carmake.country,
+                        "priority": car.carmake.priority,
+                    },
+                    "make_slug": car.carmake.slug,
+                    "country": car.carmake.country,
                 }
             )
         return lst
