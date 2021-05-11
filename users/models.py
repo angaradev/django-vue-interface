@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 
 from django.contrib.auth.models import AbstractUser
@@ -7,6 +8,7 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     email = models.EmailField(_("email address"), unique=True)
+    image = models.ImageField(upload_to=settings.USER_IMAGES, blank=True, null=True)
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
