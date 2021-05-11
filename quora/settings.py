@@ -24,11 +24,13 @@ ALLOWED_HOSTS = [
     "localhost",
     "partshub.tk",
     "angara77.ru",
+    "0.0.0.0",
 ]
 
 # Default images folder for blog posts and categories
 BLOG_IMAGES = "blog/images"
 CAR_IMAGES = "images/cars"
+USER_IMAGES = "images/users"
 
 # Default Author for blog articles
 DEFAULT_AUTHOR = "Team of AngaraParts"
