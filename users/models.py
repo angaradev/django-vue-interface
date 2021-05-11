@@ -1,11 +1,14 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 
 from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
-    pass
+    email = models.EmailField(_("email address"), unique=True)
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
 
 
 class AutoUser(models.Model):

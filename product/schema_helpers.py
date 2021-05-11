@@ -89,14 +89,30 @@ def makeProduct(prod):
         {"name": x.attribute_name.name, "value": x.attribute_value}
         for x in prod.product_attribute.all()
     ]
-    stocks = [
-        {
-            "price": x.price,
-            "quantity": x.quantity,
-            "store": {"id": x.store.id, "name": x.store.name},
-        }
-        for x in prod.product_stock.all()
-    ]
+
+    stock = {
+        "id": "23",
+        "store": {
+            "id": 3,
+            "name": "Angara",
+            "location_city": "Moscow",
+            "location_address": "Some address",
+        },
+        "price": 3999,
+        "quantity": 2,
+        "availability_days": 0,
+    }
+    if prod.product_stock.all():
+        stocks = [
+            {
+                "price": x.price,
+                "quantity": x.quantity,
+                "store": {"id": x.store.id, "name": x.store.name},
+            }
+            for x in prod.product_stock.all()
+        ]
+    else:
+        stocks = [stock]
     related = [
         {
             "slug": x.slug,

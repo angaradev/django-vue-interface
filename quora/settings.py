@@ -24,6 +24,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "partshub.tk",
     "angara77.ru",
+    "0.0.0.0",
 ]
 
 # Default images folder for blog posts and categories
