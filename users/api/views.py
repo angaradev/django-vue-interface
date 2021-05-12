@@ -18,6 +18,10 @@ class CustomObtainAuthToken(ObtainAuthToken):
         return Response(
             {
                 "token": token.key,
-                "user": {"username": token.user.username, "email": token.user.email},
+                "user": {
+                    "username": token.user.username,
+                    "email": token.user.email,
+                    "image": token.user.profile.image.url,
+                },
             }
         )
