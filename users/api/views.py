@@ -13,6 +13,9 @@ class CurrentUserAPIVeiw(APIView):
 
 class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
+        def hasImage(object):
+            return hasattr(object, "profile")
+
         response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
         token = Token.objects.get(key=response.data["token"])
         return Response(
@@ -21,7 +24,9 @@ class CustomObtainAuthToken(ObtainAuthToken):
                 "user": {
                     "username": token.user.username,
                     "email": token.user.email,
-                    "image": token.user.profile.image.url,
+                    "image": token.user.profile.image.url
+                    if hasImage(token.user)
+                    else None,
                 },
             }
         )
