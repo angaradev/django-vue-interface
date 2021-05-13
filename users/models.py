@@ -50,10 +50,10 @@ class AutoUser(models.Model):
 
 
 class UserAdresses(models.Model):
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="address_user"
     )
-    autouser = models.OneToOneField(
+    autouser = models.ForeignKey(
         AutoUser,
         on_delete=models.CASCADE,
         related_name="address_autouser",
@@ -67,3 +67,6 @@ class UserAdresses(models.Model):
     class Meta:
         verbose_name = "Адрес"
         verbose_name_plural = "Адреса Пользователя"
+
+    def __str__(self):
+        return f"{self.user.email} - {self.city}"
