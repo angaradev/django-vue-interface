@@ -29,6 +29,15 @@ class UserDisplaySerializer(serializers.ModelSerializer):
             "email": {"required": False, "allow_null": True},
         }
 
+    def create(self, validated_data):
+        username = validated_data.get("username")
+        email = validated_data.get("email")
+        password = validated_data.get("password")
+
+        user = CustomUser(username=username, email=email, password=password)
+        user.save()
+        return user
+
     def update(self, instance, validated_data):
         print(instance.profile.phone)
 

@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django_resized import ResizedImageField
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 from django.contrib.auth.models import AbstractUser
@@ -70,3 +72,10 @@ class UserAdresses(models.Model):
 
     def __str__(self):
         return f"{self.user.email} - {self.address}"
+
+
+@receiver(post_save, sender=CustomUser)
+def save_profile(sender, instance, created, **kwargs):
+    if created:
+        profile = UserProfile(user=instance)
+        profile.save()

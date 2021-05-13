@@ -30,6 +30,8 @@ class CustomObtainAuthToken(ObtainAuthToken):
                     "username": token.user.username,
                     "email": token.user.email,
                     "image": token.user.profile.image.url
+                    if token.user.profile.image
+                    else None
                     if hasImage(token.user)
                     else None,
                 },
