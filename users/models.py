@@ -69,4 +69,4 @@ class UserAdresses(models.Model):
         verbose_name_plural = "Адреса Пользователя"
 
     def __str__(self):
-        return f"{self.user.email} - {self.city}"
+        return f"{self.user.email} - {self.address}"
