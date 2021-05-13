@@ -26,6 +26,11 @@ class UserProfile(models.Model):
         blank=True,
         null=True,
     )
+    phone = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Профиль Пользователя"
+        verbose_name_plural = "Профили Пользователя"
 
     def __str__(self):
         return self.user.email
@@ -42,3 +47,19 @@ class AutoUser(models.Model):
 
     def __str__(self):
         return self.userId
+
+
+class UserAdresses(models.Model):
+    user = models.OneToOneField(
+        CustomUser, on_delete=models.CASCADE, related_name="address_user"
+    )
+    autouser = models.OneToOneField(
+        AutoUser, on_delete=models.CASCADE, related_name="address_autouser"
+    )
+    city = models.CharField(max_length=50)
+    zip_code = models.CharField(max_length=50, blank=True, null=True)
+    address = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Адрес"
+        verbose_name_plural = "Адреса Пользователя"
