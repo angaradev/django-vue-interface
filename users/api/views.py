@@ -6,6 +6,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 from users.models import CustomUser, UserAdresses
+from rest_framework import status
 
 
 class CurrentUserAPIVeiw(viewsets.ModelViewSet):
@@ -20,6 +21,19 @@ class AddressesViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     serializer_class = UserAddressSerializer
     paginator = None
+
+    def list(self, request, *args, **kwargs):
+        try:
+
+            user = request.GET.get("user")
+            queryset = self.queryset.filter(user=CustomUser.objects.get(id=user))
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response(
+                "User not found in users views line 34",
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
