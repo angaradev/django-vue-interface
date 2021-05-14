@@ -1,17 +1,24 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from users.api.serializers import UserDisplaySerializer
+from users.api.serializers import UserAddressSerializer, UserDisplaySerializer
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
-from users.models import CustomUser
+from users.models import CustomUser, UserAdresses
 
 
 class CurrentUserAPIVeiw(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = UserDisplaySerializer
+    paginator = None
+
+
+class AddressesViewSet(viewsets.ModelViewSet):
+    queryset = UserAdresses.objects.all()
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserAddressSerializer
     paginator = None
 
 
