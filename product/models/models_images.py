@@ -71,6 +71,9 @@ class ProductImage(models.Model):
         verbose_name_plural = "Фото"
 
     def save(self, *args, **kwargs):
+        if self.main == True:
+            qs = ProductImage.objects.filter(product=self.product).exclude(id=self.id)
+            qs.update(main=False)
 
         size = ((150, 100), (245, 164), (500, 333), (900, 600), (1280, 860))
         method = Image.ANTIALIAS
