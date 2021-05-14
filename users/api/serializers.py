@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from users.models import CustomUser, UserProfile
+from users.models import CustomUser, UserAdresses, UserProfile
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -12,8 +12,19 @@ class UserProfileSerializer(serializers.ModelSerializer):
         }
 
 
+class UserAddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserAdresses
+        exclude = ("autouser",)
+        extra_kwargs = {
+            "zip_code": {"required": False, "allow_null": True},
+            "city": {"required": False, "allow_null": True},
+        }
+
+
 class UserDisplaySerializer(serializers.ModelSerializer):
     profile = UserProfileSerializer()
+    address_user = UserAddressSerializer(many=True, required=False)
 
     class Meta:
         model = CustomUser
