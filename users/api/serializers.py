@@ -19,6 +19,7 @@ class UserAddressSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "zip_code": {"required": False, "allow_null": True},
             "city": {"required": False, "allow_null": True},
+            "default": {"required": False, "allow_null": True},
         }
 
 
