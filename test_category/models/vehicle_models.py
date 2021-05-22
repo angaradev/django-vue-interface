@@ -89,12 +89,7 @@ class Engine(models.Model):
 
 
 class UserVehicles(models.Model):
-<<<<<<< HEAD
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user")
-=======
-    user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="user")
->>>>>>> 1bb2df155c421f53222a6eff471dca78ccb8b420
     vehicles = models.ForeignKey(
         Vehicle, on_delete=models.CASCADE, related_name="vehicles"
     )
@@ -114,12 +109,7 @@ class UserVehicles(models.Model):
 
 def vehicle_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-<<<<<<< HEAD
         instance.slug = unique_slug_generator(instance, instance.model, instance.slug)
-=======
-        instance.slug = unique_slug_generator(
-            instance, instance.model, instance.slug)
->>>>>>> 1bb2df155c421f53222a6eff471dca78ccb8b420
 
 
 pre_save.connect(vehicle_slug, Vehicle)
@@ -127,17 +117,10 @@ pre_save.connect(vehicle_slug, Vehicle)
 
 # presave slug for makes
 
-<<<<<<< HEAD
 
 def makes_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
-=======
-def makes_slug(sender, instance, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = unique_slug_generator(
-            instance, instance.name, instance.slug)
->>>>>>> 1bb2df155c421f53222a6eff471dca78ccb8b420
 
 
 pre_save.connect(makes_slug, Makes)
@@ -145,17 +128,10 @@ pre_save.connect(makes_slug, Makes)
 
 # presave slug for Contries
 
-<<<<<<< HEAD
 
 def countries_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
-=======
-def countries_slug(sender, instance, *args, **kwargs):
-    if not instance.slug:
-        instance.slug = unique_slug_generator(
-            instance, instance.name, instance.slug)
->>>>>>> 1bb2df155c421f53222a6eff471dca78ccb8b420
 
 
 pre_save.connect(countries_slug, Country)
