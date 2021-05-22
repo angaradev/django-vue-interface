@@ -1,0 +1,94 @@
+{
+  "from": "0",
+  "size": "20",
+  "sort": [
+    {
+      "stocks.price": {
+        "order": "asc"
+      }
+    }
+  ],
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "full_name_ngrams": {
+              "query": "\u0444\u0438\u043b\u044c\u0442\u0440 \u043c\u0430\u0441\u043b\u044f\u043d\u044b\u0439",
+              "operator": "and",
+              "analyzer": "rebuilt_russian",
+              "fuzziness": "auto"
+            }
+          }
+        },
+        {
+          "bool": {
+            "must": [
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "term": {
+                        "has_photo": "true"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "aggs": {
+    "categories": {
+      "terms": {
+        "field": "category.id",
+        "size": 2000
+      }
+    },
+    "brands": {
+      "terms": {
+        "field": "brand.name.keyword"
+      }
+    },
+    "engines": {
+      "terms": {
+        "field": "engine.name.keyword"
+      }
+    },
+    "car_models": {
+      "terms": {
+        "field": "model.name.keyword"
+      }
+    },
+    "bages": {
+      "terms": {
+        "field": "bages.keyword",
+        "size": 5
+      }
+    },
+    "condition": {
+      "terms": {
+        "field": "condition.keyword",
+        "size": 5
+      }
+    },
+    "min_price": {
+      "min": {
+        "field": "stocks.price"
+      }
+    },
+    "max_price": {
+      "max": {
+        "field": "stocks.price"
+      }
+    },
+    "has_photo": {
+      "terms": {
+        "field": "has_photo"
+      }
+    }
+  }
+}
