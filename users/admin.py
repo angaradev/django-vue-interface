@@ -5,10 +5,10 @@ from users.models import CustomUser, AutoUser, UserProfile, UserAdresses
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ["username", "email", "is_staff"]
+    # list_display = ["username", "email", "is_staff"]
 
 
-admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(CustomUser)
 admin.site.register(AutoUser)
 admin.site.register(UserProfile)
 admin.site.register(UserAdresses)
