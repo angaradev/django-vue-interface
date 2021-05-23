@@ -143,7 +143,11 @@ env.bak/
 venv.bak/
 
 # Spyder project settings
+<<<<<<< HEAD
+spyderproject
+=======
 .spyderproject
+>>>>>>> 1bb2df155c421f53222a6eff471dca78ccb8b420
 .spyproject
 
 # Rope project settings

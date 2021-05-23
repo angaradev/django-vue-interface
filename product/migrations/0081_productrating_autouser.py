@@ -7,14 +7,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0004_auto_20210418_1025'),
-        ('product', '0080_auto_20210418_1004'),
+        ("users", "0004_auto_20210418_1025"),
+        ("product", "0080_auto_20210418_1004"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='productrating',
-            name='autoUser',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='autouser_rating', to='users.AutoUser'),
+            model_name="productrating",
+            name="autoUser",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="autouser_rating",
+                to="users.AutoUser",
+            ),
         ),
     ]

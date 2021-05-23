@@ -89,8 +89,7 @@ class Engine(models.Model):
 
 
 class UserVehicles(models.Model):
-    user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="user")
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="user")
     vehicles = models.ForeignKey(
         Vehicle, on_delete=models.CASCADE, related_name="vehicles"
     )
@@ -110,8 +109,7 @@ class UserVehicles(models.Model):
 
 def vehicle_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = unique_slug_generator(
-            instance, instance.model, instance.slug)
+        instance.slug = unique_slug_generator(instance, instance.model, instance.slug)
 
 
 pre_save.connect(vehicle_slug, Vehicle)
@@ -119,10 +117,10 @@ pre_save.connect(vehicle_slug, Vehicle)
 
 # presave slug for makes
 
+
 def makes_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = unique_slug_generator(
-            instance, instance.name, instance.slug)
+        instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
 
 
 pre_save.connect(makes_slug, Makes)
@@ -130,10 +128,10 @@ pre_save.connect(makes_slug, Makes)
 
 # presave slug for Contries
 
+
 def countries_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = unique_slug_generator(
-            instance, instance.name, instance.slug)
+        instance.slug = unique_slug_generator(instance, instance.name, instance.slug)
 
 
 pre_save.connect(countries_slug, Country)

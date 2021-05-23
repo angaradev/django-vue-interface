@@ -7,14 +7,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0004_auto_20210418_1025'),
-        ('product', '0081_productrating_autouser'),
+        ("users", "0004_auto_20210418_1025"),
+        ("product", "0081_productrating_autouser"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='productrating',
-            name='autoUser',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='autouser_rating', to='users.AutoUser'),
+            model_name="productrating",
+            name="autoUser",
+            field=models.OneToOneField(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="autouser_rating",
+                to="users.AutoUser",
+            ),
         ),
     ]

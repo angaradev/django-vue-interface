@@ -47,7 +47,7 @@ class BlogCategorySearchView(ListAPIView):
         category = self.request.GET.get("category")
 
         if category:
-            print(category)
+
             q = self.queryset.filter(categories=int(category))
             return q
 
