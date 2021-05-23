@@ -72,7 +72,6 @@ class LoginAPIViewSerializer(serializers.ModelSerializer):
             raise AuthenticationFailed("Account disabled contact admin")
         if not user.is_verified:
             raise AuthenticationFailed("Account is not activated")
-        print(user.image.url)
 
         return {
             "email": user.email,
