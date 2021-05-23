@@ -48,7 +48,7 @@ class RegisterView(generics.GenericAPIView):
 
         current_site = get_current_site(request).domain
         relativeLink = reverse("activate")
-        absUrl = "http://" + current_site + relativeLink + "?token=" + str(token)
+        absUrl = str("http://" + current_site + relativeLink + "?token=" + str(token))
         email_body = f"""
         Hi {user.username} Use link below to activate your account \n
         {absUrl} 
