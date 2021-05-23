@@ -9,6 +9,22 @@ from users.forms import CustomUserForm
 from core.views import IndexTemplateView
 from django.views.generic import TemplateView
 from home.views import Home, DocumentationView, React
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="A77 API",
+        default_version="v1",
+        description="Test description",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="contact@snippets.local"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
 
 
 admin.site.site_header = "Мега Интерфейс"
@@ -45,6 +61,15 @@ urlpatterns = [
     path("vasyainterface/", include("vasya_interface.urls")),
     path("companypages/", include("company_pages.urls")),
     path("ckeditor/", include("ckeditor_uploader.urls")),
+    path("auth/", include("authentication.urls")),
+    path(
+        "authentication/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    re_path(
+        r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
+    ),
     # path("testcategory/", include("test_category.urls")),
     path("react/", React.as_view(), name="react"),
     re_path(r"^(?:react.*)/$", React.as_view(), name="react-router"),
