@@ -1,7 +1,5 @@
 from google.auth.transport import requests
 from google.oauth2 import id_token
-from dataclasses import dataclass
-from typing import Union
 from rest_framework.exceptions import AuthenticationFailed
 
 

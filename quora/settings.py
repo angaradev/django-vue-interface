@@ -76,6 +76,9 @@ INSTALLED_APPS = [
     "graphene_django",
     "company_pages",
     "taggit",
+    ####################
+    "authentication",
+    "social_auth",
 ]
 
 

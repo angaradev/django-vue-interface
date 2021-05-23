@@ -1,7 +1,6 @@
 from rest_framework import serializers
-from typing import AnyStr, Dict, OrderedDict
 
-from .models import User
+from users.models import CustomUser as User
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
 from django.utils.encoding import (

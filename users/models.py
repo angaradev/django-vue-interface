@@ -88,6 +88,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
             "access": str(refresh.access_token),
         }
 
+    class Meta:
+        verbose_name = "Ползователь"
+        verbose_name_plural = "Ползователи"
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(

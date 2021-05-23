@@ -1,5 +1,5 @@
 from django.utils.encoding import smart_bytes, smart_str
-from authentication.models import User
+from users.models import CustomUser as User
 from rest_framework import generics, status, views
 from .renderers import UserRenderer
 
