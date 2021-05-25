@@ -95,26 +95,26 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = "Ползователи"
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(
-        CustomUser, on_delete=models.CASCADE, related_name="profile"
-    )
-    image = ResizedImageField(
-        size=[100, 100],
-        quality=75,
-        crop=["middle", "center"],
-        upload_to=settings.USER_IMAGES,
-        blank=True,
-        null=True,
-    )
-    phone = models.CharField(max_length=50, blank=True, null=True)
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(
+#         CustomUser, on_delete=models.CASCADE, related_name="profile"
+#     )
+#     image = ResizedImageField(
+#         size=[100, 100],
+#         quality=75,
+#         crop=["middle", "center"],
+#         upload_to=settings.USER_IMAGES,
+#         blank=True,
+#         null=True,
+#     )
+#     phone = models.CharField(max_length=50, blank=True, null=True)
 
-    class Meta:
-        verbose_name = "Профиль Пользователя"
-        verbose_name_plural = "Профили Пользователя"
+#     class Meta:
+#         verbose_name = "Профиль Пользователя"
+#         verbose_name_plural = "Профили Пользователя"
 
-    def __str__(self):
-        return self.user.email
+#     def __str__(self):
+#         return self.user.email
 
 
 class AutoUser(models.Model):
