@@ -1,4 +1,5 @@
 from django.utils.encoding import smart_bytes, smart_str
+from rest_framework.permissions import AllowAny
 from users.models import CustomUser as User
 from rest_framework import generics, status, views
 from .renderers import UserRenderer
@@ -33,6 +34,7 @@ Need to replace site url for activation email to frontend site
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     renderer_classes = [UserRenderer]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         user = request.data
@@ -46,9 +48,10 @@ class RegisterView(generics.GenericAPIView):
 
         token = RefreshToken.for_user(user).access_token
 
-        current_site = get_current_site(request).domain
-        relativeLink = reverse("activate")
-        absUrl = "http://" + current_site + relativeLink + "?token=" + str(token)
+        # current_site = get_current_site(request).domain
+        absUrl = f"{settings.FRONTEND_URL}/account/activate?token={str(token)}"
+        # relativeLink = reverse("activate")
+        # absUrl = "http://" + current_site + relativeLink + "?token=" + str(token)
         email_body = f"""
         Hi {user.username} Use link below to activate your account \n
         {absUrl} 
@@ -56,7 +59,7 @@ class RegisterView(generics.GenericAPIView):
         data = {
             "email_recepient": user.email,
             "email_body": email_body,
-            "email_subject": f"Activate your account at {current_site}",
+            "email_subject": f"Activate your account at {settings.FRONTEND_URL}",
         }
         Util.send_email(data)
 
@@ -66,6 +69,7 @@ class RegisterView(generics.GenericAPIView):
 class VerifyEmailView(views.APIView):
     serializer_class = EmailVerificationSerializer
     renderer_classes = [UserRenderer]
+    permission_classes = [AllowAny]
 
     token_param_config = openapi.Parameter(
         "token",
@@ -104,6 +108,7 @@ class VerifyEmailView(views.APIView):
 class LoginAPIView(generics.GenericAPIView):
     serializer_class = LoginAPIViewSerializer
     renderer_classes = [UserRenderer]
+    permission_classes = [AllowAny]
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -114,6 +119,7 @@ class LoginAPIView(generics.GenericAPIView):
 
 class RequestPasswordResetEmail(generics.GenericAPIView):
     serializer_class = ResetPasswordEmailResetSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request):
         data = {"request": request, "data": request.data}
@@ -150,6 +156,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
 
 class PasswordTokenCheckAPIView(generics.GenericAPIView):
     serializer_class = ResetPasswordEmailResetSerializer
+    permission_classes = [AllowAny]
 
     def get(self, request, uidb64, token):
 
@@ -181,6 +188,7 @@ class PasswordTokenCheckAPIView(generics.GenericAPIView):
 
 class SetNewPasswordAPIView(generics.GenericAPIView):
     serializer_class = SetNewPasswordSerializer
+    permission_classes = [AllowAny]
 
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)
