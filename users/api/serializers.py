@@ -40,23 +40,19 @@ class UserDisplaySerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        print(instance.profile.phone)
 
         instance.username = validated_data.get("username", instance.username)
         instance.email = validated_data.get("email", instance.email)
 
         try:
-            instance.profile.phone = validated_data["profile"]["phone"]
+            instance.phone = validated_data["phone"]
         except:
             pass
 
         try:
-            instance.profile.image = (
-                validated_data["profile"]["image"] or instance.profile.image
-            )
+            instance.image = validated_data["image"] or instance.image
         except:
             pass
-        instance.profile.save()
         instance.save()
 
         return instance
