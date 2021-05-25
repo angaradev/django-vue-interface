@@ -1,15 +1,5 @@
 from rest_framework import serializers
-from users.models import CustomUser, UserAdresses, UserProfile
-
-
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserProfile
-        exclude = ("id", "user")
-        extra_kwargs = {
-            "image": {"required": False, "allow_null": True},
-            "phone": {"required": False, "allow_null": True},
-        }
+from users.models import CustomUser, UserAdresses
 
 
 class UserAddressSerializer(serializers.ModelSerializer):
@@ -24,7 +14,6 @@ class UserAddressSerializer(serializers.ModelSerializer):
 
 
 class UserDisplaySerializer(serializers.ModelSerializer):
-    profile = UserProfileSerializer()
     address_user = UserAddressSerializer(many=True, required=False)
 
     class Meta:
