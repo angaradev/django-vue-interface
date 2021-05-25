@@ -48,9 +48,10 @@ class RegisterView(generics.GenericAPIView):
 
         token = RefreshToken.for_user(user).access_token
 
-        current_site = get_current_site(request).domain
-        relativeLink = reverse("activate")
-        absUrl = "http://" + current_site + relativeLink + "?token=" + str(token)
+        # current_site = get_current_site(request).domain
+        absUrl = f"{settings.FRONTEND_URL}/account/activate?token={str(token)}"
+        # relativeLink = reverse("activate")
+        # absUrl = "http://" + current_site + relativeLink + "?token=" + str(token)
         email_body = f"""
         Hi {user.username} Use link below to activate your account \n
         {absUrl} 
@@ -58,7 +59,7 @@ class RegisterView(generics.GenericAPIView):
         data = {
             "email_recepient": user.email,
             "email_body": email_body,
-            "email_subject": f"Activate your account at {current_site}",
+            "email_subject": f"Activate your account at {settings.FRONTEND_URL}",
         }
         Util.send_email(data)
 
