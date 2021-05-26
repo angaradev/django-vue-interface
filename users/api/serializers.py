@@ -46,7 +46,7 @@ class UserDisplaySerializer(serializers.ModelSerializer):
         instance.first_name = validated_data.get("first_name", instance.first_name)
         instance.last_name = validated_data.get("last_name", instance.last_name)
         instance.phone = validated_data.get("phone", instance.phone)
-        instance.image = validated_data["image"] or instance.image
+        instance.image = validated_data.get("image", instance.image)
         instance.save()
 
         return instance
