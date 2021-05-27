@@ -4,6 +4,7 @@ import os
 import random
 from rest_framework.exceptions import AuthenticationFailed
 from django.conf import settings
+from django.conf import settings
 
 
 def generate_username(name):
@@ -24,11 +25,16 @@ def register_social_user(provider, user_id, email, name):
         if provider == filtered_user_by_email[0].auth_provider:
 
             registered_user = authenticate(email=email, password=settings.SOCIAL_SECRET)
+            print(registered_user.image.url)
 
             return {
+                "id": registered_user.id,
                 "username": registered_user.username,
                 "email": registered_user.email,
                 "tokens": registered_user.tokens(),
+                "image": settings.SITE_URL + registered_user.image.url
+                if registered_user.image
+                else None,
             }
 
         else:
@@ -50,7 +56,9 @@ def register_social_user(provider, user_id, email, name):
 
         new_user = authenticate(email=email, password=settings.SOCIAL_SECRET)
         return {
+            "id": new_user.id,
             "email": new_user.email,
             "username": new_user.username,
             "tokens": new_user.tokens(),
+            "image": None,
         }
