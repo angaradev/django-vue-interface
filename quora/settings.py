@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     ####################
     "authentication",
     "social_auth",
+    "orders",
 ]
 
 
