@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from users.models import CustomUser
 from users.models import CustomUser as User
 from django.contrib import auth
 from rest_framework.exceptions import AuthenticationFailed
@@ -23,7 +23,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         fields = ["email", "username", "password"]
 
     def validate(self, attrs):
-        # email = attrs.get("email", "")
+        email = attrs.get("email", "")
+        if CustomUser.objects.filter(email=email).exists():
+            raise serializers.ValidationError("User already exists")
+
         username = attrs.get("username", "")
 
         if not username.isalnum():

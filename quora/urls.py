@@ -62,6 +62,7 @@ urlpatterns = [
     path("companypages/", include("company_pages.urls")),
     path("ckeditor/", include("ckeditor_uploader.urls")),
     path("auth/", include("authentication.urls")),
+    path("auth/social/", include("social_auth.urls")),
     path(
         "authentication/",
         schema_view.with_ui("swagger", cache_timeout=0),

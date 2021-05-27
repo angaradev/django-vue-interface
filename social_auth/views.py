@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import AllowAny
 from .serializers import GoogleSocialSerializer
 from rest_framework.response import Response
 
@@ -7,6 +8,7 @@ from rest_framework.response import Response
 class GoogleAuthView(GenericAPIView):
 
     serializer_class = GoogleSocialSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request):
         """

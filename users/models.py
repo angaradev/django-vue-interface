@@ -158,10 +158,3 @@ class UserAdresses(models.Model):
             qs = UserAdresses.objects.filter(user=self.user).exclude(id=self.id)
             qs.update(default=False)
         super().save(*args, **kwargs)
-
-
-@receiver(post_save, sender=CustomUser)
-def save_profile(sender, instance, created, **kwargs):
-    if created:
-        profile = UserProfile(user=instance)
-        profile.save()
