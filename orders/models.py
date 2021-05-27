@@ -27,7 +27,7 @@ class Orders(models.Model):
         return self.number
 
 
-class OrderDetails(models.Model):
+class OrderProducts(models.Model):
     order = models.ForeignKey(Orders, on_delete=models.CASCADE)
     product_id = models.IntegerField()
     product_price = models.DecimalField(max_digits=14, decimal_places=2)
@@ -35,3 +35,10 @@ class OrderDetails(models.Model):
     product_car = models.CharField(max_length=255)
     product_brand = models.CharField(max_length=255)
     qty = models.IntegerField()
+
+    class Meta:
+        verbose_name = "Детали заказа"
+        verbose_name_plural = "Детали заказа"
+
+    def __str__(self):
+        return self.product_name
