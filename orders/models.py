@@ -15,7 +15,6 @@ class Orders(models.Model):
     status = models.CharField(
         max_length=50, choices=StatusChoices.choices, default=StatusChoices.ORDERED
     )
-    total = models.DecimalField(max_digits=14, decimal_places=2)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     autouser = models.ForeignKey(AutoUser, on_delete=models.CASCADE)
 
@@ -26,9 +25,23 @@ class Orders(models.Model):
     def __str__(self):
         return self.number
 
+    @property
+    def total(self):
+        sum = 0
+        try:
+            prods = self.order_product.all()
+            for prod in prods:
+                sum += prod.product_price
+        except:
+            pass
+        print(sum)
+        return sum
+
 
 class OrderProducts(models.Model):
-    order = models.ForeignKey(Orders, on_delete=models.CASCADE)
+    order = models.ForeignKey(
+        Orders, on_delete=models.CASCADE, related_name="order_product"
+    )
     product_id = models.IntegerField()
     product_price = models.DecimalField(max_digits=14, decimal_places=2)
     product_name = models.CharField(max_length=555)

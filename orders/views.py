@@ -9,3 +9,4 @@ class OrderAPIView(viewsets.ModelViewSet):
     queryset = Orders.objects.all()
     permission_classes = [IsAuthenticated]
     serializer_class = OrderSerializer
+    paginator = None
