@@ -132,7 +132,7 @@ class RequestPasswordResetEmail(generics.GenericAPIView):
             uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
 
-            absUrl = f"{settings.FRONTEND_URL}/auth/newpassword/{uidb64}/{token}/"
+            absUrl = f"{settings.FRONTEND_URL}/account/newpassword/?uid={uidb64}&token={token}"
             email_body = f"""
             Hi {user.username} Use link below to reset your password \n
             {absUrl} 
