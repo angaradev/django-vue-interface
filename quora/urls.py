@@ -47,6 +47,7 @@ urlpatterns = [
         ),
         name="django_r",
     ),
+    path("orders/", include("orders.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("accounts/", include("django_registration.backends.one_step.urls")),
     path("product/", include("product.urls"), name="product-main"),
