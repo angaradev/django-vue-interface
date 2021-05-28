@@ -40,7 +40,7 @@ class Orders(models.Model):
 
 class OrderProducts(models.Model):
     order = models.ForeignKey(
-        Orders, on_delete=models.CASCADE, related_name="order_product"
+        Orders, on_delete=models.CASCADE, related_name="order_products"
     )
     product_id = models.IntegerField()
     product_price = models.DecimalField(max_digits=14, decimal_places=2)
