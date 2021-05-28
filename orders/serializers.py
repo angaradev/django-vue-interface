@@ -15,6 +15,8 @@ class OrderProductsSerializer(serializers.ModelSerializer):
             "product_car",
             "product_brand",
             "qty",
+            "image",
+            "slug",
         ]
         extra_kwargs = {
             "order": {"required": False, "allow_null": True},

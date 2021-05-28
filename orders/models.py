@@ -29,9 +29,9 @@ class Orders(models.Model):
     def total(self):
         sum = 0
         try:
-            prods = self.order_product.all()
+            prods = self.order_products.all()
             for prod in prods:
-                sum += prod.product_price
+                sum += float(prod.product_price)
         except:
             pass
         print(sum)
@@ -48,6 +48,8 @@ class OrderProducts(models.Model):
     product_car = models.CharField(max_length=255)
     product_brand = models.CharField(max_length=255)
     qty = models.IntegerField()
+    image = models.CharField(max_length=555, null=True, blank=True)
+    slug = models.SlugField(max_length=255)
 
     class Meta:
         verbose_name = "Детали заказа"
