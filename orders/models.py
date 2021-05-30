@@ -10,6 +10,15 @@ class Orders(models.Model):
         SENT = ("SENT", "ОТПРАВЛЕН")
         DELIVERED = ("DELIV", "ДОСТАВЛЕН")
 
+    class PaymentChoices(models.TextChoices):
+        ONGET = ("OnGet", "ПРИ ПОЛУЧЕНИИ")
+        ONSITE = ("OnSite", "ОНЛАЙН")
+
+    class DeliveryChoices(models.TextChoices):
+        SELF = ("self", "САМОВЫВОЗ")
+        KUR = ("kur", "КУРЬЕРОМ")
+        POST = ("poset", "ТРАНСПОРТНОЙ КОМПАНИЕЙ")
+
     date = models.DateTimeField(auto_now_add=True)
     number = models.CharField(max_length=50)
     status = models.CharField(
@@ -17,6 +26,19 @@ class Orders(models.Model):
     )
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     autouser = models.ForeignKey(AutoUser, on_delete=models.CASCADE)
+    payment = models.CharField(
+        max_length=50, choices=PaymentChoices.choices, default=PaymentChoices.ONGET
+    )
+    delivery = models.CharField(
+        max_length=50, choices=DeliveryChoices.choices, default=DeliveryChoices.SELF
+    )
+    total_front = models.DecimalField(
+        max_digits=14, decimal_places=2, null=True, blank=True
+    )
+    email = models.CharField(max_length=100, null=True, blank=True)
+    phone = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=255, null=True, blank=True)
+    address = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name = "Заказ"
