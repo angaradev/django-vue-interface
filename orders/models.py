@@ -11,8 +11,8 @@ class Orders(models.Model):
         DELIVERED = ("DELIV", "ДОСТАВЛЕН")
 
     class PaymentChoices(models.TextChoices):
-        ONGET = ("OnGet", "ПРИ ПОЛУЧЕНИИ")
-        ONSITE = ("OnSite", "ОНЛАЙН")
+        ONGET = ("onGet", "ПРИ ПОЛУЧЕНИИ")
+        ONSITE = ("onSite", "ОНЛАЙН")
 
     class DeliveryChoices(models.TextChoices):
         SELF = ("self", "САМОВЫВОЗ")
@@ -73,7 +73,6 @@ class OrderProducts(models.Model):
     product_slug = models.SlugField(max_length=500)
     qty = models.IntegerField()
     image = models.CharField(max_length=555, null=True, blank=True)
-    slug = models.SlugField(max_length=255)
 
     class Meta:
         verbose_name = "Детали заказа"
