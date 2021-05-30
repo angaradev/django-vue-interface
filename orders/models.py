@@ -69,6 +69,8 @@ class OrderProducts(models.Model):
     product_name = models.CharField(max_length=555)
     product_car = models.CharField(max_length=255)
     product_brand = models.CharField(max_length=255)
+    product_image = models.CharField(max_length=500, blank=True, null=True)
+    product_slug = models.SlugField(max_length=500)
     qty = models.IntegerField()
     image = models.CharField(max_length=555, null=True, blank=True)
     slug = models.SlugField(max_length=255)
