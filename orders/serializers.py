@@ -47,6 +47,9 @@ class OrderSerializer(serializers.ModelSerializer):
             "order_products",
         ]
 
+    def validate_autouser(self, value):
+        return value
+
     def create(self, validated_data):
         products_data = validated_data.pop("order_products")
         autouser = validated_data.pop("autouser")
