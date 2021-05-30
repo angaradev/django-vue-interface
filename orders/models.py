@@ -24,8 +24,10 @@ class Orders(models.Model):
     status = models.CharField(
         max_length=50, choices=StatusChoices.choices, default=StatusChoices.ORDERED
     )
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    autouser = models.ForeignKey(AutoUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, null=True, blank=True
+    )
+    autouser = models.ForeignKey(AutoUser, on_delete=models.CASCADE, null=True, blank=True)
     payment = models.CharField(
         max_length=50, choices=PaymentChoices.choices, default=PaymentChoices.ONGET
     )

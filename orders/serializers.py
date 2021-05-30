@@ -1,3 +1,4 @@
+from users.models import AutoUser
 from rest_framework import serializers
 from .models import OrderProducts, Orders
 
@@ -48,6 +49,10 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         products_data = validated_data.pop("order_products")
+        autouser = validated_data.pop("autouser")
+        qs = AutoUser.objects.get(userId=autouser)
+        validated_data["autouser"] = qs
+        print(validated_data)
 
         order = Orders.objects.create(**validated_data)
         for product in products_data:
