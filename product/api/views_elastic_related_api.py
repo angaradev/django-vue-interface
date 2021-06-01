@@ -176,12 +176,13 @@ def byCarCount(request):
     """
     if request.method == "GET":
         limit = request.GET.get("limit") or 10
+        query = request.GET.get("make") or "hyundai"
 
         # If query has car model and slug
         query = {
             "size": 0,
             "_source": ["id", "name"],
-            "query": {"match_all": {}},
+            "query": {"term": {"model.make.slug.keyword": query}},
             "aggs": {
                 "cars": {
                     "terms": {"field": "model.name.keyword", "size": 1000},
