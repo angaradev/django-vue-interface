@@ -175,7 +175,6 @@ def byCarCount(request):
     Endpoint return aggs by car and top categories
     """
     if request.method == "GET":
-        limit = request.GET.get("limit") or 10
         query = request.GET.get("make") or "hyundai"
 
         # If query has car model and slug
@@ -185,10 +184,10 @@ def byCarCount(request):
             "query": {"match": {"model.make.slug.keyword": "hyundai"}},
             "aggs": {
                 "cars": {
-                    "terms": {"field": "model.name.keyword", "size": 1000},
+                    "terms": {"field": "model.slug.keyword", "size": 1000},
                     "aggs": {
                         "cats": {
-                            "terms": {"field": "category.name.keyword", "size": 12},
+                            "terms": {"field": "category.name.keyword", "size": 6},
                             "aggs": {
                                 "cats": {
                                     "terms": {
