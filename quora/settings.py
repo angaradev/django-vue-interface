@@ -21,6 +21,7 @@ ALLOWED_HOSTS = [
     "192.168.0.107",
     "192.168.0.109",
     "192.168.0.24",
+    "46.151.155.97",
     "dnobaka.ru",
     "localhost",
     "partshub.tk",

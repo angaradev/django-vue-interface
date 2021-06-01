@@ -26,6 +26,7 @@ class OrderProductsSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     order_products = OrderProductsSerializer(many=True)
+    autouser = serializers.CharField()
 
     class Meta:
         model = Orders
