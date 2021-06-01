@@ -10,13 +10,37 @@ class Orders(models.Model):
         SENT = ("SENT", "ОТПРАВЛЕН")
         DELIVERED = ("DELIV", "ДОСТАВЛЕН")
 
+    class PaymentChoices(models.TextChoices):
+        ONGET = ("onGet", "ПРИ ПОЛУЧЕНИИ")
+        ONSITE = ("onSite", "ОНЛАЙН")
+
+    class DeliveryChoices(models.TextChoices):
+        SELF = ("self", "САМОВЫВОЗ")
+        KUR = ("kur", "КУРЬЕРОМ")
+        POST = ("poset", "ТРАНСПОРТНОЙ КОМПАНИЕЙ")
+
     date = models.DateTimeField(auto_now_add=True)
     number = models.CharField(max_length=50)
     status = models.CharField(
         max_length=50, choices=StatusChoices.choices, default=StatusChoices.ORDERED
     )
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    autouser = models.ForeignKey(AutoUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, null=True, blank=True
+    )
+    autouser = models.ForeignKey(AutoUser, on_delete=models.CASCADE, null=True, blank=True)
+    payment = models.CharField(
+        max_length=50, choices=PaymentChoices.choices, default=PaymentChoices.ONGET
+    )
+    delivery = models.CharField(
+        max_length=50, choices=DeliveryChoices.choices, default=DeliveryChoices.SELF
+    )
+    total_front = models.DecimalField(
+        max_digits=14, decimal_places=2, null=True, blank=True
+    )
+    email = models.CharField(max_length=100, null=True, blank=True)
+    phone = models.CharField(max_length=100, null=True, blank=True)
+    city = models.CharField(max_length=255, null=True, blank=True)
+    address = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name = "Заказ"
@@ -47,9 +71,10 @@ class OrderProducts(models.Model):
     product_name = models.CharField(max_length=555)
     product_car = models.CharField(max_length=255)
     product_brand = models.CharField(max_length=255)
+    product_image = models.CharField(max_length=500, blank=True, null=True)
+    product_slug = models.SlugField(max_length=500)
     qty = models.IntegerField()
     image = models.CharField(max_length=555, null=True, blank=True)
-    slug = models.SlugField(max_length=255)
 
     class Meta:
         verbose_name = "Детали заказа"
