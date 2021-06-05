@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from product.models import Product, Category
 import json, requests
 import pprint, re
+from django.conf import settings
 
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -43,7 +44,7 @@ def similar(request):
             data = json.dumps(query)
 
         r = requests.get(
-            "http://localhost:9200/prod_notebook/_search",
+            f"{settings.ELASTIC_URL}/prod_notebook/_search",
             headers={"Content-Type": "application/json"},
             data=data,
         )
@@ -92,7 +93,7 @@ def latest(request):
             data = json.dumps(query)
 
         r = requests.get(
-            "http://localhost:9200/prod_notebook/_search",
+            f"{settings.ELASTIC_URL}/prod_notebook/_search",
             headers={"Content-Type": "application/json"},
             data=data,
         )
@@ -149,7 +150,61 @@ def byTag(request):
             data = json.dumps(query)
 
         r = requests.get(
-            "http://localhost:9200/prod_notebook/_search",
+            f"{settings.ELASTIC_URL}/prod_notebook/_search",
+            headers={"Content-Type": "application/json"},
+            data=data,
+        )
+        if r.status_code != 200:
+            raise ValueError(
+                f"Request cannot be proceeded Status code is: {r.status_code}"
+            )
+        response = r.json()
+
+        # Cheking if aggregation exist in the query
+
+        data = response
+
+        return JsonResponse(data, safe=False)
+
+    else:
+        raise Exception({"Cannot poceed the request, params are suck"})
+
+
+def byCarCount(request):
+    """
+    Endpoint return aggs by car and top categories
+    """
+    if request.method == "GET":
+        query = request.GET.get("make") or "hyundai"
+
+        # If query has car model and slug
+        query = {
+            "size": 0,
+            "_source": ["id", "name"],
+            "query": {"match": {"model.make.slug.keyword": "hyundai"}},
+            "aggs": {
+                "cars": {
+                    "terms": {"field": "model.slug.keyword", "size": 1000},
+                    "aggs": {
+                        "cats": {
+                            "terms": {"field": "category.name.keyword", "size": 6},
+                            "aggs": {
+                                "cats": {
+                                    "terms": {
+                                        "field": "category.slug.keyword",
+                                        "size": 1,
+                                    }
+                                }
+                            },
+                        }
+                    },
+                }
+            },
+        }
+        data = json.dumps(query)
+
+        r = requests.get(
+            f"{settings.ELASTIC_URL}/prod_notebook/_search",
             headers={"Content-Type": "application/json"},
             data=data,
         )
