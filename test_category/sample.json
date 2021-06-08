@@ -12,30 +12,18 @@
     "bool": {
       "must": [
         {
-          "term": {
-            "model.slug.keyword": "hd72"
-          }
-        },
-        {
-          "term": {
-            "category.slug.keyword": "ressory-puruzhiny-torsiony"
+          "match": {
+            "full_name_ngrams": {
+              "query": "filste",
+              "operator": "and",
+              "analyzer": "rebuilt_russian",
+              "fuzziness": "auto"
+            }
           }
         },
         {
           "bool": {
-            "must": [
-              {
-                "bool": {
-                  "should": [
-                    {
-                      "term": {
-                        "bages.keyword": "hot"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "must": []
           }
         }
       ]
