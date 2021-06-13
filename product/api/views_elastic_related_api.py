@@ -13,7 +13,7 @@ pp = pprint.PrettyPrinter(indent=2)
 def similar(request):
     if request.method == "GET":
         q = request.GET.get("q")
-        model = request.GET.get("model")
+        model = request.GET.get("model") or "porter2"
         """
         Check if search by make slug exists
         """
