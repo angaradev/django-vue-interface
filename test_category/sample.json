@@ -12,18 +12,36 @@
     "bool": {
       "must": [
         {
-          "match": {
-            "full_name_ngrams": {
-              "query": "filste",
-              "operator": "and",
-              "analyzer": "rebuilt_russian",
-              "fuzziness": "auto"
-            }
+          "term": {
+            "model.slug.keyword": "county"
           }
         },
         {
           "bool": {
-            "must": []
+            "must": [
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "term": {
+                        "has_photo": "true"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "term": {
+                        "brand.name.keyword": "mobis"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
