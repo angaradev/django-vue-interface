@@ -12,13 +12,13 @@
     "bool": {
       "must": [
         {
-          "match": {
-            "full_name_ngrams": {
-              "query": "porter",
-              "operator": "and",
-              "analyzer": "rebuilt_russian",
-              "fuzziness": "auto"
-            }
+          "term": {
+            "model.slug.keyword": "hd500"
+          }
+        },
+        {
+          "term": {
+            "category.slug.keyword": "fary-osveschenie-signalizatsija"
           }
         },
         {
@@ -29,7 +29,7 @@
                   "should": [
                     {
                       "term": {
-                        "has_photo": "true"
+                        "brand.name.keyword": "cr"
                       }
                     }
                   ]

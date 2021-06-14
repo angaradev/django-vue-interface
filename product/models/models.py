@@ -142,7 +142,7 @@ class Product(models.Model):  # Main table product
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     slug = models.SlugField(max_length=255, blank=True)
-    one_c_id = models.IntegerField(blank=True, null=True)
+    one_c_id = models.IntegerField(blank=True, null=True, unique=True)
     unit = models.ForeignKey(
         "Units", on_delete=models.DO_NOTHING, related_name="product_unit"
     )
