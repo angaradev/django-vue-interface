@@ -13,12 +13,12 @@
       "must": [
         {
           "term": {
-            "model.slug.keyword": "hd500"
+            "model.slug.keyword": "porter1"
           }
         },
         {
           "term": {
-            "category.slug.keyword": "fary-osveschenie-signalizatsija"
+            "category.slug.keyword": "turbina-i-interkuller"
           }
         },
         {
@@ -29,7 +29,7 @@
                   "should": [
                     {
                       "term": {
-                        "brand.name.keyword": "cr"
+                        "has_photo": "true"
                       }
                     }
                   ]
