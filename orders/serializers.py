@@ -21,6 +21,7 @@ class OrderProductsSerializer(serializers.ModelSerializer):
         ]
         extra_kwargs = {
             "order": {"required": False, "allow_null": True},
+            "product_car": {"required": False, "allow_null": True},
         }
 
 

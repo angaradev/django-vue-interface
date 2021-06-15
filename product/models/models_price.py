@@ -79,16 +79,20 @@ class Stock(models.Model):
     class Meta:
         verbose_name = "Сток"
         verbose_name_plural = "Стоки"
+        unique_together = ("product", "store")
 
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="product_stock"
     )
     store = models.ForeignKey(
-        Store, on_delete=models.CASCADE, related_name="store_stock"
+        Store,
+        on_delete=models.CASCADE,
+        related_name="store_stock",
+        default=1,
     )
     price = models.DecimalField(max_digits=10, decimal_places=0, blank=True, null=True)
-    quantity = models.IntegerField()
-    availability_days = models.IntegerField()
+    quantity = models.IntegerField(default=0, null=True, blank=True)
+    availability_days = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.product.full_name
