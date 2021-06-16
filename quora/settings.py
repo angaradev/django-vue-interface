@@ -5,6 +5,7 @@ from datetime import timedelta
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+ONE_C_PRICE = "/home/manhee/Projects/quora/quora/test_category/all.csv"
 
 SECRET_KEY = SECRET_KEY
 VUE_DEV = VUE_DEV
@@ -28,6 +29,7 @@ ALLOWED_HOSTS = [
     "angara77.ru",
     "0.0.0.0",
 ]
+
 
 # Default images folder for blog posts and categories
 BLOG_IMAGES = "blog/images"

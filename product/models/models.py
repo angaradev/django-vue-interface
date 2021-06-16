@@ -138,19 +138,26 @@ class Product(models.Model):  # Main table product
         Category, related_name="category_reverse", blank=True
     )
     # Field for the cross selling products many many
-    related = models.ManyToManyField("self", blank=True)
+    related = models.ManyToManyField("self", blank=True, null=True)
     created_date = models.DateTimeField(auto_now_add=True)
-    updated_date = models.DateTimeField(auto_now=True)
+    updated_date = models.DateTimeField(auto_now=True, blank=True, null=True)
     slug = models.SlugField(max_length=255, blank=True)
     one_c_id = models.IntegerField(blank=True, null=True, unique=True)
     unit = models.ForeignKey(
-        "Units", on_delete=models.DO_NOTHING, related_name="product_unit"
+        "Units",
+        on_delete=models.DO_NOTHING,
+        related_name="product_unit",
+        blank=True,
+        null=True,
     )
     condition = models.CharField(max_length=20, null=True, blank=True, default="new")
     active = models.BooleanField(default=True)
     engine = models.ManyToManyField(
         "CarEngine", related_name="car_related_engine", blank=True
     )
+
+    def __str__(self):
+        return f"{self.name}-one-c={self.one_c_id}-id={self.id}"
 
     @property
     def bages(self):
@@ -243,9 +250,6 @@ class Product(models.Model):  # Main table product
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
-
-    def __str__(self):
-        return self.name
 
 
 class AngaraOld(models.Model):
