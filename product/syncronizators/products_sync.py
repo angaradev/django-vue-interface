@@ -1,5 +1,9 @@
 from datetime import datetime
 from django.conf import ONE_C_PRICE
+from product.models import Product, CarModel, Stock, Store
+from brands.models import BrandsDict
+import csv
+
 
 start = datetime.now()
 car_model_list = {
