@@ -80,11 +80,14 @@ INSTALLED_APPS = [
     "company_pages",
     "taggit",
     "drf_yasg",
+    "django_crontab",
     ####################
     "authentication",
     "social_auth",
     "orders",
 ]
+
+CRONJOBS = [("5 3 * * *", "product.syncronizers.products_sync.sync_products")]
 
 
 MIDDLEWARE = [
