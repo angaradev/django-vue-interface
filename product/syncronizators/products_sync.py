@@ -146,9 +146,4 @@ def sync_products():
             st.save()
 
     end = datetime.now()
-    print(end - start)
-    print(i, j)
-    print(update_list[:1])
-    print("-------------------" * 6)
-    print(obj_create_list[:1])
-    print(f, "Fuck up count")
+    print(f"Sync script ended up in:", end - start)
