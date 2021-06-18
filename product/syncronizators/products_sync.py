@@ -52,7 +52,7 @@ for key, value in car_model_list.items():
 f = 0
 csv_ids = []
 
-with open(settings.ONE_C_PRICE) as file:
+with open(settings.ONE_C_PRICE, encoding="utf-8") as file:
     reader = csv.reader(file, delimiter=";")
     csv_list = list(reader)
 
