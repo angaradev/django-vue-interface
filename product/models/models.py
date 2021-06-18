@@ -138,7 +138,7 @@ class Product(models.Model):  # Main table product
         Category, related_name="category_reverse", blank=True
     )
     # Field for the cross selling products many many
-    related = models.ManyToManyField("self", blank=True, null=True)
+    related = models.ManyToManyField("self", blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True, blank=True, null=True)
     slug = models.SlugField(max_length=255, blank=True)
