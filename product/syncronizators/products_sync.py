@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.conf import ONE_C_PRICE
+from django.conf import settings
 from product.models import Product, CarModel, Stock, Store
 from brands.models import BrandsDict
 import csv
@@ -52,7 +52,7 @@ for key, value in car_model_list.items():
 f = 0
 csv_ids = []
 
-with open(ONE_C_PRICE) as file:
+with open(settings.ONE_C_PRICE) as file:
     reader = csv.reader(file, delimiter=";")
     csv_list = list(reader)
 
