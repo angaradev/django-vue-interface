@@ -235,3 +235,5 @@ def do_all():
     print("Tota unique products are: ", len(ul))
 
     text_file.close()
+
+    return len(ul)
