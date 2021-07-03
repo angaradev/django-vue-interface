@@ -12,30 +12,16 @@
     "bool": {
       "must": [
         {
-          "term": {
-            "model.slug.keyword": "porter1"
-          }
-        },
-        {
-          "term": {
-            "category.slug.keyword": "turbina-i-interkuller"
+          "match": {
+            "cat_number": {
+              "query": "4599",
+              "analyzer": "standard"
+            }
           }
         },
         {
           "bool": {
-            "must": [
-              {
-                "bool": {
-                  "should": [
-                    {
-                      "term": {
-                        "has_photo": "true"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "must": []
           }
         }
       ]

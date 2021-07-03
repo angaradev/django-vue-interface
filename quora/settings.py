@@ -27,6 +27,7 @@ ALLOWED_HOSTS = [
     "partshub.tk",
     "angara77.ru",
     "0.0.0.0",
+    "angara77.ml",
 ]
 
 
