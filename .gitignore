@@ -5,6 +5,7 @@ node_modules
 .env.local
 .env.*.local
 elastic_stuff.sh
+wsgi.py
 
 
 # Log files

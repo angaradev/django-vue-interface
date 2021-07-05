@@ -218,10 +218,10 @@ def do_all():
         return uniq_lst
 
     try:
-        os.remove("product_notebook.json")
+        os.remove("test_category/product_notebook.txt")
     except:
         print("The file does not exist")
-    text_file = open("product_notebook.json", "w", encoding="utf-8")
+    text_file = open("test_category/product_notebook.txt", "w", encoding="utf-8")
 
     cars = CarModel.objects.all()
 
