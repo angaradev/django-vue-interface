@@ -2,7 +2,8 @@ from django.views.generic.base import TemplateView
 from django.http import JsonResponse
 from product.models import Product, Category
 import json, requests
-import pprint, re
+import pprint, re, os
+from django.conf import settings
 
 pp = pprint.PrettyPrinter(indent=2)
 autocomplete_size = 14
@@ -146,7 +147,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
 
     # pp.pprint(tmp)
 
-    with open("/home/manhee/Projects/quora/quora/test_category/sample.json", "w") as f:
+    with open(os.path.join(settings.BASE_DIR, "test_category/sample.json"), "w") as f:
         json.dump(tmp, f, indent=2)
     f.close()
 
