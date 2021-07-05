@@ -6,6 +6,7 @@ node_modules
 .env.*.local
 elastic_stuff.sh
 wsgi.py
+product_notebook.txt
 
 
 # Log files
