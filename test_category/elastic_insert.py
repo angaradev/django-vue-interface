@@ -217,11 +217,12 @@ def do_all():
 
         return uniq_lst
 
+    my_file = os.path.join(settings.BASE_DIR, "test_category/product_notebook.txt")
     try:
-        os.remove("test_category/product_notebook.txt")
+        os.remove(my_file)
     except:
         print("The file does not exist")
-    text_file = open("test_category/product_notebook.txt", "w", encoding="utf-8")
+    text_file = open(my_file, "w", encoding="utf-8")
 
     cars = CarModel.objects.all()
 
