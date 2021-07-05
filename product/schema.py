@@ -47,7 +47,7 @@ class Query(ObjectType):
     vehicle = Field(NewCarModelType, slug=String())
     vehicles = List(NewCarModelType)
     makes = List(CarMakeType)
-    make = Field(CarMakeType, slug=String(required=True))
+    make = Field(CarMakeType, slug=String(required=False))
     vehicles_by_make = List(NewCarModelType, slug=String(required=True))
     vehicles_by_priority = List(NewCarModelType, priority=Int(required=True))
     category_by_slug = Field(CategoryType, slug=String(required=True))
@@ -299,27 +299,32 @@ class Query(ObjectType):
         }
 
     def resolve_vehicle(self, info, slug):
-        car = CarModel.objects.filter(slug=slug).first()
-        years = [car.year_from, car.year_to] if car.year_from else []
-        return {
-            "id": car.id,
-            "model": car.name,
-            "rusname": car.rusname,
-            "year": years,
-            "engine": car.engine.all(),
-            "slug": car.slug,
-            "priority": car.priority,
-            "image": car.image.url if car.image else None,
-            "make": {
-                "id": car.carmake.id,
-                "name": car.carmake.name,
-                "slug": car.carmake.slug,
+        try:
+            car = CarModel.objects.filter(slug=slug).first()
+            years = [car.year_from, car.year_to] if (car) else []
+
+            return {
+                "id": car.id,
+                "model": car.name,
+                "rusname": car.rusname,
+                "year": years,
+                "engine": car.engine.all(),
+                "slug": car.slug,
+                "priority": car.priority,
+                "image": car.image.url if car.image else None,
+                "make": {
+                    "id": car.carmake.id,
+                    "name": car.carmake.name,
+                    "slug": car.carmake.slug,
+                    "country": car.carmake.country,
+                    "priority": car.carmake.priority,
+                },
+                "make_slug": car.carmake.slug,
                 "country": car.carmake.country,
-                "priority": car.carmake.priority,
-            },
-            "make_slug": car.carmake.slug,
-            "country": car.carmake.country,
-        }
+            }
+        except Exception as e:
+            print(e, "in exception")
+            return None
 
     def resolve_vehicles(self, info):
         qs = CarModel.objects.all()
