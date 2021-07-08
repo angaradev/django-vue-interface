@@ -49,6 +49,7 @@ urlpatterns = [
         ),
         name="django_r",
     ),
+    path("stats/", include("stats.urls")),
     path("orders/", include("orders.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("accounts/", include("django_registration.backends.one_step.urls")),
