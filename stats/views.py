@@ -23,16 +23,16 @@ class ProductDoneView(ListView, LoginRequiredMixin):
             print("im here")
             qs = self.queryset.filter(
                 updated_date__gte=start, updated_date__lt=f"{end} 23:59:59"
-            )
+            )[:400]
         elif start and end:
-            qs = self.queryset.filter(updated_date__range=(start, end))
+            qs = self.queryset.filter(updated_date__range=(start, end))[:400]
         elif start and not end:
             qs = self.queryset.filter(
                 updated_date__gte=start, updated_date__lt=f"{start} 23:59:59"
-            )
+            )[:400]
         elif not start and end:
             qs = self.queryset.filter(
                 updated_date__gte=end, updated_date__lt=f"{end} 23:59:59"
-            )
+            )[:400]
 
         return qs
