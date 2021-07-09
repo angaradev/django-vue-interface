@@ -27,19 +27,65 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Name</th>
+                  <th scope="col" class="w-5">#</th>
+                  <th scope="col" class="w-20">Done</th>
+                  <th scope="col" class="w-20">Name</th>
+                  <th scope="col">Cat Number</th>
+                  <th scope="col">Brand</th>
                   <th scope="col">One C Id</th>
                   <th scope="col">Date</th>
+                  <th scope="col">To Site</th>
                 </tr>
               </thead>
                <tbody>
                 {% for object in objects %}
                   <tr>
                     <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ object.name }}</td>
+                    <td style="display: flex;">
+                      {% if object.have_photo %}
+                      <div class="stats-icons">
+                      <span>PH</span>
+                      </div>
+                      {% else %}
+                      <div class="stats-icons-false">
+                      <span>PH</span>
+                      </div>
+                      {% endif %}
+                      {% if object.have_description %}
+                      <div class="stats-icons">
+                      <span>D</span>
+                      </div>
+                      {% else %}
+                      <div class="stats-icons-false">
+                      <span>D</span>
+                      </div>
+                      {% endif %}
+                      {% if object.have_attribute %}
+                      <div class="stats-icons">
+                      <span>A</span>
+                      </div>
+                      {% else %}
+                      <div class="stats-icons-false">
+                      <span>A</span>
+                      </div>
+                      {% endif %}
+                      {% if object.have_video %}
+                      <div class="stats-icons">
+                      <span>V</span>
+                      </div>
+                      {% else %}
+                      <div class="stats-icons-false">
+                      <span>V</span>
+                      </div>
+                      {% endif %}
+                    </td>
+                    <td><a href="{{ request.scheme }}://{{request.META.HTTP_HOST}}/product/{{object.id}}/"  target="_blank">{{ object.name }}</a></td>
+                    <td>{{ object.cat_number }}</td>
+                    <td>{{ object.brand }}</td>
                     <td>{{ object.one_c_id }}</td>
                     <td>{{ object.updated_date }}</td>
+                    <td><a href="{{ frontend_url }}/product/{{object.slug}}"  target="_blank">Check on site</a></td>
+                  </tr>
                   </tr>
             {% endfor %}
                 </tbody>
