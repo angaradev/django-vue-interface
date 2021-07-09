@@ -3,6 +3,7 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 import datetime, time
+from django.conf import settings
 
 from product.models import Product
 
@@ -12,6 +13,11 @@ class ProductDoneView(ListView, LoginRequiredMixin):
     queryset = Product.objects.all()
     template_name = "stats/index.html"
     context_object_name = "objects"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["frontend_url"] = settings.FRONTEND_URL
+        return context
 
     def get_queryset(self):
         request = self.request
