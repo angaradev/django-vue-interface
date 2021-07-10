@@ -363,6 +363,7 @@ class Query(ObjectType):
             return makeProduct(prod)
         except Exception as e:
             print("Product not found in GraphQl product/schema line 326", e)
+
     def resolve_productOneC(self, info, onec):
 
         try:
