@@ -60,6 +60,7 @@ class Query(ObjectType):
     similarProducts = List(ProductType, slug=String(required=True), quantity=Int())
     togetherProduct = List(ProductType, slug=String(required=True))
     product = Field(ProductType, slug=String(required=True))
+    productOneC = Field(ProductType, onec=Int(required=True))
     autouser = Field(AutoUserType, userId=String(required=True))
     rating = Field(RatingType, productId=Int(), userId=String())
     productRating = Field(GetRatingType, productId=Int())
@@ -359,6 +360,13 @@ class Query(ObjectType):
 
         try:
             prod = Product.objects.get(slug=slug)
+            return makeProduct(prod)
+        except Exception as e:
+            print("Product not found in GraphQl product/schema line 326", e)
+    def resolve_productOneC(self, info, onec):
+
+        try:
+            prod = Product.objects.get(one_c_id=onec)
             return makeProduct(prod)
         except Exception as e:
             print("Product not found in GraphQl product/schema line 326", e)
