@@ -106,6 +106,7 @@ class CarModel(models.Model):
     priority = models.IntegerField(
         choices=Priority.choices, default=Priority.LOWEST, null=True, blank=True
     )
+    weight = models.IntegerField(default=0, null=True, blank=True)
 
     year_from = models.ForeignKey(
         Years,
