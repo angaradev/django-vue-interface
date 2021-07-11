@@ -242,7 +242,7 @@ class Query(ObjectType):
         qs = (
             CarModel.objects.filter(active=True)
             .filter(priority__gte=priority)
-            .order_by("-priority")
+            .order_by("-carmake__priority", "-priority", "-weight")
         )
         lst = []
         for car in qs:
