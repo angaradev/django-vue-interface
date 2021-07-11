@@ -48,6 +48,7 @@ class NewCarModelType(ObjectType):
     make = Field(CarMakeType, required=True)
     country = String(required=True)
     priority = String()
+    weight = Int()
     count = String()
     image = String(required=False)
 

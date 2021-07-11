@@ -209,7 +209,7 @@ class Query(ObjectType):
             CarModel.objects.filter(active=True)
             .filter(carmake__slug=slug)
             .annotate(count=Count("model_product"))
-            .order_by("-priority")
+            .order_by("-priority", "-weight")
         )
         lst = []
         for car in qs:
@@ -224,6 +224,7 @@ class Query(ObjectType):
                     "slug": car.slug,
                     "priority": car.priority,
                     "image": car.image.url if car.image else None,
+                    "weight": car.weight,
                     "make": {
                         "id": car.carmake.id,
                         "name": car.carmake.name,
@@ -242,7 +243,7 @@ class Query(ObjectType):
         qs = (
             CarModel.objects.filter(active=True)
             .filter(priority__gte=priority)
-            .order_by("-priority")
+            .order_by("-carmake__priority", "-priority", "-weight")
         )
         lst = []
         for car in qs:
@@ -257,6 +258,7 @@ class Query(ObjectType):
                     "slug": car.slug,
                     "priority": car.priority,
                     "image": car.image.url if car.image else None,
+                    "weight": car.weight,
                     "make": {
                         "id": car.carmake.id,
                         "name": car.carmake.name,
@@ -313,6 +315,7 @@ class Query(ObjectType):
                 "slug": car.slug,
                 "priority": car.priority,
                 "image": car.image.url if car.image else None,
+                    "weight": car.weight,
                 "make": {
                     "id": car.carmake.id,
                     "name": car.carmake.name,
@@ -342,6 +345,7 @@ class Query(ObjectType):
                     "slug": car.slug,
                     "priority": car.priority,
                     "image": car.image.url if car.image else None,
+                    "weight": car.weight,
                     "make": {
                         "id": car.carmake.id,
                         "name": car.carmake.name,
