@@ -4,9 +4,10 @@ from django.http import HttpResponse
 from home.models import Documentation
 from product.models import CarModel, CarMake, Product
 from django.db.models import Q, Count
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
-class Home(TemplateView):
+class Home(LoginRequiredMixin, TemplateView):
     """
     This class will aggregate all statistic by model
     To show in main analytics page on dashboard
