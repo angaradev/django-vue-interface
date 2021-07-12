@@ -13,9 +13,11 @@
       "must": [
         {
           "match": {
-            "cat_number": {
-              "query": "4599",
-              "analyzer": "standard"
+            "full_name_ngrams": {
+              "query": "\u0444\u0438\u043b\u044c\u0442\u0440",
+              "operator": "and",
+              "analyzer": "rebuilt_russian",
+              "fuzziness": "auto"
             }
           }
         },
