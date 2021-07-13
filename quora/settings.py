@@ -94,7 +94,6 @@ CRONJOBS = [
     (
         "5 3 * * *",
         "product.syncronizators.products_sync.sync_products",
-        ">> /home/manhee/logs/django_cront_sync.log",
     )
 ]
 
