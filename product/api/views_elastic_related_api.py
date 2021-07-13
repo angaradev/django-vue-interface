@@ -181,7 +181,7 @@ def byCarCount(request):
         query = {
             "size": 0,
             "_source": ["id", "name"],
-            "query": {"match": {"model.make.slug.keyword": "hyundai"}},
+            "query": {"match": {"model.make.slug.keyword": query}},
             "aggs": {
                 "cars": {
                     "terms": {"field": "model.slug.keyword", "size": 1000},

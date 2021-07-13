@@ -14,7 +14,7 @@
         {
           "match": {
             "full_name_ngrams": {
-              "query": "\u0444\u0438\u043b\u044c\u0442\u0440",
+              "query": "\u0441\u0442\u0435\u043a\u043b\u043e \u043b\u043e\u0431\u043e\u0432\u043e\u0435",
               "operator": "and",
               "analyzer": "rebuilt_russian",
               "fuzziness": "auto"
@@ -23,7 +23,19 @@
         },
         {
           "bool": {
-            "must": []
+            "must": [
+              {
+                "bool": {
+                  "should": [
+                    {
+                      "term": {
+                        "model.name.keyword": "\u043f\u043e\u0440\u0442\u0435\u04401"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
