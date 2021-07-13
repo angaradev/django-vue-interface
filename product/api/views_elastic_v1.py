@@ -87,7 +87,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     tmp = {
         "from": page_from,
         "size": page_size,
-        "sort": [{"stocks.price": {"order": sort_price}}],
+        # "sort": [{"stocks.price": {"order": sort_price}}],
         "query": {
             "bool": {
                 "must": [
@@ -100,7 +100,6 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     }
 
     # pp.pprint(tmp)
-
 
     return json.dumps(tmp)
 
@@ -147,7 +146,7 @@ def send_json(request):
                 {
                     "from": page_from,
                     "size": page_size,
-                    "sort": [{"stocks.price": {"order": sort_price}}],
+                    # "sort": [{"stocks.price": {"order": sort_price}}],
                     "query": {
                         "bool": {
                             "must": [
@@ -167,7 +166,7 @@ def send_json(request):
                 {
                     "from": page_from,
                     "size": page_size,
-                    "sort": [{"stocks.price": {"order": sort_price}}],
+                    # "sort": [{"stocks.price": {"order": sort_price}}],
                     "query": {"term": {"model.slug.keyword": model}},
                     "aggs": aggs(aggs_size),
                 }
@@ -180,8 +179,9 @@ def send_json(request):
             makeSlug = make.lower()
             data = json.dumps(
                 {
+                    "from": page_from,
                     "size": page_size,
-                    "sort": [{"stocks.price": {"order": sort_price}}],
+                    # "sort": [{"stocks.price": {"order": sort_price}}],
                     "query": {"term": {"model.make.slug.keyword": makeSlug}},
                     "aggs": aggs(aggs_size),
                 }
