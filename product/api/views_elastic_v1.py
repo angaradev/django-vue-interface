@@ -39,7 +39,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     price = request.GET.get("price")
     priceMin = 1
     priceMax = 10000000
-    sort_price = request.GET.get("sort_price") or "asc"
+    sort_price = request.GET.get("sort_price") or "desc"
     if price:
         spl = price.split("-")
         priceMin = spl[0]
@@ -87,7 +87,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     tmp = {
         "from": page_from,
         "size": page_size,
-        # "sort": [{"stocks.price": {"order": sort_price}}],
+        "sort": [{"stocks.price": {"order": sort_price}}],
         "query": {
             "bool": {
                 "must": [
@@ -146,7 +146,7 @@ def send_json(request):
                 {
                     "from": page_from,
                     "size": page_size,
-                    # "sort": [{"stocks.price": {"order": sort_price}}],
+                    "sort": [{"stocks.price": {"order": sort_price}}],
                     "query": {
                         "bool": {
                             "must": [
@@ -166,7 +166,7 @@ def send_json(request):
                 {
                     "from": page_from,
                     "size": page_size,
-                    # "sort": [{"stocks.price": {"order": sort_price}}],
+                    "sort": [{"stocks.price": {"order": sort_price}}],
                     "query": {"term": {"model.slug.keyword": model}},
                     "aggs": aggs(aggs_size),
                 }
@@ -181,7 +181,7 @@ def send_json(request):
                 {
                     "from": page_from,
                     "size": page_size,
-                    # "sort": [{"stocks.price": {"order": sort_price}}],
+                    "sort": [{"stocks.price": {"order": sort_price}}],
                     "query": {"term": {"model.make.slug.keyword": makeSlug}},
                     "aggs": aggs(aggs_size),
                 }
