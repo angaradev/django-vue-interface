@@ -124,6 +124,9 @@ class CarModel(models.Model):
     )
     active = models.BooleanField(default=True)
     image = models.ImageField(upload_to=settings.CAR_IMAGES, blank=True, null=True)
+    model_history = models.TextField(null=True, blank=True)
+    model_liquids = models.TextField(null=True, blank=True)
+    model_to = models.TextField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Модель Машины"
