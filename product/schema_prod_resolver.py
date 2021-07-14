@@ -105,5 +105,4 @@ def resolve_poduct(self, info, slug):
         "reviews": prod.reviews,
         "condition": prod.condition,
     }
-    print(returnProduct)
     return returnProduct

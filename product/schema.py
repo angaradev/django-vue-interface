@@ -314,8 +314,11 @@ class Query(ObjectType):
                 "engine": car.engine.all(),
                 "slug": car.slug,
                 "priority": car.priority,
+                "history": car.model_history,
+                "liquids": car.model_liquids,
+                "to": car.model_to,
                 "image": car.image.url if car.image else None,
-                    "weight": car.weight,
+                "weight": car.weight,
                 "make": {
                     "id": car.carmake.id,
                     "name": car.carmake.name,
