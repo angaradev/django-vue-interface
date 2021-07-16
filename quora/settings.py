@@ -90,13 +90,6 @@ INSTALLED_APPS = [
     "stats",
 ]
 
-CRONJOBS = [
-    (
-        "5 3 * * *",
-        "product.syncronizators.products_sync.sync_products",
-    )
-]
-
 
 MIDDLEWARE = [
     #        'corsheaders.middleware.CorsMiddleware',
