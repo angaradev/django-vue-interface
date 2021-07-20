@@ -69,8 +69,9 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <label for="productGroup">Группа запчасти</label>
-                                        <input v-model="part.category" class="form-control form-control-sm" type="text"
-                                            id="productGroup" placeholder="Группа" disabled>
+                                        <!-- <input v-model="part.category" class="form-control form-control-sm" type="text" -->
+                                        <!--     id="productGroup" placeholder="Группа" disabled> -->
+                                        <div v-for="(category, id) in part.category" :key="id">{category.name}<span>, </span></div>
                                     </div>
                                     <div class="col-6">
                                         <label for="productBrand">Бренд</label>
@@ -510,7 +511,7 @@
     // In your Javascript (external .js resource or <script> tag)
     // $(document).ready(function () {
     //     $('.js-example-basic-single').select2({
-    //         tags: true
+    //         tags: true.name.name
     //     });
     // });
 </script>
