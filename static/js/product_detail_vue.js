@@ -631,6 +631,7 @@ const app = new Vue({
     this.getPart(id, car_make_id);
     this.getVideo(id);
     this.getDescription(id);
+    // commenmt
   },
   mounted() {},
 });
