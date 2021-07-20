@@ -595,7 +595,7 @@ const app = new Vue({
       // await this.getSelectCarEnginelList(this.part.car_model.id);
       await this.getImage(this.part.id);
 
-      // console.log(data);
+      console.log(data);
     },
     async getSelectCarModelList(id) {
       const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodel/${id}/`;
@@ -631,6 +631,7 @@ const app = new Vue({
     this.getPart(id, car_make_id);
     this.getVideo(id);
     this.getDescription(id);
+    console.log('Here I am in created hook');
   },
   mounted() {},
 });
