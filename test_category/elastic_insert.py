@@ -4,6 +4,7 @@ from product.models import Product, Category, CarModel, ProductRating
 from django.conf import settings
 from django.db.models import Avg
 import math
+from django.utils.html import strip_tags
 
 # try to create one big function to call
 def do_all():
@@ -170,7 +171,7 @@ def do_all():
             categories = categories_work(prod)
             description = ""
             if hasattr(prod, "product_description"):
-                description = prod.product_description.text
+                description = strip_tags(prod.product_description.text)
 
             product_json = json.dumps(
                 {
