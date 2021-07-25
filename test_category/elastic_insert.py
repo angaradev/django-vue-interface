@@ -168,6 +168,9 @@ def do_all():
 
             # Category working
             categories = categories_work(prod)
+            description = ""
+            if hasattr(prod, "product_description"):
+                description = prod.product_description.text
 
             product_json = json.dumps(
                 {
@@ -188,9 +191,7 @@ def do_all():
                     "model": model,
                     "engine": eng_list,
                     "excerpt": "prod.excerpt",
-                    "description": prod.product_description.text
-                    if prod.product_description
-                    else "",
+                    "description": description,
                     "rating": ratingAvg(prod.id),
                     "has_photo": prod.have_photo,
                     "images": images,
