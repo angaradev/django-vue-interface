@@ -188,7 +188,9 @@ def do_all():
                     "model": model,
                     "engine": eng_list,
                     "excerpt": "prod.excerpt",
-                    "description": "prod.product_description.text",
+                    "description": prod.product_description.text
+                    if prod.product_description
+                    else "",
                     "rating": ratingAvg(prod.id),
                     "has_photo": prod.have_photo,
                     "images": images,
