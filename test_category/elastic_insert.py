@@ -1,9 +1,11 @@
-import os, json, random
+import os, json, random, re
 import progressbar
 from product.models import Product, Category, CarModel, ProductRating
 from django.conf import settings
 from django.db.models import Avg
 import math
+from django.utils.html import strip_tags
+from bs4 import BeautifulSoup
 
 # try to create one big function to call
 def do_all():
@@ -168,6 +170,11 @@ def do_all():
 
             # Category working
             categories = categories_work(prod)
+            description = ""
+            if hasattr(prod, "product_description"):
+                soup = BeautifulSoup(prod.product_description.text, "lxml")
+                description = soup.get_text()
+                description = re.sub("&nbsp;", " ", description, flags=re.IGNORECASE)
 
             product_json = json.dumps(
                 {
@@ -188,7 +195,7 @@ def do_all():
                     "model": model,
                     "engine": eng_list,
                     "excerpt": "prod.excerpt",
-                    "description": "prod.product_description.text",
+                    "description": description,
                     "rating": ratingAvg(prod.id),
                     "has_photo": prod.have_photo,
                     "images": images,
