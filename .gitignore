@@ -7,6 +7,8 @@ node_modules
 elastic_stuff.sh
 wsgi.py
 product_notebook.txt
+all.csv
+el_log.txt
 
 
 # Log files
