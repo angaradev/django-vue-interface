@@ -58,7 +58,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
         if item[0] == "search":
             # If search is a number
             if re.match(r"^\d+", str(search)):
-                print(search)
+                # print(search)
 
                 query.append(
                     {
@@ -76,7 +76,8 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                 query.append(
                     {
                         "match": {
-                            "full_name_ngrams": {
+                            # "full_name_ngrams": {
+                            "full_name": {
                                 "query": second[0],
                                 "operator": "and",
                                 "analyzer": "rebuilt_russian",
@@ -133,7 +134,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     tmp = {
         "from": page_from,
         "size": page_size,
-        "sort": [{"stocks.price": {"order": sort_price}}],
+        # "sort": [{"stocks.price": {"order": sort_price}}],
         "query": {
             "bool": {
                 "must": [
@@ -145,11 +146,11 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
         "aggs": aggs(aggs_size),
     }
 
-    # pp.pprint(tmp)
+    pp.pprint(tmp)
 
-    #     with open(os.path.join(settings.BASE_DIR, "test_category/sample.json"), "w") as f:
-    #         json.dump(tmp, f, indent=2)
-    #     f.close()
+    with open(os.path.join(settings.BASE_DIR, "test_category/sample.json"), "w") as f:
+        json.dump(tmp, f, indent=2)
+    f.close()
 
     return json.dumps(tmp)
 
