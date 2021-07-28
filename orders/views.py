@@ -6,6 +6,8 @@ from .models import Orders
 from .serializers import OrderSerializer
 from rest_framework.response import Response
 from users.models import AutoUser, CustomUser
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 
 class OrderAPIView(viewsets.ModelViewSet):
@@ -13,6 +15,20 @@ class OrderAPIView(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     serializer_class = OrderSerializer
     paginator = None
+
+    # def create(self, request, *args, **kwargs):
+    #     response = super().create(request, *args, **kwargs)
+    #     serializer = self.serializer_class
+    #     data = serializer.data
+    #     print(dir(data))
+    #     send_mail(
+    #         "Test email in order",
+    #         "Message from test order",
+    #         "mikohan1@gmail.com",
+    #         ["angara99@gmail.com"],
+    #         fail_silently=False,
+    #     )
+    #     return response
 
     def list(self, request, *args, **kwargs):
         user = request.GET.get("user", None)

@@ -1,6 +1,9 @@
 from users.models import AutoUser, CustomUser
 from django.db import models
 from product.models import Product
+from django.core.mail import send_mail
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class Orders(models.Model):
@@ -27,7 +30,9 @@ class Orders(models.Model):
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, null=True, blank=True
     )
-    autouser = models.ForeignKey(AutoUser, on_delete=models.CASCADE, null=True, blank=True)
+    autouser = models.ForeignKey(
+        AutoUser, on_delete=models.CASCADE, null=True, blank=True
+    )
     payment = models.CharField(
         max_length=50, choices=PaymentChoices.choices, default=PaymentChoices.ONGET
     )
