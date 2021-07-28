@@ -247,6 +247,14 @@ WEBPACK_LOADER = {
 
 AUTH_USER_MODEL = "users.CustomUser"
 
+COMPANY_INFO = {
+    "phone": "8-800-200-99-53",
+    "email": "angara77@gmail.com",
+    "website": FRONTEND_URL,
+}
+EMAIL_MANAGERS = ["angara99@gmail.com"]
+EMAIL_REPLY_TO = ["angara99@gmail.com"]
+
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
