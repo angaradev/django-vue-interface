@@ -1,4 +1,5 @@
-from users.models import AutoUser
+from django.contrib.auth.models import User
+from users.models import AutoUser, CustomUser
 from rest_framework import serializers
 from .models import OrderProducts, Orders
 from django.core.mail import send_mail, EmailMultiAlternatives
@@ -75,10 +76,21 @@ class OrderSerializer(serializers.ModelSerializer):
                 }
                 for x in products_data
             ]
+            user = None
+            try:
+                user = CustomUser.objects.get(email=validated_data.get("user"))
+            except:
+                pass
             data = {
                 "email": validated_data.get("email"),
                 "phone": validated_data.get("phone"),
-                "user": validated_data.get("user"),
+                "user": {
+                    "username": user.username if user else "",
+                    "firstname": user.first_name if user else "",
+                    "lastname": user.last_name if user else "",
+                    "phone": user.phone if user else None,
+                    "email": user.email if user else None,
+                },
                 "city": validated_data.get("city"),
                 "address": validated_data.get("address"),
                 "autouser": validated_data.get("autouser"),
@@ -91,9 +103,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 "company_email": settings.COMPANY_INFO["email"],
                 "company_website": settings.COMPANY_INFO["website"],
             }
-            print(validated_data)
             context = {"products": products, "data": data}
-            print(emailsTo)
 
             text_content = render_to_string("emails/order_text.txt", context)
             html_content = render_to_string("emails/order_html.html", context)
