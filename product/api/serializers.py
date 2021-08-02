@@ -221,6 +221,7 @@ class ProductSerializer(serializers.ModelSerializer):
             "name",
             "name2",
             "cat_number",
+            "oem_number",
             "category",
             "slug",
             "brand",
@@ -253,6 +254,7 @@ class ProductSerializer(serializers.ModelSerializer):
             name=validated_data["name"],
             name2=validated_data["name2"],
             cat_number=validated_data["cat_number"],
+            oem_number=validated_data["oem_number"],
             brand=brand_qs,
             # car_model=car_model_qs,
             unit=unit_qs,
@@ -308,6 +310,7 @@ class ProductSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get("name", instance.name)
         instance.name2 = validated_data.get("name2", instance.name2)
         instance.cat_number = validated_data.get("cat_number", instance.cat_number)
+        instance.oem_number = validated_data.get("oem_number", instance.oem_number)
         instance.slug = validated_data.get("slug", instance.slug)
         instance.one_c_id = validated_data.get("one_c_id", instance.one_c_id)
         instance.active = validated_data.get("active", instance.active)
