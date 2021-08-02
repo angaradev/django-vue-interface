@@ -49,6 +49,7 @@ const app = new Vue({
       name: 'Название Товара',
       name2: 'Доп Параметры',
       cat_number: '',
+      oem_number: '',
       category: '',
       brand: 1,
       car_model: {
@@ -548,6 +549,7 @@ const app = new Vue({
         name: this.part.name,
         name2: this.part.name2,
         cat_number: this.part.cat_number,
+        oem_number: this.part.oem_number,
         brand: brandId,
         car_model: car_mod,
         unit: unitId,
