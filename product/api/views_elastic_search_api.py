@@ -60,17 +60,47 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
             if re.match(r"^\d+", str(search)):
                 # print(search)
 
+                # query.append(
+                #     {
+                #         "match": {
+                #             "cat_number": {
+                #                 "query": search,
+                #                 "analyzer": "standard",
+                #             }
+                #         },
+                #     }
+                # )
+                # Else search is a text
                 query.append(
                     {
-                        "match": {
-                            "cat_number": {
-                                "query": search,
-                                "analyzer": "standard",
-                            }
-                        },
+                        "bool": {
+                            "must": [
+                                {
+                                    "bool": {
+                                        "should": [
+                                            {
+                                                "match": {
+                                                    "cat_number": {
+                                                        "query": search,
+                                                        "analyzer": "standard",
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "match": {
+                                                    "oem_number": {
+                                                        "query": search,
+                                                        "analyzer": "standard",
+                                                    }
+                                                }
+                                            },
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
                     }
                 )
-            # Else search is a text
 
             else:
                 query.append(
