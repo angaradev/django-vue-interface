@@ -26,7 +26,7 @@ from product.models.models_productfields import ProductBages, ProductVideos
 
 class Category(MPTTModel):  # MPTT model here for now
 
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(max_length=50, unique=True, db_index=True)
     type = models.CharField(max_length=30, default="shop")
     layout = models.CharField(max_length=30, default="products")
     parent = TreeForeignKey(
@@ -121,7 +121,7 @@ class ProductRating(models.Model):
 
 class Product(models.Model):  # Main table product
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, db_index=True)
     name2 = models.CharField(max_length=255, null=True, blank=True)
     brand = models.ForeignKey(
         BrandsDict,
@@ -132,8 +132,8 @@ class Product(models.Model):  # Main table product
     )
 
     car_model = models.ManyToManyField(CarModel, related_name="model_product")
-    cat_number = models.CharField(max_length=255)
-    oem_number = models.CharField(max_length=255, blank=True, null=True)
+    cat_number = models.CharField(max_length=255, db_index=True)
+    oem_number = models.CharField(max_length=255, blank=True, null=True, db_index=True)
     category = TreeManyToManyField(
         Category, related_name="category_reverse", blank=True
     )
