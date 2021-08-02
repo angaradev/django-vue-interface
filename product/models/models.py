@@ -121,7 +121,7 @@ class ProductRating(models.Model):
 
 class Product(models.Model):  # Main table product
 
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, db_index=True)
     name2 = models.CharField(max_length=255, null=True, blank=True)
     brand = models.ForeignKey(
         BrandsDict,
@@ -132,7 +132,7 @@ class Product(models.Model):  # Main table product
     )
 
     car_model = models.ManyToManyField(CarModel, related_name="model_product")
-    cat_number = models.CharField(max_length=255)
+    cat_number = models.CharField(max_length=255, db_index=True)
     oem_number = models.CharField(max_length=255, blank=True, null=True)
     category = TreeManyToManyField(
         Category, related_name="category_reverse", blank=True
