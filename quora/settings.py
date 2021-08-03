@@ -252,7 +252,7 @@ COMPANY_INFO = {
     "email": "angara77@gmail.com",
     "website": FRONTEND_URL,
 }
-EMAIL_MANAGERS = ["angara99@gmail.com"]
+EMAIL_MANAGERS = ["angara99@gmail.com", "angara77@gmail.com", "yellkalolka@gmail.com"]
 EMAIL_REPLY_TO = ["angara99@gmail.com"]
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
