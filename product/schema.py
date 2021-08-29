@@ -138,7 +138,7 @@ class Query(ObjectType):
         try:
             product = Product.objects.get(id=productId)
             qs = ProductRating.objects.get(product=product, autoUser__userId=userId)
-            return qs
+            return {"score": qs.score, "autouser": qs.autoUser}
         except:
             return None
 

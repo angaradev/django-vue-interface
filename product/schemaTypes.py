@@ -119,7 +119,7 @@ class AttributesType(ObjectType):
 
 
 class RatingType(ObjectType):
-    score = Int()
+    score = Float()
     autouser = String()
     product = ID()
 
@@ -131,7 +131,7 @@ class AutoUserType(ObjectType):
 
 
 class GetRatingType(ObjectType):
-    rating = Int()
+    rating = Float()
     ratingCount = Int()
 
 
