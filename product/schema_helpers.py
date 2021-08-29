@@ -13,8 +13,10 @@ def ratingAvg(productId):
         qs = ProductRating.objects.filter(product=product)
         avg = qs.aggregate(avg_score=Avg("score"))
         count = qs.count()
+        ret_scor = round(avg["avg_score"], 2)
+        print(ret_scor, "Avg to return print")
 
-        return math.ceil(avg["avg_score"]), count
+        return ret_scor, count
     except Exception as e:
         return None, None
 

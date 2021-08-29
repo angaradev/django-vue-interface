@@ -12,6 +12,7 @@ from graphene import (
     Int,
     Mutation,
     DateTime,
+    Float,
 )
 from django.db.models import Count
 from .utils import chk_img
@@ -178,7 +179,7 @@ class ProductType(ObjectType):
     attributes = List(AttributesType)
     stocks = List(ProductStocksType, required=False)
     bages = List(String, required=False)
-    rating = Int()
+    rating = Float()
     ratingCount = Int()
     video = List(String)
     condition = String(required=False)
