@@ -1,7 +1,7 @@
 //##########################################################//
 //############### VUE PART STARTS HERE #####################//
 //##########################################################//
-Vue.use(VueToast);
+// Vue.use(VueToast);
 Vue.use(CKEditor);
 Vue.component('vue-multiselect', window.VueMultiselect.default);
 
