@@ -792,12 +792,28 @@
 		<script src="{% static 'js/config.js' %}"></script>
 		<script src="{% static 'js/service_api.js' %}"></script>
 		<!-- Lastly add this package -->
-    <script src="https://cdn.jsdelivr.net/npm/vue-toast-notification@0.6.2/dist/index.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/vue-toast-notification/dist/theme-sugar.css" rel="stylesheet">
-<!-- Init the plugin -->
-    <!-- <script> -->
-    <!--     Vue.use(VueToast); -->
-    <!-- </script> -->
+		<!-- <script src="https://cdn.jsdelivr.net/npm/vue-toast-notification"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/vue-toast-notification@2"></script>
+		<!-- <link -->
+		<!-- 	href="https://cdn.jsdelivr.net/npm/vue-toast-notification/dist/theme-default.css" -->
+		<!-- 	rel="stylesheet" -->
+		<!-- /> -->
+    <link href="https://cdn.jsdelivr.net/npm/vue-toast-notification@2/dist/theme-sugar.css" rel="stylesheet">
+		<!-- Init the plugin -->
+		<script>
+      console.log(window.VueToast)
+			Vue.use(VueToast);
+
+			// //Vue.$toast.open('message string');
+
+			// // Can accept an Object of options
+			// Vue.$toast.open({
+			//   message: 'message string',
+			//   type: 'error',
+			//   position: 'top-right'
+			//   // all other options
+			// });
+		</script>
 		<script src="https://unpkg.com/vue-multiselect@2.1.0"></script>
 
 
