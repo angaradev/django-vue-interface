@@ -393,12 +393,12 @@ class getPartCarEngine(APIView):
 
 class SelectAllProductsVasyaView(APIView, LimitOffsetPagination):
 
-
     """
     Merchant here
     Class selecting all products from product for Google Merchant or other Ads purposes
     """
-    permission_classes =(AllowAny,)
+
+    permission_classes = (AllowAny,)
 
     def get(self, request):
         products = Product.objects.all()

@@ -100,7 +100,7 @@ def makeProduct(prod):
             "location_city": "Moscow",
             "location_address": "Some address",
         },
-        "price": 3999,
+        "price": 0,
         "quantity": 2,
         "availability_days": 0,
     }
