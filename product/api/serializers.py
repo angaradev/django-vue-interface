@@ -19,6 +19,7 @@ from product.models import (
     ProductAttribute,
     ProductAttributeName,
 )
+from django.conf import settings
 
 
 class ProductAttribureNameSerializer(serializers.ModelSerializer):
@@ -347,3 +348,107 @@ class ProductDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductDescription
         fields = ["id", "text", "product"]
+
+
+class MerchantImagesSerilizer(serializers.ModelSerializer):
+    """
+    For Merchant images only
+    """
+
+    class Meta:
+        model = ProductImage
+        fields = ["images"]
+
+    images = serializers.SerializerMethodField()
+
+    def get_images(self, obj):
+        photo_url = obj.img800.url
+        if photo_url:
+            return settings.SITE_URL + photo_url
+        else:
+            return []
+
+
+class MerchangSerializer(serializers.ModelSerializer):
+    """
+    Serializer for merchant and other Ads API
+    """
+
+    title = serializers.SerializerMethodField()
+    video = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
+    stock = serializers.SerializerMethodField()
+    category_id = serializers.SerializerMethodField()
+    has_photo = serializers.SerializerMethodField()
+    images = MerchantImagesSerilizer(many=True)
+    car_model = serializers.SerializerMethodField()
+    engine = serializers.SerializerMethodField()
+
+    def get_title(self, obj):
+        return obj.full_name
+
+    def get_video(self, obj):
+        videos = obj.product_video.all()
+        if len(videos):
+            return videos[0].url
+        else:
+            return ""
+
+    def get_price(self, obj):
+        stock = obj.product_stock.all()
+        if stock:
+            return stock[0].price
+        else:
+            return None
+
+    def get_stock(self, obj):
+        stock = obj.product_stock.all()
+        if stock:
+            return stock[0].quantity
+        else:
+            return 0
+
+    def get_category_id(self, obj):
+        category = obj.category.all()
+        if category:
+            return category[0].id
+        else:
+            return None
+
+    def get_has_photo(self, obj):
+        return obj.have_photo
+
+    def get_car_model(self, obj):
+        car_model = obj.car_model.all()
+        if len(car_model):
+            return car_model[0].carmake.name + " " + car_model[0].name
+        else:
+            return ""
+
+    def get_engine(self, obj):
+        engine = obj.engine.all()
+        if engine:
+            return engine[0].name
+        else:
+            return ""
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "title",
+            "cat_number",
+            "brand",
+            "one_c_id",
+            "car_model",
+            "description",
+            "images",
+            "video",
+            "price",
+            "stock",
+            "category_id",
+            "engine",
+            "has_photo",
+            "created_date",
+            "updated_date",
+        ]
