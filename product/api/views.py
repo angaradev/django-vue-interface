@@ -393,10 +393,12 @@ class getPartCarEngine(APIView):
 
 class SelectAllProductsVasyaView(APIView, LimitOffsetPagination):
 
+
     """
     Merchant here
     Class selecting all products from product for Google Merchant or other Ads purposes
     """
+    permission_classes =(AllowAny,)
 
     def get(self, request):
         products = Product.objects.all()
@@ -404,4 +406,5 @@ class SelectAllProductsVasyaView(APIView, LimitOffsetPagination):
         print("Products with photo:", filtered.count())
         # result = self.paginate_queryset(filtered, request, view=self)
         serializer = MerchangSerializer(filtered, many=True)
+        self.check_permissions(request)
         return Response(serializer.data)
