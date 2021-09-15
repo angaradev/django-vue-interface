@@ -402,7 +402,12 @@ class SelectAllProductsVasyaView(APIView, LimitOffsetPagination):
 
     def get(self, request):
         products = Product.objects.all()
-        filtered = products.filter(product_image__isnull=False)
+        filtered = (
+            products.filter(product_image__isnull=False)
+            .filter(one_c_id__isnull=False)
+            .distinct()
+        )
+
         # filtered_stock = filtered.filter(product_stock__price__isnull=False)
         print("Products with photo:", filtered.count())
         # result = self.paginate_queryset(filtered, request, view=self)
