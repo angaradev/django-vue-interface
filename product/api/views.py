@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from rest_framework.pagination import LimitOffsetPagination
 
 from rest_framework import generics
 from django.shortcuts import render, redirect
@@ -41,6 +41,7 @@ from product.api.serializers import (
     ProductAttributeSerializer,
     ProductAttribureNameSerializer,
     ProductRelatedSerializer,
+    MerchangSerializer,
 )
 from django.http import Http404
 from rest_framework import viewsets
@@ -387,4 +388,20 @@ class getPartCarEngine(APIView):
             id_list = request.GET.get("pk").split(",")
             qs = CarEngine.objects.filter(id__in=id_list)
         serializer = CarEngineSerializerSession(qs, many=True)
+        return Response(serializer.data)
+
+
+class SelectAllProductsVasyaView(APIView, LimitOffsetPagination):
+
+    """
+    Merchant here
+    Class selecting all products from product for Google Merchant or other Ads purposes
+    """
+
+    def get(self, request):
+        products = Product.objects.all()
+        filtered = products.filter(product_image__isnull=False)
+        print("Products with photo:", filtered.count())
+        # result = self.paginate_queryset(filtered, request, view=self)
+        serializer = MerchangSerializer(filtered, many=True)
         return Response(serializer.data)

@@ -146,6 +146,11 @@ urlpatterns = [
         views_a77.SingleCategorySlugView.as_view(),
         name="cat-test-slug",
     ),
+    path(
+        "merchant/",
+        productApiViews.SelectAllProductsVasyaView.as_view(),
+        name="merchant-api",
+    ),
     path("jsontest", send_json, name="send_json"),
     path("searchapi", search_api, name="searchapi"),
     path("autocomplete", autocomplete, name="autocomplete"),
