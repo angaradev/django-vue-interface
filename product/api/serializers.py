@@ -20,6 +20,7 @@ from product.models import (
     ProductAttributeName,
 )
 from django.conf import settings
+from bs4 import BeautifulSoup
 
 
 class ProductAttribureNameSerializer(serializers.ModelSerializer):
@@ -383,9 +384,26 @@ class MerchangSerializer(serializers.ModelSerializer):
     images = MerchantImagesSerilizer(many=True)
     car_model = serializers.SerializerMethodField()
     engine = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+
+    def get_description(self, obj):
+        if obj.description:
+            soup = BeautifulSoup(obj.description, "html.parser")
+            text = soup.get_text()
+            return text
+        else:
+            return ""
 
     def get_title(self, obj):
-        return obj.full_name
+        car_model = obj.car_model.all()
+        car = ""
+        if len(car_model):
+            car = car_model[0].carmake.name + " " + car_model[0].name
+
+        title = obj.name + " " + car
+        if obj.name2:
+            title = obj.name + " " + car + obj.name2
+        return title
 
     def get_video(self, obj):
         videos = obj.product_video.all()
@@ -437,6 +455,7 @@ class MerchangSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "slug",
             "cat_number",
             "brand",
             "one_c_id",
