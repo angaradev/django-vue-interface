@@ -15,7 +15,7 @@ class Orders(models.Model):
 
     class PaymentChoices(models.TextChoices):
         ONGET = ("onGet", "ПРИ ПОЛУЧЕНИИ")
-        ONSITE = ("onSite", "ОНЛАЙН")
+        ONSITE = ("onLine", "ОНЛАЙН")
 
     class DeliveryChoices(models.TextChoices):
         SELF = ("self", "САМОВЫВОЗ")
