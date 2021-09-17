@@ -111,7 +111,7 @@ class OrderSerializer(serializers.ModelSerializer):
             emailMessage = EmailMultiAlternatives(
                 subject=subject,
                 body=text_content,
-                from_email=emailSender,
+                from_email=f"PartsHub Запчасти <mikohan1@gmail.com>",
                 to=emailsTo,
                 reply_to=settings.EMAIL_REPLY_TO,
             )
