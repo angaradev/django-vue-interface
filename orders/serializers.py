@@ -61,7 +61,7 @@ class OrderSerializer(serializers.ModelSerializer):
         def send_order_email(validated_data, products_data):
             subject = f"Ангара Заказ запчастей {validated_data.get('number')} принят"
             emailSender = settings.EMAIL_HOST
-            emailsTo = settings.EMAIL_MANAGERS
+            emailsTo = [*settings.EMAIL_MANAGERS]
             print(type(emailsTo), emailsTo, validated_data.get("email"))
             # settings.EMAIL_MANAGERS.append(validated_data.get("email"))
             emailsTo.append(validated_data.get("email"))
