@@ -20,7 +20,7 @@ class Orders(models.Model):
     class DeliveryChoices(models.TextChoices):
         SELF = ("self", "САМОВЫВОЗ")
         KUR = ("kur", "КУРЬЕРОМ")
-        POST = ("poset", "ТРАНСПОРТНОЙ КОМПАНИЕЙ")
+        POST = ("post", "ТРАНСПОРТНОЙ КОМПАНИЕЙ")
 
     date = models.DateTimeField(auto_now_add=True)
     number = models.CharField(max_length=50)
