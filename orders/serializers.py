@@ -117,6 +117,7 @@ class OrderSerializer(serializers.ModelSerializer):
             )
             emailMessage.attach_alternative(html_content, "text/html")
             emailMessage.send(fail_silently=False)
+            del emailsTo
 
         products_data = validated_data.pop("order_products")
         autouser = validated_data.pop("autouser")
