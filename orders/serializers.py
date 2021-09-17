@@ -59,7 +59,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         def send_order_email(validated_data, products_data):
-            subject = f"Ангара Заказ запчастей {validated_data.get('number')} принят"
+            subject = f"{settings.COMPANY_INFO['website']} {validated_data.get('number')} принят"
             emailSender = settings.EMAIL_HOST
             emailsTo = [*settings.EMAIL_MANAGERS]
             print(type(emailsTo), emailsTo, validated_data.get("email"))
@@ -111,7 +111,7 @@ class OrderSerializer(serializers.ModelSerializer):
             emailMessage = EmailMultiAlternatives(
                 subject=subject,
                 body=text_content,
-                from_email=emailSender,
+                from_email=f"PartsHub Запчасти <mikohan1@gmail.com>",
                 to=emailsTo,
                 reply_to=settings.EMAIL_REPLY_TO,
             )

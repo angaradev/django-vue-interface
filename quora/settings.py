@@ -38,7 +38,7 @@ CAR_IMAGES = "images/cars"
 USER_IMAGES = "images/users"
 
 # Default Author for blog articles
-DEFAULT_AUTHOR = "Team of AngaraParts"
+DEFAULT_AUTHOR = "Team of PartsHub.ru"
 
 # Folder to find photos ready for uploading
 
@@ -253,7 +253,7 @@ COMPANY_INFO = {
     "website": FRONTEND_URL,
 }
 EMAIL_MANAGERS = ["angara99@gmail.com", "angara77@gmail.com", "yellkalolka@gmail.com"]
-EMAIL_REPLY_TO = ["angara99@gmail.com"]
+EMAIL_REPLY_TO = ["angara77@gmail.com"]
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
