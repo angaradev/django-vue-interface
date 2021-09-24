@@ -125,7 +125,7 @@ def send_json(request):
 
         page_from = request.GET.get("page_from") or 0
         search = request.GET.get("search") or None
-        sort_price = request.GET.get("sort_price") or "asc"
+        sort_price = request.GET.get("sort_price") or "desc"
 
         filters_chk = request.GET.get("filters_chk")
         cat = request.GET.get("category")
@@ -146,7 +146,10 @@ def send_json(request):
                 {
                     "from": page_from,
                     "size": page_size,
-                    "sort": [{"stocks.price": {"order": sort_price}}],
+                    "sort": [
+                        {"has_photo": {"order": sort_price}},
+                        {"stocks.price": {"order": "desc"}},
+                    ],
                     "query": {
                         "bool": {
                             "must": [
@@ -166,7 +169,10 @@ def send_json(request):
                 {
                     "from": page_from,
                     "size": page_size,
-                    "sort": [{"stocks.price": {"order": sort_price}}],
+                    "sort": [
+                        {"has_photo": {"order": sort_price}},
+                        {"stocks.price": {"order": "desc"}},
+                    ],
                     "query": {"term": {"model.slug.keyword": model}},
                     "aggs": aggs(aggs_size),
                 }
@@ -181,7 +187,10 @@ def send_json(request):
                 {
                     "from": page_from,
                     "size": page_size,
-                    "sort": [{"stocks.price": {"order": sort_price}}],
+                    "sort": [
+                        {"has_photo": {"order": sort_price}},
+                        {"stocks.price": {"order": "desc"}},
+                    ],
                     "query": {"term": {"model.make.slug.keyword": makeSlug}},
                     "aggs": aggs(aggs_size),
                 }
@@ -192,7 +201,10 @@ def send_json(request):
             data = json.dumps(
                 {
                     "size": 10000,
-                    "sort": [{"stocks.price": {"order": sort_price}}],
+                    "sort": [
+                        {"has_photo": {"order": sort_price}},
+                        {"stocks.price": {"order": "desc"}},
+                    ],
                     "query": {"match_all": {}},
                     "aggs": aggs(aggs_size),
                 }
