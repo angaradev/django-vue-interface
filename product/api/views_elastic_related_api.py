@@ -23,6 +23,10 @@ def similar(request):
             # If query has car model and slug
             query = {
                 "size": 20,
+                "sort": [
+                    {"has_photo": {"order": "desc"}},
+                    {"stocks.price": {"order": "desc"}},
+                ],
                 "query": {
                     "bool": {
                         "must": [
@@ -81,6 +85,10 @@ def latest(request):
             # If query has car model and slug
             query = {
                 "size": limit,
+                "sort": [
+                    {"has_photo": {"order": "desc"}},
+                    {"stocks.price": {"order": "desc"}},
+                ],
                 "query": {
                     "bool": {
                         "must": [
@@ -129,6 +137,10 @@ def byTag(request):
             # If query has car model and slug
             query = {
                 "size": limit,
+                "sort": [
+                    {"has_photo": {"order": "desc"}},
+                    {"stocks.price": {"order": "desc"}},
+                ],
                 "query": {
                     "bool": {
                         "must": [
