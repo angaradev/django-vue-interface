@@ -50,6 +50,12 @@ class Category(MPTTModel):  # MPTT model here for now
     cat_image = models.ImageField(
         upload_to=settings.CATEGORY_IMAGES, blank=True, null=True
     )
+    weight = models.IntegerField(
+        default=0,
+        blank=True,
+        null=True,
+        help_text="Вес категории от 0 до 5. Больше вес - выше показывается",
+    )
 
     class MPTTMeta:
         order_insertion_by = ["name"]
@@ -78,7 +84,11 @@ class Category(MPTTModel):  # MPTT model here for now
 
     @property
     def image(self):
-        image = self.image or "http://localhost:8000/media/123/555_tf/IMG_4210.jpg"
+        image = None
+        if self.cat_image:
+            image = settings.SITE_URL + self.cat_image.url
+        else:
+            image = "http://localhost:8000/media/images/categories/default.jpg"
         return image
 
     @property
