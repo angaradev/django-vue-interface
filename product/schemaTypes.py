@@ -27,6 +27,7 @@ class CategoryType(ObjectType):
     parent = ID(required=False)
     count = String()
     layout = String()
+    weight = Int(required=False)
 
 
 class CarMakeType(ObjectType):

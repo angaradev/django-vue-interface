@@ -138,6 +138,9 @@ def send_json(request):
         if model and not make and filters_chk:
             print("IN make models and filters")
             data = make_query(request, aggs, aggs_size, True, page_from, page_size)
+        elif cat and not model and not make and filters_chk:
+            print("IN make models and filters")
+            data = make_query(request, aggs, aggs_size, True, page_from, page_size)
 
             # If query has car model and slug
         elif model and cat and not make:
@@ -192,6 +195,21 @@ def send_json(request):
                         {"stocks.price": {"order": "desc"}},
                     ],
                     "query": {"term": {"model.make.slug.keyword": makeSlug}},
+                    "aggs": aggs(aggs_size),
+                }
+            )
+        # If cat and not models
+        elif cat and not model and not make:
+            print("In CATEGORY statement")
+            data = json.dumps(
+                {
+                    "from": page_from,
+                    "size": page_size,
+                    "sort": [
+                        {"has_photo": {"order": sort_price}},
+                        {"stocks.price": {"order": "desc"}},
+                    ],
+                    "query": {"match": {"category.slug.keyword": {"query": cat}}},
                     "aggs": aggs(aggs_size),
                 }
             )
