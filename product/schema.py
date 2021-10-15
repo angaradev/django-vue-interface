@@ -52,6 +52,7 @@ class Query(ObjectType):
     vehicles_by_priority = List(NewCarModelType, priority=Int(required=True))
     category_by_slug = Field(CategoryType, slug=String(required=True))
     category_all = List(CategoryType)
+    category_top = List(CategoryType)
     popular_products = List(
         PopularProductByModelType,
         slugs=List(String),
@@ -167,6 +168,30 @@ class Query(ObjectType):
 
     def resolve_category_all(self, info):
         cats = Category.objects.all()
+        lst = []
+
+        for cat in cats:
+            parent = None
+            try:
+                parent = cat.parent.id
+            except:
+                parent = None
+            lst.append(
+                {
+                    "id": cat.id,
+                    "name": cat.name,
+                    "slug": cat.slug,
+                    "parent": parent,
+                    "image": cat.image,
+                    "type": cat.type,
+                    "layout": cat.layout,
+                }
+            )
+        return lst
+
+    # Resolving categories top level
+    def resolve_category_top(self, info):
+        cats = Category.objects.filter(parent__isnull=True)
         lst = []
 
         for cat in cats:
