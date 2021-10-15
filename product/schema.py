@@ -209,6 +209,7 @@ class Query(ObjectType):
                     "image": cat.image,
                     "type": cat.type,
                     "layout": cat.layout,
+                    "weight": cat.weight,
                 }
             )
         return lst
