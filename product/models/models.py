@@ -47,6 +47,9 @@ class Category(MPTTModel):  # MPTT model here for now
     tags = models.ManyToManyField(
         "CategoryTags", blank=True, related_name="category_tags"
     )
+    cat_image = models.ImageField(
+        upload_to=settings.CATEGORY_IMAGES, blank=True, null=True
+    )
 
     class MPTTMeta:
         order_insertion_by = ["name"]
@@ -75,7 +78,8 @@ class Category(MPTTModel):  # MPTT model here for now
 
     @property
     def image(self):
-        return "http://localhost:8000/media/123/555_tf/IMG_4210.jpg"
+        image = self.image or "http://localhost:8000/media/123/555_tf/IMG_4210.jpg"
+        return image
 
     @property
     def items(self):
