@@ -7,6 +7,7 @@ from django.conf import settings
 
 pp = pprint.PrettyPrinter(indent=2)
 autocomplete_size = 14
+fuzziness = "1"  # "auto" # Pssible value
 
 main_params = ["model", "category"]
 filters_params = [
@@ -111,7 +112,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                                 "query": second[0],
                                 "operator": "and",
                                 "analyzer": "rebuilt_russian",
-                                "fuzziness": "auto",
+                                "fuzziness": fuzziness,
                             }
                         }
                     }
@@ -277,7 +278,7 @@ def autocomplete(request):
                     "name": {
                         "query": q,
                         "analyzer": "rebuilt_russian",
-                        "fuzziness": "auto",
+                        "fuzziness": fuzziness,
                         "operator": "and",
                     }
                 }
@@ -297,7 +298,7 @@ def autocomplete(request):
                                     "name": {
                                         "query": "помпа портер насос",
                                         "analyzer": "rebuilt_russian",
-                                        "fuzziness": "auto",
+                                        "fuzziness": fuzziness,
                                         "operator": "and",
                                     }
                                 }

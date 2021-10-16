@@ -256,7 +256,9 @@ class ProductSerializer(serializers.ModelSerializer):
             name=validated_data["name"],
             name2=validated_data["name2"],
             cat_number=validated_data["cat_number"],
-            oem_number=validated_data["oem_number"],
+            # Here is some point to check in future on card it is no field oem number
+            oem_number=validated_data["cat_number"],
+            # oem_number=validated_data["oem_number"],
             brand=brand_qs,
             # car_model=car_model_qs,
             unit=unit_qs,
