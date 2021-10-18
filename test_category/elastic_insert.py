@@ -248,6 +248,9 @@ def do_all():
 
 
 def do_all_two():
+    """
+    Getting all products regardless of cars
+    """
     domain = settings.SITE_URL
 
     # Fake stocks !!!! replace for production
@@ -465,11 +468,12 @@ def do_all_two():
 
             return uniq_lst
 
+    my_file = os.path.join(settings.BASE_DIR, "test_category/product_notebook.txt")
     try:
-        os.remove("product_notebook2.txt")
+        os.remove(my_file)
     except:
         print("The file does not exist")
-    text_file = open("product_notebook2.txt", "w")
+    text_file = open(my_file, "w")
 
     prdx = getProducts()
 
