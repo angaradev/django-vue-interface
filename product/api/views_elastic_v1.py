@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from product.models import Product, Category
 import json, requests
 import pprint
+from django.conf import settings
 
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -230,7 +231,7 @@ def send_json(request):
         # if query has q == all and cat slug
 
     r = requests.get(
-        "http://localhost:9200/prod_notebook/_search",
+        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=data,
     )
@@ -397,7 +398,7 @@ def send_json_filters(request):
             # if query has q == all and cat slug
 
     r = requests.get(
-        "http://localhost:9200/prod_notebook/_search",
+        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=data,
     )

@@ -48,7 +48,7 @@ def similar(request):
             data = json.dumps(query)
 
         r = requests.get(
-            f"{settings.ELASTIC_URL}/prod_notebook/_search",
+            f"{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
             headers={"Content-Type": "application/json"},
             data=data,
         )
@@ -101,7 +101,7 @@ def latest(request):
             data = json.dumps(query)
 
         r = requests.get(
-            f"{settings.ELASTIC_URL}/prod_notebook/_search",
+            f"{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
             headers={"Content-Type": "application/json"},
             data=data,
         )
@@ -162,7 +162,7 @@ def byTag(request):
             data = json.dumps(query)
 
         r = requests.get(
-            f"{settings.ELASTIC_URL}/prod_notebook/_search",
+            f"{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
             headers={"Content-Type": "application/json"},
             data=data,
         )
@@ -216,7 +216,7 @@ def byCarCount(request):
         data = json.dumps(query)
 
         r = requests.get(
-            f"{settings.ELASTIC_URL}/prod_notebook/_search",
+            f"{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
             headers={"Content-Type": "application/json"},
             data=data,
         )
