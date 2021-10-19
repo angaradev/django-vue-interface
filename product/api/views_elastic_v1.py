@@ -139,11 +139,8 @@ def send_json(request):
         if model and not make and filters_chk:
             print("IN make models and filters")
             data = make_query(request, aggs, aggs_size, True, page_from, page_size)
-        elif cat and not model and not make and filters_chk:
-            print("IN make models and filters")
-            data = make_query(request, aggs, aggs_size, True, page_from, page_size)
 
-            # If query has car model and slug
+        # If query has car model and slug
         elif model and cat and not make:
             print("In model and cat NOT filters")
             data = json.dumps(
