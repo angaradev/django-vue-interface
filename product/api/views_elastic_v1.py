@@ -16,6 +16,7 @@ filters_params = [
     "image",
     "has_photo",
     "condition",
+    "car_models",
 ]
 
 
