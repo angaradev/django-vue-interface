@@ -122,6 +122,7 @@ def checFilters(filters, get):
 
 def send_json(request):
     aggs_size = 2000
+    data = None
     if request.method == "GET":
         for item in request.GET.items():
             print(item)
@@ -280,6 +281,7 @@ def send_json(request):
 
 def send_json_filters(request):
     aggs_size = 2000
+    data = None
     product_sizes = 200
     cat_slug = None
     query = None
