@@ -14,7 +14,6 @@ def ratingAvg(productId):
         avg = qs.aggregate(avg_score=Avg("score"))
         count = qs.count()
         ret_scor = round(avg["avg_score"], 2)
-        print(ret_scor, "Avg to return print")
 
         return ret_scor, count
     except Exception as e:
@@ -35,7 +34,8 @@ def makeProduct(prod):
 
     breads = []
     for cat in cats:
-        brad = Category.objects.get(id=cat["id"]).get_ancestors(include_self=True)
+        brad = Category.objects.get(
+            id=cat["id"]).get_ancestors(include_self=True)
         some = [{"slug": x.slug, "name": x.name} for x in brad]
         breads.append(some)
 
