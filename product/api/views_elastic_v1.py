@@ -78,7 +78,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                         phot = "true"
                     lst = {"term": {"has_photo": phot}}
                 elif item[0] == "car_models":
-                    lst = {"term": {"model.slug.keyword": filVal}}
+                    lst = {"term": {"model.name.keyword": filVal}}
                 else:
                     lst = {"term": {f"{item[0]}.name.keyword": filVal}}
                 inside.append(lst)
@@ -144,6 +144,11 @@ def send_json(request):
 
         if model and not make and filters_chk:
             print("IN make models and filters")
+            data = make_query(request, aggs, aggs_size, True, page_from, page_size)
+
+        # Below is condition for category only and filters for autoparts page
+        elif cat and not make and not model and filters_chk:
+            print("IN cat and not make not model and filters")
             data = make_query(request, aggs, aggs_size, True, page_from, page_size)
 
         # If query has car model and slug

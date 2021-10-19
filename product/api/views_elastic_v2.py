@@ -80,7 +80,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                         phot = "true"
                     lst = {"term": {"has_photo": phot}}
                 elif item[0] == "car_models":
-                    lst = {"term": {"model.slug.keyword": filVal}}
+                    lst = {"term": {"model.name.keyword": filVal}}
                 else:
                     lst = {"term": {f"{item[0]}.name.keyword": filVal}}
                 inside.append(lst)
