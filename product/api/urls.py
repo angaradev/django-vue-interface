@@ -17,6 +17,7 @@ from product.api.views_elastic_search_api import (
     findNumbers,
     send_json as search_api,
 )
+from product.api.views_elastic_v2 import send_json as send_json2
 from product.api.views_elastic_related_api import similar, latest, byTag, byCarCount
 
 router = DefaultRouter()
@@ -152,6 +153,7 @@ urlpatterns = [
         name="merchant-api",
     ),
     path("jsontest", send_json, name="send_json"),
+    path("jsontest_v2", send_json2, name="send_json2"),
     path("searchapi", search_api, name="searchapi"),
     path("autocomplete", autocomplete, name="autocomplete"),
     path("findnumber", findNumbers, name="findNumbers"),
