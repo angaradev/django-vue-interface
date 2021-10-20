@@ -193,12 +193,15 @@ def do_all_update_products():
         response = updateProducts(chunk)
         all_responses.append(response)
         time.sleep(5)
-    send_mail(
-        "Товары на маркете обновились",
-        f"Скрипт, angara77.ru django/products/syncronizators/yandex_market_update.py который обновляет или добавляет товары обновился статус коды\
-        и количество чанков {json.dumps(all_responses)}",
-        settings.COMPANY_INFO["email"],
-        settings.EMAIL_ADMINS,
-        fail_silently=False,
-    )
+    try:
+        send_mail(
+            "Товары на маркете обновились",
+            f"Скрипт, angara77.ru django/products/syncronizators/yandex_market_update.py который обновляет или добавляет товары обновился статус коды\
+            и количество чанков {json.dumps(all_responses)}",
+            settings.COMPANY_INFO["email"],
+            settings.EMAIL_ADMINS,
+            fail_silently=False,
+        )
+    except Exception as e:
+        print(e)
     print(all_responses)
