@@ -2,9 +2,71 @@ from quora.local_settings import OAUTH_YANDEX_MARKET
 from product.models import Product
 from django.conf import settings
 import requests, json, time
+from django.core.mail import send_mail
 
 
-maslo_lst = [59696, 949434]
+maslo_lst = [
+    24962,
+    25508,
+    3226,
+    25332,
+    24684,
+    24700,
+    16567,
+    23850,
+    24352,
+    16330,
+    16683,
+    16674,
+    23048,
+    14569,
+    24821,
+    24628,
+    14567,
+    24813,
+    24740,
+    25469,
+    22752,
+    22641,
+    24644,
+    11145,
+    24549,
+    23714,
+    11189,
+    23715,
+    15768,
+    15791,
+    24260,
+    23318,
+    24698,
+    15803,
+    23853,
+    24194,
+    3615,
+    25305,
+    23704,
+    24094,
+    25486,
+    25087,
+    25467,
+    25489,
+    25487,
+    23780,
+    23781,
+    25429,
+    25088,
+    25482,
+    25483,
+    25485,
+    25484,
+    25481,
+    24859,
+    23463,
+    24861,
+    24862,
+    25453,
+    3434,
+]
 
 
 def chunkGenerator():
@@ -126,7 +188,17 @@ def createJsonChunks():
 
 def do_all_update_products():
     chunkGen = createJsonChunks()
+    all_responses = []
     for chunk in chunkGen:
         response = updateProducts(chunk)
+        all_responses.append(response)
         time.sleep(5)
-        print(response)
+    send_mail(
+        "Товары на маркете обновились",
+        f"Скрипт, angara77.ru django/products/syncronizators/yandex_market_update.py который обновляет или добавляет товары обновился статус коды\
+        и количество чанков {json.dumps(all_responses)}",
+        settings.COMPANY_INFO["email"],
+        settings.EMAIL_ADMINS,
+        fail_silently=False,
+    )
+    print(all_responses)

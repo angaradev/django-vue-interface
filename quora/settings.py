@@ -255,6 +255,10 @@ COMPANY_INFO = {
     "website": FRONTEND_URL,
 }
 EMAIL_MANAGERS = ["angara99@gmail.com", "angara77@gmail.com", "yellkalolka@gmail.com"]
+
+# Email for technical information mostly from crontab
+EMAIL_ADMINS = ["angara99@gmail.com", "yellkalolka@gmail.com"]
+
 EMAIL_REPLY_TO = ["angara77@gmail.com"]
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
