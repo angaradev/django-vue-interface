@@ -71,7 +71,7 @@ maslo_lst = [
 
 def chunkGenerator():
     # Chunk size
-    n = 490
+    n = 190
     # Select products with images and prices
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
@@ -86,13 +86,18 @@ def chunkGenerator():
 
 def makeProduct(product):
     name = ""
+    car_make = ""
+    car_model = ""
     try:
-        name = f"{product.name.capitalize()} \
-            {product.car_model.first().carmake.name.upper()} \
-            {product.car_model.first().name.upper()} \
-            {product.name2 if product.name2 else ''}".strip()
+        car_make = product.car_model.first().carmake.name.upper()
+        car_model = product.car_model.first().name.upper()
     except Exception as e:
+        print("No name in product", product)
         print(e)
+    name = f"{product.name.capitalize()} \
+        {car_make} \
+        {car_model} \
+        {product.name2 if product.name2 else ''}".strip()
 
     brand = ""
     try:
@@ -209,10 +214,10 @@ def createJsonChunks():
 def do_all_update_products():
     chunkGen = createJsonChunks()
     all_responses = []
-    for chunk in chunkGen:
+    for i, chunk in enumerate(chunkGen):
         response = updateProducts(chunk)
         all_responses.append(response)
-        print("ONe chunk here")
+        print(f"{i} chunk here")
         time.sleep(5)
     try:
         send_mail(
