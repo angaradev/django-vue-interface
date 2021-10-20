@@ -79,6 +79,7 @@ def chunkGenerator():
         .exclude(one_c_id__in=maslo_lst)
         .distinct()
     )
+    print("Products selected:", products.count())
     for i in range(0, products.count(), n):
         yield products[i : i + n]
 
@@ -93,9 +94,19 @@ def makeProduct(product):
     except Exception as e:
         print(e)
 
-    brand = product.brand.brand.upper()
+    brand = ""
+    try:
 
-    country = [product.brand.country.upper() if product.brand.country else ""]
+        brand = product.brand.brand.upper()
+    except Exception as e:
+        print("No brand found")
+
+    country = "Корея"
+    try:
+
+        country = [product.brand.country.upper() if product.brand.country else ""]
+    except Exception as e:
+        print("No counnreis found")
     images = []
     try:
         imgUrl = settings.SITE_URL
@@ -201,6 +212,7 @@ def do_all_update_products():
     for chunk in chunkGen:
         response = updateProducts(chunk)
         all_responses.append(response)
+        print("ONe chunk here")
         time.sleep(5)
     try:
         send_mail(
