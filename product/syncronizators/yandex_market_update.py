@@ -192,10 +192,7 @@ def createJsonChunks():
     for chunk in gen:
         for i, product in enumerate(chunk):
             products.append(makeProduct(product))
-            if i > 2:
-                break
         yield {"offerMappingEntries": products}
-        time.sleep(5)
 
 
 def do_all_update_products():
