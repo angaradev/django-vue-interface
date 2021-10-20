@@ -71,7 +71,7 @@ maslo_lst = [
 
 def chunkGenerator():
     # Chunk size
-    n = 190
+    n = 50
     # Select products with images and prices
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
@@ -193,7 +193,7 @@ def sendRequest():
 
 
 def updateProducts(product):
-    url = "https://api.partner.market.yandex.ru/v2/campaigns/22527279/offer-prices/updates.json"
+    url = "https://api.partner.market.yandex.ru/v2/campaigns/22527279/offer-mapping-entries/updates.json"
 
     headers = {"Authorization": OAUTH_YANDEX_MARKET, "Content-Type": "application/json"}
 
@@ -217,7 +217,7 @@ def do_all_update_products():
     for i, chunk in enumerate(chunkGen):
         response = updateProducts(chunk)
         all_responses.append(response)
-        print(f"{i} chunk here")
+        print(f"{i} chunk here", response)
         time.sleep(5)
     try:
         send_mail(
