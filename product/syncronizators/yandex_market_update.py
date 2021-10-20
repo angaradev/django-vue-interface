@@ -84,10 +84,15 @@ def chunkGenerator():
 
 
 def makeProduct(product):
-    name = f"{product.name.capitalize()} \
-        {product.car_model.first().carmake.name.upper()} \
-        {product.car_model.first().name.upper()} \
-        {product.name2 if product.name2 else ''}".strip()
+    name = ""
+    try:
+        name = f"{product.name.capitalize()} \
+            {product.car_model.first().carmake.name.upper()} \
+            {product.car_model.first().name.upper()} \
+            {product.name2 if product.name2 else ''}".strip()
+    except Exception as e:
+        print(e)
+
     brand = product.brand.brand.upper()
 
     country = [product.brand.country.upper() if product.brand.country else ""]
@@ -103,36 +108,43 @@ def makeProduct(product):
     except Exception as e:
         print(e)
 
-    testProduct = {
-        "offer": {
-            "shopSku": product.one_c_id,
-            "name": name,
-            "category": category,
-            "manufacturer": brand,
-            "manufacturerCountries": country,
-            "weightDimensions": {
-                "length": 15.0,
-                "width": 24.0,
-                "height": 12.5,
-                "weight": 3.1,
-            },
-            "urls": [f"https://partshub.ru/product/{product.slug}"],
-            "pictures": images,
-            "vendor": brand,
-            "vendorCode": product.cat_number,
-            "shelfLife": {"timePeriod": 5, "timeUnit": "YEAR"},
-            "minShipment": 1,
-            "supplyScheduleDays": [
-                "MONDAY",
-                "TUESDAY",
-                "WEDNESDAY",
-                "THURSDAY",
-                "FRIDAY",
-                "SATURDAY",
-            ],
-            "deliveryDurationDays": 1,
+    testProduct = None
+
+    try:
+
+        testProduct = {
+            "offer": {
+                "shopSku": product.one_c_id,
+                "name": name,
+                "category": category,
+                "manufacturer": brand,
+                "manufacturerCountries": country,
+                "weightDimensions": {
+                    "length": 15.0,
+                    "width": 24.0,
+                    "height": 12.5,
+                    "weight": 3.1,
+                },
+                "urls": [f"https://partshub.ru/product/{product.slug}"],
+                "pictures": images,
+                "vendor": brand,
+                "vendorCode": product.cat_number,
+                "shelfLife": {"timePeriod": 5, "timeUnit": "YEAR"},
+                "minShipment": 1,
+                "supplyScheduleDays": [
+                    "MONDAY",
+                    "TUESDAY",
+                    "WEDNESDAY",
+                    "THURSDAY",
+                    "FRIDAY",
+                    "SATURDAY",
+                ],
+                "deliveryDurationDays": 1,
+            }
         }
-    }
+    except Exception as e:
+        print(product)
+        # print(e)
 
     return testProduct
 
