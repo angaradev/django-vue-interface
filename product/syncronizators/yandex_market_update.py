@@ -71,7 +71,7 @@ maslo_lst = [
 
 def chunkGenerator():
     # Chunk size
-    n = 50
+    n = 100
     # Select products with images and prices
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
@@ -92,37 +92,41 @@ def makeProduct(product):
         car_make = product.car_model.first().carmake.name.upper()
         car_model = product.car_model.first().name.upper()
     except Exception as e:
-        print("No name in product", product)
-        print(e)
-    name = f"{product.name.capitalize()} \
-        {car_make} \
-        {car_model} \
-        {product.name2 if product.name2 else ''}".strip()
+        # print("No name in product", product)
+        # print(e)
+        pass
+    try:
+        name = f"{product.name.capitalize()} {car_make} {car_model} {product.name2 if product.name2 else ''}".strip()
+    except:
+        print("Name is fucks up")
 
     brand = ""
     try:
 
         brand = product.brand.brand.upper()
     except Exception as e:
-        print("No brand found")
+        # print("No brand found")
+        pass
 
     country = "Корея"
     try:
-
         country = [product.brand.country.upper() if product.brand.country else ""]
     except Exception as e:
-        print("No counnreis found")
+        # print("No counnreis found")
+        pass
     images = []
     try:
         imgUrl = settings.SITE_URL
         images = [f"{imgUrl}{x.img800.url}" for x in product.product_image.all()]
     except Exception as e:
-        print(e)
+        # print(e)
+        pass
     category = ""
     try:
         category = product.category.first().name.upper()
     except Exception as e:
-        print(e)
+        # print(e)
+        pass
 
     testProduct = None
 
@@ -141,7 +145,7 @@ def makeProduct(product):
                     "height": 12.5,
                     "weight": 3.1,
                 },
-                "urls": [f"https://partshub.ru/product/{product.slug}"],
+                "urls": [f"{settings.SITE_URL}/product/{product.slug}"],
                 "pictures": images,
                 "vendor": brand,
                 "vendorCode": product.cat_number,
@@ -202,10 +206,10 @@ def updateProducts(product):
 
 
 def createJsonChunks():
-    products = []
     gen = chunkGenerator()
 
     for chunk in gen:
+        products = []
         for i, product in enumerate(chunk):
             products.append(makeProduct(product))
         yield {"offerMappingEntries": products}
@@ -215,6 +219,7 @@ def do_all_update_products():
     chunkGen = createJsonChunks()
     all_responses = []
     for i, chunk in enumerate(chunkGen):
+        print(len(chunk["offerMappingEntries"]))
         response = updateProducts(chunk)
         all_responses.append(response)
         print(f"{i} chunk here", response)
