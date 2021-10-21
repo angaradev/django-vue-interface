@@ -1,6 +1,7 @@
 import os
 import re
 import pathlib
+from bs4 import BeautifulSoup
 from quora.local_settings import OAUTH_YANDEX_MARKET
 from product.models import Product
 from django.conf import settings
@@ -148,6 +149,14 @@ def makeProduct(product):
         category = product.category.first().name.upper()
     except Exception as e:
         # print(e)
+        pass
+    try:
+        description = ""
+        if hasattr(product, "product_description"):
+            soup = BeautifulSoup(product.product_description.text, "lxml")
+            description = soup.get_text()
+            description = re.sub("&nbsp;", " ", description, flags=re.IGNORECASE)
+    except Exception as e:
         pass
 
     testProduct = None

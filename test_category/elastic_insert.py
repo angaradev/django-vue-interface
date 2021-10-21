@@ -419,6 +419,14 @@ def do_all_two():
                 # Category working
                 categories = categories_work(prod)
 
+                description = ""
+                if hasattr(prod, "product_description"):
+                    soup = BeautifulSoup(prod.product_description.text, "lxml")
+                    description = soup.get_text()
+                    description = re.sub(
+                        "&nbsp;", " ", description, flags=re.IGNORECASE
+                    )
+
                 product_json = json.dumps(
                     {
                         "id": prod.id,
@@ -428,7 +436,7 @@ def do_all_two():
                         "full_name": prod.full_name,
                         "one_c_id": prod.one_c_id,
                         "active": prod.active,
-                        "unit": None,
+                        "unit": None,  # prod.unit.unit_name if hasattr(prod, "unit") else "шт",
                         "cat_number": prod.cat_number,
                         "oem_number": prod.oem_number,
                         "brand": brand,
@@ -438,7 +446,7 @@ def do_all_two():
                         "model": model,
                         "engine": eng_list,
                         "excerpt": "prod.excerpt",
-                        "description": "prod.product_description.text",
+                        "description": description,
                         "rating": ratingAvg(prod.id),
                         "has_photo": prod.have_photo,
                         "images": images,
@@ -468,7 +476,7 @@ def do_all_two():
 
             return uniq_lst
 
-    my_file = os.path.join(settings.BASE_DIR, "test_category/product_notebook.txt")
+    my_file = os.path.join(settings.BASE_DIR, "test_category/product_notebook2.txt")
     try:
         os.remove(my_file)
     except:
