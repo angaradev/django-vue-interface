@@ -71,7 +71,7 @@ maslo_lst = [
 
 def chunkGenerator():
     # Chunk size
-    n = 100
+    n = 10
     # Select products with images and prices
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
@@ -88,6 +88,8 @@ def makeProduct(product):
     name = ""
     car_make = ""
     car_model = ""
+    imgUrl = "https://angara77.ru"  # settings.SITE_URL
+    siteUrl = "https://partshub.ru"  # settings.SITE_URL
     try:
         car_make = product.car_model.first().carmake.name.upper()
         car_model = product.car_model.first().name.upper()
@@ -116,7 +118,6 @@ def makeProduct(product):
         pass
     images = []
     try:
-        imgUrl = settings.SITE_URL
         images = [f"{imgUrl}{x.img800.url}" for x in product.product_image.all()]
     except Exception as e:
         # print(e)
@@ -145,7 +146,7 @@ def makeProduct(product):
                     "height": 12.5,
                     "weight": 3.1,
                 },
-                "urls": [f"{settings.SITE_URL}/product/{product.slug}"],
+                "urls": [f"{siteUrl}/product/{product.slug}"],
                 "pictures": images,
                 "vendor": brand,
                 "vendorCode": product.cat_number,
@@ -163,9 +164,8 @@ def makeProduct(product):
             }
         }
     except Exception as e:
-        print(product)
-        # print(e)
-
+        print(e)
+        return False
     return testProduct
 
 
@@ -211,6 +211,8 @@ def createJsonChunks():
     for chunk in gen:
         products = []
         for i, product in enumerate(chunk):
+            if not product:
+                print("Fucks up in product")
             products.append(makeProduct(product))
         yield {"offerMappingEntries": products}
 
@@ -223,7 +225,7 @@ def do_all_update_products():
         response = updateProducts(chunk)
         all_responses.append(response)
         print(f"{i} chunk here", response)
-        time.sleep(5)
+        time.sleep(2)
     try:
         send_mail(
             "Товары на маркете обновились",
