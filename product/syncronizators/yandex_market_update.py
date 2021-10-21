@@ -7,7 +7,7 @@ from product.models import Product
 from django.conf import settings
 import requests, json, time
 from django.core.mail import send_mail
-from quora.lib.get_parent_category import parent_category
+from quora.common_lib.get_parent_category import parent_category
 
 
 maslo_lst = [
