@@ -102,6 +102,7 @@ def makeProduct(product):
     name = ""
     car_make = ""
     car_model = ""
+    price = 0
     imgUrl = "https://angara77.ru"  # settings.SITE_URL
     siteUrl = "https://partshub.ru"  # settings.SITE_URL
     try:
@@ -160,6 +161,11 @@ def makeProduct(product):
     except Exception as e:
         pass
 
+    try:
+        price = p.product_stock.first().price
+    except:
+        pass
+
     testProduct = None
 
     try:
@@ -176,6 +182,12 @@ def makeProduct(product):
                     "width": 24.0,
                     "height": 12.5,
                     "weight": 3.1,
+                },
+                "price": {
+                    "currencyId": "RUR",
+                    "value": price,
+                    "discountBase": price + price * 0.1,
+                    "vat": 5,
                 },
                 "urls": [f"{siteUrl}/product/{product.slug}"],
                 "pictures": images,
