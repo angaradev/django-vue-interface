@@ -1,3 +1,6 @@
+import os
+import re
+import pathlib
 from quora.local_settings import OAUTH_YANDEX_MARKET
 from product.models import Product
 from django.conf import settings
@@ -69,9 +72,18 @@ maslo_lst = [
 ]
 
 
+def logging(string, filename):
+    path = os.path.join(settings.BASE_DIR, "logs")
+    pathlib.Path(path).mkdir(parents=True, exist_ok=True)
+    final_path = os.path.join(path, filename)
+
+    with open(os.path.join(path, filename), "a") as file:
+        file.write(string)
+
+
 def chunkGenerator():
     # Chunk size
-    n = 100
+    n = 200
     # Select products with images and prices
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
@@ -88,6 +100,8 @@ def makeProduct(product):
     name = ""
     car_make = ""
     car_model = ""
+    imgUrl = "https://angara77.ru"  # settings.SITE_URL
+    siteUrl = "https://partshub.ru"  # settings.SITE_URL
     try:
         car_make = product.car_model.first().carmake.name.upper()
         car_model = product.car_model.first().name.upper()
@@ -97,26 +111,34 @@ def makeProduct(product):
         pass
     try:
         name = f"{product.name.capitalize()} {car_make} {car_model} {product.name2 if product.name2 else ''}".strip()
+        pattern = r"(\(.+\))|(\s\w+\/\w+)"
+        chk = re.search(pattern, name)
+        if chk:
+            logging(f"{name}, {product.one_c_id} \n", "fucked_products.log")
+            # with open(f"/home/manhee/tmp/chunks/fucked_prods.txt", "a") as file:
+            #     file.write(f"{name}, {product.one_c_id} \n")
+        name = re.sub(pattern, "", name)
     except:
         print("Name is fucks up")
 
-    brand = ""
+    brand = "MOBIS"
     try:
 
         brand = product.brand.brand.upper()
+        if not brand or brand == "оригинал":
+            brand = "MOBIS"
     except Exception as e:
         # print("No brand found")
         pass
 
     country = "Корея"
     try:
-        country = [product.brand.country.upper() if product.brand.country else ""]
+        country = product.brand.country.upper() if product.brand.country else ""
     except Exception as e:
         # print("No counnreis found")
         pass
     images = []
     try:
-        imgUrl = settings.SITE_URL
         images = [f"{imgUrl}{x.img800.url}" for x in product.product_image.all()]
     except Exception as e:
         # print(e)
@@ -138,14 +160,14 @@ def makeProduct(product):
                 "name": name,
                 "category": category,
                 "manufacturer": brand,
-                "manufacturerCountries": country,
+                "manufacturerCountries": [country],
                 "weightDimensions": {
                     "length": 15.0,
                     "width": 24.0,
                     "height": 12.5,
                     "weight": 3.1,
                 },
-                "urls": [f"{settings.SITE_URL}/product/{product.slug}"],
+                "urls": [f"{siteUrl}/product/{product.slug}"],
                 "pictures": images,
                 "vendor": brand,
                 "vendorCode": product.cat_number,
@@ -163,9 +185,8 @@ def makeProduct(product):
             }
         }
     except Exception as e:
-        print(product)
-        # print(e)
-
+        print(e)
+        return False
     return testProduct
 
 
@@ -208,10 +229,15 @@ def updateProducts(product):
 def createJsonChunks():
     gen = chunkGenerator()
 
-    for chunk in gen:
+    for i, chunk in enumerate(gen):
         products = []
-        for i, product in enumerate(chunk):
+        for product in chunk:
+            if not product:
+                print("Fucks up in product")
             products.append(makeProduct(product))
+        # with open(f"/home/manhee/tmp/chunks/{i}-chunk.json", "w") as file:
+        #     file.write(json.dumps(products, indent=2))
+
         yield {"offerMappingEntries": products}
 
 
@@ -223,7 +249,7 @@ def do_all_update_products():
         response = updateProducts(chunk)
         all_responses.append(response)
         print(f"{i} chunk here", response)
-        time.sleep(5)
+        time.sleep(2)
     try:
         send_mail(
             "Товары на маркете обновились",
