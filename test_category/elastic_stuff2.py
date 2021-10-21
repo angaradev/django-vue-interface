@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.mail import EmailMessage
 import requests, os
 
 
@@ -26,11 +27,19 @@ def do_insert():
         data=data_insert.encode("utf-8"),
         headers=headers,
     )
-    print(res_delete, res_mapping, res_insert)
-
-
-# curl -H 'Content-Type: application/x-ndjson' -XDELETE 'http://localhost:9200/prod_all';
-# curl -H 'Content-Type: application/x-ndjson' -XPUT \
-#   'http://localhost:9200/prod_all' --data-binary @/home/manhee/Projects/quora/quora/test_category/product_mapping.json;
-# curl -H 'Content-Type: application/x-ndjson' -XPUT \
-#   'http://localhost:9200/_bulk' --data-binary @/home/manhee/Projects/quora/quora/test_category/product_notebook2.txt > el_log.log;
+    all_res = f"Elastic index inserted. Responses are Delete index - {res_delete}, Mapping index - {res_mapping}, Insert index - {res_insert}"
+    from_email = f"PartsHub Admin <mikohan1@gmail.com>"
+    headers = {
+        "Content-Type": "text/plain",
+        "X-Priority": "1 (Highest)",
+        "X-MSMail-Priority": "High",
+    }
+    email = EmailMessage(
+        "Elastic index inserted",
+        all_res,
+        from_email,
+        settings.EMAIL_ADMINS,
+        headers=headers,
+    )
+    email.send(fail_silently=False)
+    print(all_res)

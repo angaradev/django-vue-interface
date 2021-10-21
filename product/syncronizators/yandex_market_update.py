@@ -132,7 +132,7 @@ def makeProduct(product):
         # print("No brand found")
         pass
 
-    country = "Корея"
+    country = "Южная Корея"
     try:
         country = product.brand.country.upper() if product.brand.country else ""
     except Exception as e:
