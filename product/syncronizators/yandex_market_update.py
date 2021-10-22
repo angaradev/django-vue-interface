@@ -145,7 +145,7 @@ def makeProduct(product):
         # print(e)
         pass
     try:
-        description = ""
+        description = "Материлы изготовления: сталь, алюминий, резина, стекло, пластик. Произведена на высокоточном оборудовании, с соблюдением всех допусков."
         if hasattr(product, "product_description"):
             soup = BeautifulSoup(product.product_description.text, "lxml")
             description = soup.get_text()
