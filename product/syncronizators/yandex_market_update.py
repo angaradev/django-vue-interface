@@ -314,14 +314,14 @@ def do_all_update_prices():
                 status_code, response = updatePrices(chunk)
                 all_responses.append(f"{response}")
                 print(f"{i} chunk here || Attempt number-{conn}", response)
-                if str(status_code) == "200":
+                if status_code == 200:
                     break
                 conn += 1
             except:
                 print("Attempt #", conn)
                 continue
-            time.sleep(65)
 
+        time.sleep(65)
     try:
         send_mail(
             "Цены Товаров на маркете обновились",
