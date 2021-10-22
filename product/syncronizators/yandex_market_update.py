@@ -1,4 +1,5 @@
 import os
+from quora.common_lib.logger import logger
 import re
 import pathlib
 from bs4 import BeautifulSoup
@@ -257,8 +258,9 @@ def createJsonChunks(makeItems):
             if not product:
                 print("Fucks up in product")
             products.append(makeItems(product))
-        with open(f"/home/manhee/tmp/chunks/{i}-{method_name}-chunk.json", "w") as file:
-            file.write(json.dumps(products, indent=2))
+        logger(products, f"{i}-{method_name}-chunk.json", "yandex_market")
+        # with open(f"/home/manhee/tmp/chunks/{i}-{method_name}-chunk.json", "w") as file:
+        #     file.write(json.dumps(products, indent=2))
 
         if method_name == "makePrices":
             yield {"offers": products}
