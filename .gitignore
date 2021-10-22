@@ -1,3 +1,6 @@
+product_notebook.txt
+product_notebook2.txt
+
 .DS_Store
 node_modules
 *.ipynb
@@ -6,8 +9,6 @@ node_modules
 .env.*.local
 elastic_stuff.sh
 wsgi.py
-product_notebook.txt
-priduct_notebook2.txt
 all.csv
 el_log.txt
 
