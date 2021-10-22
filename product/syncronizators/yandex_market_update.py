@@ -308,16 +308,18 @@ def do_all_update_prices():
     all_responses = []
     for i, chunk in enumerate(chunkGen):
         print(len(chunk["offers"]))
-        conn = 5
-        while conn < 5:
+        conn = 1
+        while conn <= 5:
             try:
                 status_code, response = updatePrices(chunk)
                 all_responses.append(f"{response}")
-                print(f"{i} chunk here", response)
+                print(f"{i} chunk here || Attempt number-{conn}", response)
                 time.sleep(65)
-                if status_code != 200:
+                if status_code == 200:
                     break
+                conn += 1
             except:
+                print("Attempt #", conn)
                 continue
 
     try:
