@@ -134,7 +134,7 @@ def makeProduct(product):
         )
     except Exception as e:
         # print("No counnreis found")
-        pass
+        country = default_country
     images = []
     try:
         images = [f"{imgUrl}{x.img800.url}" for x in product.product_image.all()]
