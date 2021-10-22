@@ -315,7 +315,7 @@ def do_all_update_prices():
                 all_responses.append(f"{response}")
                 print(f"{i} chunk here || Attempt number-{conn}", response)
                 time.sleep(65)
-                if status_code == 200:
+                if str(status_code) == "200":
                     break
                 conn += 1
             except:
