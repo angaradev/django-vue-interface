@@ -13,6 +13,7 @@ VUE_DEV = VUE_DEV
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+FROM_EMAIL_ADMIN = f"PartsHub Admin <mikohan1@gmail.com>"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 

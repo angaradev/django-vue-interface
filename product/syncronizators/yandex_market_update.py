@@ -291,7 +291,7 @@ def do_all_update_products():
             "Товары на маркете обновились",
             f"Скрипт, angara77.ru django/products/syncronizators/yandex_market_update.py который обновляет или добавляет товары обновился статус коды\
             и количество чанков {json.dumps(all_responses)}",
-            settings.COMPANY_INFO["email"],
+            settings.FROM_EMAIL_ADMIN,
             settings.EMAIL_ADMINS,
             fail_silently=False,
         )
@@ -325,7 +325,7 @@ def do_all_update_prices():
             "Цены Товаров на маркете обновились",
             f"Скрипт, angara77.ru django/products/syncronizators/yandex_market_update.py который обновляет или добавляет товары обновился статус коды\
             и количество чанков {json.dumps(all_responses)}",
-            settings.COMPANY_INFO["email"],
+            settings.FROM_EMAIL_ADMIN,
             settings.EMAIL_ADMINS,
             fail_silently=False,
         )
