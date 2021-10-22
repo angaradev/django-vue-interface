@@ -94,9 +94,9 @@ def makeProduct(product):
     name = ""
     car_make = ""
     car_model = ""
-    price = 0
     imgUrl = "https://angara77.ru"  # settings.SITE_URL
     siteUrl = "https://partshub.ru"  # settings.SITE_URL
+    description = "Материлы изготовления: сталь, алюминий, резина, стекло, пластик. Произведена на высокоточном оборудовании, с соблюдением всех допусков."
     try:
         car_make = product.car_model.first().carmake.name.upper()
         car_model = product.car_model.first().name.upper()
@@ -145,7 +145,6 @@ def makeProduct(product):
         # print(e)
         pass
     try:
-        description = "Материлы изготовления: сталь, алюминий, резина, стекло, пластик. Произведена на высокоточном оборудовании, с соблюдением всех допусков."
         if hasattr(product, "product_description"):
             soup = BeautifulSoup(product.product_description.text, "lxml")
             description = soup.get_text()
@@ -164,17 +163,12 @@ def makeProduct(product):
                 "category": category,
                 "manufacturer": brand,
                 "manufacturerCountries": [country],
+                "description": description,
                 "weightDimensions": {
                     "length": 15.0,
                     "width": 24.0,
                     "height": 12.5,
                     "weight": 3.1,
-                },
-                "price": {
-                    "currencyId": "RUR",
-                    "value": price,
-                    "discountBase": price + price * 0.1,
-                    "vat": 5,
                 },
                 "urls": [f"{siteUrl}/product/{product.slug}"],
                 "pictures": images,
