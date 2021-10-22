@@ -234,7 +234,7 @@ def createJsonChunks(makeItems):
 
     chunk_size = 50
     if method_name == "makeProduct":
-        chunk_size = 200
+        chunk_size = 100
 
     gen = chunkGenerator(chunk_size)
     for i, chunk in enumerate(gen):
@@ -281,7 +281,7 @@ def do_all_update_products():
     chunkGen = createJsonChunks(makeProduct)
     all_responses = []
     for i, chunk in enumerate(chunkGen):
-        print(len(chunk["offerMappingEntries"]))
+        print("Chunk Size is:", len(chunk["offerMappingEntries"]))
         status_code, response = updateProducts(chunk)
         all_responses.append(f"{response}")
         print(f"{i} chunk here", response)
