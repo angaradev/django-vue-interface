@@ -75,15 +75,6 @@ maslo_lst = [
 ]
 
 
-def logging(string, filename):
-    path = os.path.join(settings.BASE_DIR, "logs")
-    pathlib.Path(path).mkdir(parents=True, exist_ok=True)
-    final_path = os.path.join(path, filename)
-
-    with open(os.path.join(path, filename), "a") as file:
-        file.write(string)
-
-
 def chunkGenerator(chunk_size):
     # Chunk size
     n = chunk_size
@@ -118,7 +109,9 @@ def makeProduct(product):
         pattern = r"(\(.+\))|(\s\w+\/\w+)"
         chk = re.search(pattern, name)
         if chk:
-            logging(f"{name}, {product.one_c_id} \n", "fucked_products.log")
+            logger(
+                f"{name}, {product.one_c_id} \n", "fucked_products.log", "ynadex_market"
+            )
             # with open(f"/home/manhee/tmp/chunks/fucked_prods.txt", "a") as file:
             #     file.write(f"{name}, {product.one_c_id} \n")
         name = re.sub(pattern, "", name)
