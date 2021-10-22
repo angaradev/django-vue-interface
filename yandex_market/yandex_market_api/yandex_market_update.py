@@ -127,6 +127,7 @@ def makeProduct(product):
         pass
 
     default_country = "Южная Корея"
+    country = None
     try:
         country = (
             product.brand.country.upper() if product.brand.country else default_country
