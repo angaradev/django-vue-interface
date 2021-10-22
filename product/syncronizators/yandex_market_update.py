@@ -223,7 +223,7 @@ def updatePrices(prices):
     }
 
     r = requests.post(url, data=json.dumps(prices), headers=headers)
-    return (r.json(), r.status_code)
+    return r.status_code, r.json()
 
 
 def updateProducts(product):
@@ -314,13 +314,13 @@ def do_all_update_prices():
                 status_code, response = updatePrices(chunk)
                 all_responses.append(f"{response}")
                 print(f"{i} chunk here || Attempt number-{conn}", response)
-                time.sleep(65)
                 if str(status_code) == "200":
                     break
                 conn += 1
             except:
                 print("Attempt #", conn)
                 continue
+            time.sleep(65)
 
     try:
         send_mail(
