@@ -83,9 +83,9 @@ def logging(string, filename):
         file.write(string)
 
 
-def chunkGenerator():
+def chunkGenerator(chunk_size):
     # Chunk size
-    n = 200
+    n = chunk_size
     # Select products with images and prices
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
@@ -161,11 +161,6 @@ def makeProduct(product):
     except Exception as e:
         pass
 
-    try:
-        price = p.product_stock.first().price
-    except:
-        pass
-
     testProduct = None
 
     try:
@@ -227,7 +222,7 @@ data = {
 }
 
 
-def sendRequest():
+def updatePrices(prices):
     url = "https://api.partner.market.yandex.ru/v2/campaigns/22527279/offer-prices/updates.json"
 
     headers = {
@@ -235,8 +230,8 @@ def sendRequest():
         "Content-Type": "application/json",
     }
 
-    r = requests.post(url, data=json.dumps(data), headers=headers)
-    print(r.json(), r.status_code)
+    r = requests.post(url, data=json.dumps(prices), headers=headers)
+    return (r.json(), r.status_code)
 
 
 def updateProducts(product):
@@ -248,23 +243,50 @@ def updateProducts(product):
     return f"{r.json()} {r.status_code}"
 
 
-def createJsonChunks():
-    gen = chunkGenerator()
+def createJsonChunks(makeItems):
+    method_name = makeItems.__name__
 
+    chunk_size = 50
+    if method_name == "makeProduct":
+        chunk_size = 200
+
+    gen = chunkGenerator(chunk_size)
     for i, chunk in enumerate(gen):
         products = []
         for product in chunk:
             if not product:
                 print("Fucks up in product")
-            products.append(makeProduct(product))
-        # with open(f"/home/manhee/tmp/chunks/{i}-chunk.json", "w") as file:
-        #     file.write(json.dumps(products, indent=2))
+            products.append(makeItems(product))
+        with open(f"/home/manhee/tmp/chunks/{i}-{method_name}-chunk.json", "w") as file:
+            file.write(json.dumps(products, indent=2))
 
-        yield {"offerMappingEntries": products}
+        if method_name == "makePrices":
+            yield {"offers": products}
+        else:
+            yield {"offerMappingEntries": products}
+
+
+def makePrices(product):
+    shopSku = product.one_c_id
+    price = 0
+    try:
+        price = float(product.product_stock.first().price)
+    except:
+        pass
+    item = {
+        "shopSku": shopSku,
+        "price": {
+            "currencyId": "RUR",
+            "value": price,
+            "discountBase": price + price * 0.1,
+            "vat": 5,
+        },
+    }
+    return item
 
 
 def do_all_update_products():
-    chunkGen = createJsonChunks()
+    chunkGen = createJsonChunks(makeProduct)
     all_responses = []
     for i, chunk in enumerate(chunkGen):
         print(len(chunk["offerMappingEntries"]))
@@ -284,3 +306,25 @@ def do_all_update_products():
     except Exception as e:
         print(e)
     print(all_responses)
+
+
+def do_all_update_prices():
+    chunkGen = createJsonChunks(makePrices)
+    all_responses = []
+    for i, chunk in enumerate(chunkGen):
+        print(len(chunk["offers"]))
+        response = updatePrices(chunk)
+        all_responses.append(response)
+        print(f"{i} chunk here", response)
+        time.sleep(65)
+    try:
+        send_mail(
+            "Цены Товаров на маркете обновились",
+            f"Скрипт, angara77.ru django/products/syncronizators/yandex_market_update.py который обновляет или добавляет товары обновился статус коды\
+            и количество чанков {json.dumps(all_responses)}",
+            settings.COMPANY_INFO["email"],
+            settings.EMAIL_ADMINS,
+            fail_silently=False,
+        )
+    except:
+        pass
