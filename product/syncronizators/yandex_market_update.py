@@ -110,10 +110,8 @@ def makeProduct(product):
         chk = re.search(pattern, name)
         if chk:
             logger(
-                f"{name}, {product.one_c_id} \n", "fucked_products.log", "ynadex_market"
+                f"{name}, {product.one_c_id} \n", "fucked_products.log", "yandex_market"
             )
-            # with open(f"/home/manhee/tmp/chunks/fucked_prods.txt", "a") as file:
-            #     file.write(f"{name}, {product.one_c_id} \n")
         name = re.sub(pattern, "", name)
     except:
         print("Name is fucks up")
@@ -234,7 +232,7 @@ def updateProducts(product):
     headers = {"Authorization": OAUTH_YANDEX_MARKET, "Content-Type": "application/json"}
 
     r = requests.post(url, data=json.dumps(product), headers=headers)
-    return f"{r.json()} {r.status_code}"
+    return r.status_code, r.json()
 
 
 def createJsonChunks(makeItems):
@@ -256,8 +254,6 @@ def createJsonChunks(makeItems):
             f"{i}-{method_name}-chunk.json",
             "yandex_market",
         )
-        # with open(f"/home/manhee/tmp/chunks/{i}-{method_name}-chunk.json", "w") as file:
-        #     file.write(json.dumps(products, indent=2))
 
         if method_name == "makePrices":
             yield {"offers": products}
@@ -289,8 +285,8 @@ def do_all_update_products():
     all_responses = []
     for i, chunk in enumerate(chunkGen):
         print(len(chunk["offerMappingEntries"]))
-        response = updateProducts(chunk)
-        all_responses.append(response)
+        status_code, response = updateProducts(chunk)
+        all_responses.append(f"response")
         print(f"{i} chunk here", response)
         time.sleep(2)
     try:
@@ -312,10 +308,18 @@ def do_all_update_prices():
     all_responses = []
     for i, chunk in enumerate(chunkGen):
         print(len(chunk["offers"]))
-        response = updatePrices(chunk)
-        all_responses.append(response)
-        print(f"{i} chunk here", response)
-        time.sleep(65)
+        conn = 5
+        while conn < 5:
+            try:
+                status_code, response = updatePrices(chunk)
+                all_responses.append(f"{response}")
+                print(f"{i} chunk here", response)
+                time.sleep(65)
+                if status_code != 200:
+                    break
+            except:
+                continue
+
     try:
         send_mail(
             "Цены Товаров на маркете обновились",
