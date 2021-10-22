@@ -283,9 +283,9 @@ def do_all_update_products():
     for i, chunk in enumerate(chunkGen):
         print(len(chunk["offerMappingEntries"]))
         status_code, response = updateProducts(chunk)
-        all_responses.append(f"response")
+        all_responses.append(f"{response}")
         print(f"{i} chunk here", response)
-        time.sleep(2)
+        time.sleep(5)
     try:
         send_mail(
             "Товары на маркете обновились",
