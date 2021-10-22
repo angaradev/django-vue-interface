@@ -258,7 +258,11 @@ def createJsonChunks(makeItems):
             if not product:
                 print("Fucks up in product")
             products.append(makeItems(product))
-        logger(products, f"{i}-{method_name}-chunk.json", "yandex_market")
+        logger(
+            json.dumps(products, indent=2),
+            f"{i}-{method_name}-chunk.json",
+            "yandex_market",
+        )
         # with open(f"/home/manhee/tmp/chunks/{i}-{method_name}-chunk.json", "w") as file:
         #     file.write(json.dumps(products, indent=2))
 
