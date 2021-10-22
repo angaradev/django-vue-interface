@@ -248,7 +248,11 @@ def createJsonChunks(makeItems):
         for product in chunk:
             if not product:
                 print("Fucks up in product")
-            products.append(makeItems(product))
+            try:
+                products.append(makeItems(product))
+            except:
+                print("Exception raised in zerro price")
+                pass
         logger(
             json.dumps(products, indent=2),
             f"{i}-{method_name}-chunk.json",
@@ -264,10 +268,9 @@ def createJsonChunks(makeItems):
 def makePrices(product):
     shopSku = product.one_c_id
     price = 0
-    try:
-        price = float(product.product_stock.first().price)
-    except:
-        pass
+    price = float(product.product_stock.first().price)
+    if not price:
+        raise TypeError()
     item = {
         "shopSku": shopSku,
         "price": {
@@ -307,7 +310,7 @@ def do_all_update_prices():
     chunkGen = createJsonChunks(makePrices)
     all_responses = []
     for i, chunk in enumerate(chunkGen):
-        print(len(chunk["offers"]))
+        print("Chunk length is:", len(chunk["offers"]))
         conn = 1
         while conn <= 5:
             try:
@@ -317,6 +320,7 @@ def do_all_update_prices():
                 if status_code == 200:
                     break
                 conn += 1
+                time.sleep(65)
             except:
                 print("Attempt #", conn)
                 continue
