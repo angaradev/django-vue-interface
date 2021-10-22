@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     "social_auth",
     "orders",
     "stats",
+    "yandex_market",
 ]
 
 

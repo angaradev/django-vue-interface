@@ -33,6 +33,7 @@ admin.site.site_title = "Интерфейс"
 
 
 urlpatterns = [
+    path("yandex-market/", include("yandex_market.urls"), name="yandex-market"),
     path("elastic-file-create/", elastic_file_create, name="elastic-create"),
     path(
         "robots.txt",
