@@ -17,6 +17,8 @@ from product.models import (
     Cross,
     ProductBages,
     ProductRating,
+    CategoryYandexMarket,
+    CategoryOzon,
 )
 from product.models.models_vehicle import Years, CarEngine, CarMake, CarModel, Country
 
@@ -39,6 +41,8 @@ admin.site.register(PriceHistory)
 admin.site.register(Years)
 admin.site.register(ProductBages)
 admin.site.register(ProductRating)
+admin.site.register(CategoryYandexMarket)
+admin.site.register(CategoryOzon)
 
 
 # admin.site.register(Category, MPTTModelAdmin)

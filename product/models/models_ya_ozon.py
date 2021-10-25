@@ -9,6 +9,13 @@ class CategoryYandexMarket(models.Model):
     cat_id = models.CharField(max_length=255, blank=True, null=True)
     name = models.CharField(max_length=255)
 
+    class Meta:
+        verbose_name = "Категория Яндекс"
+        verbose_name_plural = "Категории Яндекс"
+
+    def __str__(self):
+        return self.name
+
 
 class CategoryOzon(models.Model):
     shop_cat = models.OneToOneField(
@@ -16,3 +23,10 @@ class CategoryOzon(models.Model):
     )
     cat_id = models.CharField(max_length=255, blank=True, null=True)
     name = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Категория Ozon"
+        verbose_name_plural = "Категории Ozon"
+
+    def __str__(self):
+        return self.name
