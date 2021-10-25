@@ -5,7 +5,7 @@ from product.utils import categorizer_split
 
 # from product.utils import categorizer
 from mptt.models import MPTTModel, TreeForeignKey, TreeManyToManyField
-import os, random
+import os
 from brands.models import BrandsDict
 from product.utils import unique_slug_generator, get_youtube_id
 from django.db.models.signals import pre_save, post_save
