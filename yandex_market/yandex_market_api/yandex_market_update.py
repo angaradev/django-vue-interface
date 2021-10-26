@@ -217,7 +217,7 @@ data = {
 
 
 def updatePrices(prices):
-    url = "https://api.partner.market.yandex.ru/v2/campaigns/22527279/offer-prices/updates.json"
+    url = "https://api.partner.market.yandex.ru/v2/campaigns/{settings.CAMPAIGN_ID}/offer-prices/updates.json"
 
     headers = {
         "Authorization": settings.OAUTH_YANDEX_MARKET,
@@ -229,7 +229,7 @@ def updatePrices(prices):
 
 
 def updateProducts(product):
-    url = "https://api.partner.market.yandex.ru/v2/campaigns/22527279/offer-mapping-entries/updates.json"
+    url = "https://api.partner.market.yandex.ru/v2/campaigns/{settings.CAMPAIGN_ID}/offer-mapping-entries/updates.json"
 
     headers = {"Authorization": OAUTH_YANDEX_MARKET, "Content-Type": "application/json"}
 
