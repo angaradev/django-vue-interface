@@ -1,13 +1,16 @@
 from product.models import Category, CategoryYandexMarket
-import csv
+from django.conf import settings
+import csv, pathlib, os
 
 
 def yand_cats_insert_update():
+    cwd = pathlib.Path().cwd()
+    file_path = os.path.join(settings.BASE_DIR, "product/syncronizators/cats.csv")
 
     all_cats = Category.objects.all()
     created_count = []
 
-    with open("/home/manhee/tmp/cats.csv", "r") as r_file:
+    with open(file_path, "r") as r_file:
         reader = csv.reader(r_file, delimiter=",")
         for row in reader:
             yand_name = row[2].split("/")[-1]
