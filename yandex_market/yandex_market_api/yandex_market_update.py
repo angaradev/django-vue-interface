@@ -191,6 +191,7 @@ def makeProduct(product):
                     "THURSDAY",
                     "FRIDAY",
                     "SATURDAY",
+                    "SUNDAY",
                 ],
                 "deliveryDurationDays": 1,
             }
