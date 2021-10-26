@@ -137,21 +137,6 @@ def makeProduct(product):
     return testProduct
 
 
-data = {
-    "offers": [
-        {
-            "marketSku": 101413224188,
-            "price": {
-                "currencyId": "RUR",
-                "value": 6969.00,
-                "discountBase": 7500,
-                "vat": 5,
-            },
-        }
-    ]
-}
-
-
 def updatePrices(prices):
     url = f"https://api.partner.market.yandex.ru/v2/campaigns/{settings.CAMPAIGN_ID}/offer-prices/updates.json"
 
@@ -215,7 +200,6 @@ def makePrices(product):
             "currencyId": "RUR",
             "value": price,
             "discountBase": price + price * 0.1,
-            "vat": 5,
         },
     }
     return item
