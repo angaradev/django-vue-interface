@@ -75,6 +75,14 @@ maslo_lst = [
 ]
 
 
+def get_cat(product):
+    for cat in product.category.all():
+        for inn_cat in cat.get_ancestors(include_self=False):
+            yc = inn_cat.yandex_category.name
+            if yc:
+                return yc
+
+
 def chunkGenerator(chunk_size):
     # Chunk size
     n = chunk_size
@@ -141,12 +149,9 @@ def makeProduct(product):
     except Exception as e:
         # print(e)
         pass
-    category = ""
-    try:
-        category = parent_category(product)
-    except Exception as e:
-        # print(e)
-        pass
+
+    category = get_cat(product) or "Запчасти"
+
     try:
         if hasattr(product, "product_description"):
             soup = BeautifulSoup(product.product_description.text, "lxml")
@@ -280,14 +285,15 @@ def makePrices(product):
     return item
 
 
-def do_all_update_products():
+def do_all_update_products(production=False):
     chunkGen = createJsonChunks(makeProduct)
     all_responses = []
     for i, chunk in enumerate(chunkGen):
         print("Chunk Size is:", len(chunk["offerMappingEntries"]))
-        status_code, response = updateProducts(chunk)
-        all_responses.append(f"{response}")
-        print(f"{i} chunk here", response)
+        if production:
+            status_code, response = updateProducts(chunk)
+            all_responses.append(f"{response}")
+            print(f"{i} chunk here", response)
         time.sleep(5)
     try:
         send_mail(
