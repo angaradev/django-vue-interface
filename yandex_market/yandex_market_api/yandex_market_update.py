@@ -309,24 +309,25 @@ def do_all_update_products(production=False):
     print(all_responses)
 
 
-def do_all_update_prices():
+def do_all_update_prices(production=False):
     chunkGen = createJsonChunks(makePrices)
     all_responses = []
     for i, chunk in enumerate(chunkGen):
         print("Chunk length is:", len(chunk["offers"]))
         conn = 1
         while conn <= 5:
-            try:
-                status_code, response = updatePrices(chunk)
-                all_responses.append(f"{response}")
-                print(f"{i} chunk here || Attempt number-{conn}", response)
-                if status_code == 200:
-                    break
-                conn += 1
-                time.sleep(65)
-            except:
-                print("Attempt #", conn)
-                continue
+            if production:
+                try:
+                    status_code, response = updatePrices(chunk)
+                    all_responses.append(f"{response}")
+                    print(f"{i} chunk here || Attempt number-{conn}", response)
+                    if status_code == 200:
+                        break
+                    conn += 1
+                    time.sleep(65)
+                except:
+                    print("Attempt #", conn)
+                    continue
 
         time.sleep(65)
     try:
