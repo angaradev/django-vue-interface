@@ -11,70 +11,6 @@ from django.core.mail import send_mail
 from quora.common_lib.get_parent_category import parent_category
 
 
-maslo_lst = [
-    24962,
-    25508,
-    3226,
-    25332,
-    24684,
-    24700,
-    16567,
-    23850,
-    24352,
-    16330,
-    16683,
-    16674,
-    23048,
-    14569,
-    24821,
-    24628,
-    14567,
-    24813,
-    24740,
-    25469,
-    22752,
-    22641,
-    24644,
-    11145,
-    24549,
-    23714,
-    11189,
-    23715,
-    15768,
-    15791,
-    24260,
-    23318,
-    24698,
-    15803,
-    23853,
-    24194,
-    3615,
-    25305,
-    23704,
-    24094,
-    25486,
-    25087,
-    25467,
-    25489,
-    25487,
-    23780,
-    23781,
-    25429,
-    25088,
-    25482,
-    25483,
-    25485,
-    25484,
-    25481,
-    24859,
-    23463,
-    24861,
-    24862,
-    25453,
-    3434,
-]
-
-
 def get_cat(product):
     for cat in product.category.all():
         for inn_cat in cat.get_ancestors(include_self=False):
@@ -90,7 +26,6 @@ def chunkGenerator(chunk_size):
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
         .filter(product_stock__quantity__gt=0)
-        .exclude(one_c_id__in=maslo_lst)
         .distinct()
     )
     print("Products selected:", products.count())
