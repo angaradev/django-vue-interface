@@ -1,5 +1,5 @@
 from django.db import models
-from product.models.models import Category
+from product.models import Category
 
 
 class CategoryYandexMarket(models.Model):
