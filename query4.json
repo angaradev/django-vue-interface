@@ -1,0 +1,46 @@
+{
+	"items": [
+		{
+			"attributes": [
+				{
+					"complex_id": 0,
+					"id": 0,
+					"values": [{ "dictionary_value_id": 0, "value": "string" }]
+				}
+			],
+			"barcode": "string",
+			"category_id": 0,
+			"color_image": "string",
+			"complex_attributes": [
+				{
+					"attributes": [
+						{
+							"complex_id": 0,
+							"id": 0,
+							"values": [
+								{ "dictionary_value_id": 0, "value": "string" }
+							]
+						}
+					]
+				}
+			],
+			"depth": 0,
+			"dimension_unit": "string",
+			"height": 0,
+			"image_group_id": "string",
+			"images": ["string"],
+			"primary_image": "string",
+			"images360": ["string"],
+			"name": "string",
+			"offer_id": "string",
+			"old_price": "string",
+			"pdf_list": [{ "index": 0, "name": "string", "src_url": "string" }],
+			"premium_price": "string",
+			"price": "string",
+			"vat": "string",
+			"weight": 0,
+			"weight_unit": "string",
+			"width": 0
+		}
+	]
+}

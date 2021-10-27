@@ -16,44 +16,124 @@ payload = {
             "attributes": [
                 {
                     "complex_id": 0,
-                    "id": 0,
-                    "values": [{"dictionary_value_id": 0, "value": "string"}],
-                }
+                    "id": 85,
+                    "values": [{"dictionary_value_id": 0, "value": "Angara"}],
+                },
+                {
+                    "complex_id": 0,
+                    "id": 9048,
+                    "values": [{"dictionary_value_id": 0, "value": "Lamborgini"}],
+                },
+                {
+                    "complex_id": 0,
+                    "id": 7236,
+                    "values": [{"dictionary_value_id": 0, "value": "1245545"}],
+                },
+                {
+                    "complex_id": 0,
+                    "id": 8229,
+                    "values": [
+                        {"dictionary_value_id": 0, "value": "Крыло автомобильное"}
+                    ],
+                },
+                {
+                    "complex_id": 0,
+                    "id": 4074,
+                    "values": [{"dictionary_value_id": 0, "value": "PFbomAhc51M"}],
+                },
+                {
+                    "complex_id": 0,
+                    "id": 4191,
+                    "values": [
+                        {
+                            "dictionary_value_id": 0,
+                            "value": "Description goes here blah blah blag",
+                        }
+                    ],
+                },
+                {
+                    "complex_id": 0,
+                    "id": 7204,
+                    "values": [
+                        {
+                            "dictionary_value_id": 0,
+                            "value": "RolsRoys",
+                        }
+                    ],
+                },
+                {
+                    "complex_id": 0,
+                    "id": 7212,
+                    "values": [
+                        {
+                            "dictionary_value_id": 0,
+                            "value": "Model Auto",
+                        }
+                    ],
+                },
+                {
+                    "complex_id": 0,
+                    "id": 9782,
+                    "values": [
+                        {
+                            "dictionary_value_id": 0,
+                            "value": "Не опасен",
+                        }
+                    ],
+                },
             ],
             "barcode": "string",
-            "category_id": 0,
+            "category_id": 93446776,
             "color_image": "string",
-            "complex_attributes": [
-                {
-                    "attributes": [
-                        {
-                            "complex_id": 0,
-                            "id": 0,
-                            "values": [{"dictionary_value_id": 0, "value": "string"}],
-                        }
-                    ]
-                }
-            ],
-            "depth": 0,
-            "dimension_unit": "string",
-            "height": 0,
+            "depth": 20,
+            "dimension_unit": "cm",
+            "height": 20,
             "image_group_id": "string",
-            "images": ["string"],
-            "primary_image": "string",
-            "images360": ["string"],
-            "name": "string",
-            "offer_id": "string",
-            "old_price": "string",
-            "pdf_list": [{"index": 0, "name": "string", "src_url": "string"}],
-            "premium_price": "string",
-            "price": "string",
-            "vat": "string",
-            "weight": 0,
-            "weight_unit": "string",
-            "width": 0,
+            "images": [
+                "https://angara77.ru/media/parts/1336735080/fiat/alfa/lancia/tmb/DSCN2730_LFSeBqR.JPG",
+                "https://angara77.ru/media/parts/1336735080/fiat/alfa/lancia/tmb/DSCN2732_JlZkQ2r.JPG",
+                "https://angara77.ru/media/parts/1336735080/fiat/alfa/lancia/tmb/DSCN2729_7LFeCod.JPG",
+                "https://angara77.ru/media/parts/1336735080/fiat/alfa/lancia/tmb/DSCN2731_RrgXB6q.JPG",
+            ],
+            "primary_image": "http://localhost:8000/media/parts/1362564080NG/kmk_glass/tmb/IMG_7470_ducato_sIdV3Dl.JPG",
+            "name": "Test product from API",
+            "offer_id": "1",
+            "old_price": "300",
+            "premium_price": "200",
+            "price": "250",
+            "vat": "0",
+            "weight": 2,
+            "weight_unit": "kg",
+            "width": 20,
         }
     ]
 }
+
+
+def get_cat(product):
+    "Creating vendor cateory"
+    for cat in product.category.all():
+        for inn_cat in cat.get_ancestors(include_self=False):
+            yc = inn_cat.ozon_category.name
+            if yc:
+                return yc
+
+
+def chunkGenerator(chunk_size):
+    """
+    Creating products by chanks size is given in params
+    """
+    # Chunk size
+    n = chunk_size
+    # Select products with images and prices
+    products = (
+        Product.objects.filter(product_image__img150__isnull=False)
+        .filter(product_stock__quantity__gt=0)
+        .distinct()
+    )
+    print("Products selected:", products.count())
+    for i in range(0, products.count(), n):
+        yield products[i : i + n]
 
 
 def makeProduct(product):
@@ -87,7 +167,7 @@ def makeProduct(product):
 
         brand = product.brand.brand.upper()
         if not brand or brand == "оригинал":
-            brand = "MOBIS"
+            brand = "ORIGINAL"
     except Exception as e:
         # print("No brand found")
         pass
@@ -154,7 +234,122 @@ def makeProduct(product):
                 "deliveryDurationDays": 1,
             }
         }
+        payload = {
+            "items": [
+                {
+                    "category_id": 93446776,
+                    "color_image": "string",
+                    "depth": 20,
+                    "dimension_unit": "cm",
+                    "height": 20,
+                    "image_group_id": "string",
+                    "images": [
+                        "https://angara77.ru/media/parts/1336735080/fiat/alfa/lancia/tmb/DSCN2730_LFSeBqR.JPG",
+                        "https://angara77.ru/media/parts/1336735080/fiat/alfa/lancia/tmb/DSCN2732_JlZkQ2r.JPG",
+                        "https://angara77.ru/media/parts/1336735080/fiat/alfa/lancia/tmb/DSCN2729_7LFeCod.JPG",
+                        "https://angara77.ru/media/parts/1336735080/fiat/alfa/lancia/tmb/DSCN2731_RrgXB6q.JPG",
+                    ],
+                    "primary_image": "http://localhost:8000/media/parts/1362564080NG/kmk_glass/tmb/IMG_7470_ducato_sIdV3Dl.JPG",
+                    "name": "Test product from API",
+                    "offer_id": "1",
+                    "old_price": "300",
+                    "premium_price": "200",
+                    "price": "250",
+                    "vat": "0",
+                    "weight": 2,
+                    "weight_unit": "kg",
+                    "width": 20,
+                    "attributes": [
+                        {
+                            "complex_id": 0,
+                            "id": 85,
+                            "values": [{"dictionary_value_id": 0, "value": "Angara"}],
+                        },
+                        {
+                            "complex_id": 0,
+                            "id": 9048,
+                            "values": [
+                                {"dictionary_value_id": 0, "value": "Lamborgini"}
+                            ],
+                        },
+                        {
+                            "complex_id": 0,
+                            "id": 7236,
+                            "values": [{"dictionary_value_id": 0, "value": "1245545"}],
+                        },
+                        {
+                            "complex_id": 0,
+                            "id": 8229,
+                            "values": [
+                                {
+                                    "dictionary_value_id": 0,
+                                    "value": "Крыло автомобильное",
+                                }
+                            ],
+                        },
+                        {
+                            "complex_id": 0,
+                            "id": 4074,
+                            "values": [
+                                {"dictionary_value_id": 0, "value": "PFbomAhc51M"}
+                            ],
+                        },
+                        {
+                            "complex_id": 0,
+                            "id": 4191,
+                            "values": [
+                                {
+                                    "dictionary_value_id": 0,
+                                    "value": "Description goes here blah blah blag",
+                                }
+                            ],
+                        },
+                        {
+                            "complex_id": 0,
+                            "id": 7204,
+                            "values": [
+                                {
+                                    "dictionary_value_id": 0,
+                                    "value": "RolsRoys",
+                                }
+                            ],
+                        },
+                        {
+                            "complex_id": 0,
+                            "id": 7212,
+                            "values": [
+                                {
+                                    "dictionary_value_id": 0,
+                                    "value": "Model Auto",
+                                }
+                            ],
+                        },
+                        {
+                            "complex_id": 0,
+                            "id": 9782,
+                            "values": [
+                                {
+                                    "dictionary_value_id": 0,
+                                    "value": "Не опасен",
+                                }
+                            ],
+                        },
+                    ],
+                }
+            ]
+        }
     except Exception as e:
         print(e)
         return False
     return testProduct
+
+
+"""
+Тип товара
+Артикул
+Бренд
+Наименование детали
+Вес
+Габаритные размеры упаковки
+Штрихкод
+"""
