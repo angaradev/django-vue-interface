@@ -2,6 +2,10 @@ from product.models import Category, CategoryYandexMarket, CategoryOzon
 from django.conf import settings
 import csv, pathlib, os
 
+"""
+This functions is for update and create yandex and ozon categories
+"""
+
 
 def yand_cats_insert_update():
     cwd = pathlib.Path().cwd()
