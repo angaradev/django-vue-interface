@@ -10,7 +10,7 @@ This functions is for update and create yandex and ozon categories
 def yand_cats_insert_update():
     CategoryYandexMarket.objects.all().delete()
     cwd = pathlib.Path().cwd()
-    file_path = os.path.join(settings.BASE_DIR, "product/syncronizators/cats.csv")
+    file_path = os.path.join(settings.BASE_DIR, "yandex_market/data/cats.csv")
 
     all_cats = Category.objects.all()
     created_count = []
@@ -36,7 +36,7 @@ def yand_cats_insert_update():
 def ozon_cats_insert_update():
     CategoryOzon.objects.all().delete()
     cwd = pathlib.Path().cwd()
-    file_path = os.path.join(settings.BASE_DIR, "product/syncronizators/cats.csv")
+    file_path = os.path.join(settings.BASE_DIR, "yandex_market/data/cats.csv")
 
     all_cats = Category.objects.all()
     created_count = []
