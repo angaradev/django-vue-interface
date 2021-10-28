@@ -1,4 +1,4 @@
-import os
+import os, math
 from quora.common_lib.logger import logger
 import re
 import pathlib
@@ -199,7 +199,7 @@ def makePrices(product):
         "price": {
             "currencyId": "RUR",
             "value": price,
-            "discountBase": price + price * 0.1,
+            "discountBase": math.ceil(price + price * 0.1),
         },
     }
     return item
