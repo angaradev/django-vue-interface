@@ -9,7 +9,7 @@ def insert_rating():
     for product in products:
         try:
             rating = product.product_rating.first()
-            if rating.score == 0 or rating.quantity == 0:
+            if rating.product.count == 0 or rating.score == 0 or rating.quantity == 0:
 
                 rating.score = random.randint(3, 5)
                 rating.quantity = random.randint(1, 20)
