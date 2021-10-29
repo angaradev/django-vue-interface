@@ -22,6 +22,7 @@ from product.utils import unique_slug_generator
 from product.models.models_vehicle import CarModel
 from product.models.models_images import ProductImage
 from product.models.models_productfields import ProductBages, ProductVideos
+import random
 
 
 class Category(MPTTModel):  # MPTT model here for now
@@ -106,9 +107,9 @@ class ProductRating(models.Model):
         FIVE_STARS = 5
 
     score = models.IntegerField(
-        choices=Rating.choices, null=True, blank=True, default=0
+        choices=Rating.choices, null=True, blank=True, default=random.randint(3, 5)
     )
-    quantity = models.IntegerField(null=True, blank=True, default=0)
+    quantity = models.IntegerField(null=True, blank=True, default=random.randint(1, 20))
     product = models.ForeignKey(
         "product",
         on_delete=models.DO_NOTHING,
@@ -342,6 +343,7 @@ def youtube_id_save(sender, instance, *args, **kwargs):  # youtube id saver
 
 
 pre_save.connect(youtube_id_save, ProductVideos)
+
 
 #################### File Delete Post Delete Receiver #########################
 
