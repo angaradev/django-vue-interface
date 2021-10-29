@@ -269,10 +269,11 @@ class ProductSerializer(serializers.ModelSerializer):
         )
 
         product.save()
-        rating = ProductRating(
-            product=product, score=random.randint(3, 5), quantity=random.randint(1, 20)
-        )
-        rating.save()
+        # Tryed save
+        # rating = ProductRating(
+        #     product=product, score=random.randint(3, 5), quantity=random.randint(1, 20)
+        # )
+        # rating.save()
         for engine in car_engine_list:
             product.engine.add(CarEngine.objects.get(id=engine))
 
