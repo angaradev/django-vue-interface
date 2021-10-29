@@ -23,6 +23,7 @@ class CategoryOzon(models.Model):
     )
     cat_id = models.CharField(max_length=255, blank=True, null=True)
     name = models.CharField(max_length=255)
+    ozon_type = models.CharField(max_length=255, null=True, blank=True)
 
     class Meta:
         verbose_name = "Категория Ozon"
