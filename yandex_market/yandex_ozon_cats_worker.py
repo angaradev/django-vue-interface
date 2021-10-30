@@ -46,11 +46,15 @@ def ozon_cats_insert_update():
         for row in reader:
             ozon_name = row[3]
             ozon_cat_id = row[4]
+            ozon_type = row[5]
             try:
                 shop_cat_id = row[1]
                 cat = all_cats.get(id=shop_cat_id)
                 oz_cat, created = CategoryOzon.objects.update_or_create(
-                    shop_cat=cat, name=ozon_name, cat_id=ozon_cat_id
+                    shop_cat=cat,
+                    name=ozon_name,
+                    cat_id=ozon_cat_id,
+                    ozon_type=ozon_type,
                 )
 
                 created_count.append(created)

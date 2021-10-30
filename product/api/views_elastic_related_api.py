@@ -4,6 +4,7 @@ from product.models import Product, Category
 import json, requests
 import pprint, re
 from django.conf import settings
+from product.utils import stemmer
 
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -11,14 +12,17 @@ pp = pprint.PrettyPrinter(indent=2)
 # Searching for similar products by car and name of part
 #
 def similar(request):
+
     if request.method == "GET":
         q = request.GET.get("q")
         model = request.GET.get("model") or "porter2"
+
         """
         Check if search by make slug exists
         """
 
         if model and q:
+            query_array = stemmer(q)
 
             # If query has car model and slug
             query = {
@@ -34,9 +38,9 @@ def similar(request):
                             {
                                 "match": {
                                     "name": {
-                                        "query": q,
+                                        "query": query_array[0],
                                         "analyzer": "rebuilt_russian",
-                                        "fuzziness": "auto",
+                                        "fuzziness": 1,
                                         "operator": "and",
                                     }
                                 }
