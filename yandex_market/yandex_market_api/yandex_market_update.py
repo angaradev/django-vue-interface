@@ -9,6 +9,7 @@ from django.conf import settings
 import requests, json, time
 from django.core.mail import send_mail
 from quora.common_lib.get_parent_category import parent_category
+from quora.common_lib.get_or_make_description import clear_description
 
 
 def get_cat(product):
@@ -39,7 +40,6 @@ def makeProduct(product):
     car_model = ""
     imgUrl = "https://angara77.ru"  # settings.SITE_URL
     siteUrl = "https://partshub.ru"  # settings.SITE_URL
-    description = "Материлы изготовления: сталь, алюминий, резина, стекло, пластик. Произведена на высокоточном оборудовании, с соблюдением всех допусков."
     try:
         car_make = product.car_model.first().carmake.name.upper()
         car_model = product.car_model.first().name.upper()
@@ -87,13 +87,7 @@ def makeProduct(product):
 
     category = get_cat(product) or "Запчасти"
 
-    try:
-        if hasattr(product, "product_description"):
-            soup = BeautifulSoup(product.product_description.text, "lxml")
-            description = soup.get_text()
-            description = re.sub("&nbsp;", " ", description, flags=re.IGNORECASE)
-    except Exception as e:
-        pass
+    description = clear_description(product)
 
     testProduct = None
 

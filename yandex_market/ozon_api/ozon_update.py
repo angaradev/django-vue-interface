@@ -10,6 +10,7 @@ import requests, json, time
 from django.core.mail import send_mail
 from quora.common_lib.get_parent_category import parent_category
 from product.models import CategoryOzon
+from quora.common_lib.get_or_make_description import clear_description
 
 
 def make_product(product):
@@ -30,7 +31,6 @@ def make_product(product):
     image_group_id = None
     imgUrl = "https://angara77.ru"  # settings.SITE_URL
     siteUrl = "https://partshub.ru"  # settings.SITE_URL
-    description = "Материлы изготовления: сталь, алюминий, резина, стекло, пластик. Произведена на высокоточном оборудовании, с соблюдением всех допусков."
     try:
         car_make = product.car_model.first().carmake.name.upper()
         car_model = product.car_model.first().name.upper()
@@ -91,13 +91,8 @@ def make_product(product):
     except Exception as e:
         raise ValueError("probably not found category for this product")
 
-    try:
-        if hasattr(product, "product_description"):
-            soup = BeautifulSoup(product.product_description.text, "lxml")
-            description = soup.get_text()
-            description = re.sub("&nbsp;", " ", description, flags=re.IGNORECASE)
-    except Exception as e:
-        pass
+    description = clear_description(product)
+    print(description)
     payload = None
     image_group_id = product.one_c_id or ""
 
@@ -173,6 +168,11 @@ def make_product(product):
                     "complex_id": 0,
                     "id": 4074,
                     "values": [{"dictionary_value_id": 0, "value": youtube_id}],
+                },
+                {
+                    "complex_id": 0,
+                    "id": 11254,
+                    "values": [{"dictionary_value_id": 0, "value": description}],
                 },
                 {
                     "complex_id": 0,
@@ -266,4 +266,3 @@ def makeJsonChunks(makeItems):
 
 def test():
     res = next(makeJsonChunks(make_product))
-    print(res)
