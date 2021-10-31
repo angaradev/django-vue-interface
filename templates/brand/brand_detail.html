@@ -3,6 +3,15 @@
 {% load crispy_forms_tags%}
 {% block content %}
 <div class="container">
+        <div class="row mt-f">
+            <div class="col-6">
+                <form action="." method="POST">{% csrf_token %}
+                    {{another_form|crispy}}
+                    <button class="btn btn-sm btn-success" name="submit" value="return">Submit & Return</button>
+                    <button class="btn btn-sm btn-primary" name="submit" value="stay">Submit & Stay</button>
+                </form>
+            </div>
+        </div>
     <div class="row mt-4">
         <div class="col-6">
             <form action="." method="POST">{% csrf_token %}

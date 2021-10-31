@@ -21,61 +21,59 @@ from django.db.models import Q
 from django.db import connection
 
 from brands.models import BrandsDict, BrandDictSup, AngSuppliers, AngPricesAll
-from brand_dict.forms import BrandForm, BrandFormSetFactory
+from brand_dict.forms import BrandForm
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class DictionaryList(ListView):
-    template_name = 'brand/brands_main.html'
+    template_name = "brand/brands_main.html"
     model = BrandsDict
     paginate_by = 20
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class DeleteBrand(DeleteView):
     model = BrandsDict
-    template_name = 'brand/confirm_delete.html'
+    template_name = "brand/confirm_delete.html"
 
     def get_success_url(self):
-        q = self.request.GET.get('q')
+        q = self.request.GET.get("q")
         if q:
-            return reverse_lazy('search-view', kwargs={'q': q})
+            return reverse_lazy("search-view", kwargs={"q": q})
         else:
-            return reverse_lazy('main-view')
+            return reverse_lazy("main-view")
 
 
 @login_required
 def deleteBrand(request, pk):
     obj = get_object_or_404(BrandsDict, id=pk)
-    if request.method == 'GET':
-        print(obj)
+    if request.method == "GET":
         obj.delete()
-        return redirect(request.META['HTTP_REFERER'])
+        return redirect(request.META["HTTP_REFERER"])
 
-    return redirect(reverse('main-view'))
+    return redirect(reverse("main-view"))
 
 
 # Implementing serach logic
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class DictionarySearchList(ListView):
-    template_name = 'brand/brands_main.html'
+    template_name = "brand/brands_main.html"
     model = BrandsDict
     paginate_by = 20
 
     def get_queryset(self):
-        q = self.request.GET['q'].strip()
+        q = self.request.GET["q"].strip()
         brand_sup = BrandDictSup.objects.filter(ang_brand=q)
-        query = BrandsDict.objects.filter(
-            Q(brand__icontains=q)).order_by('brand')
+        query = BrandsDict.objects.filter(Q(brand__icontains=q)).order_by("brand")
         return query
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class DictionaryDetailedView(SuccessMessageMixin, ModelFormMixin, DetailView):
-    template_name = 'brand/brand_detail.html'
+    template_name = "brand/brand_detail.html"
     model = BrandsDict
     form_class = BrandForm
-    success_message = 'Бренд сохранен!!'
+    success_message = "Бренд сохранен!!"
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -92,7 +90,7 @@ class DictionaryDetailedView(SuccessMessageMixin, ModelFormMixin, DetailView):
                 return self.form_invalid(form)
 
     def get_success_url(self):
-        return reverse('detail-view', args=[self.object.pk])
+        return reverse("detail-view", args=[self.object.pk])
 
 
 # Here is the inline formset factory for single brand working with
@@ -101,44 +99,72 @@ def manage_brands(request, pk, page):
     if not page:
         page = 1
     brand = BrandsDict.objects.get(pk=pk)
-    BrandInlineFormSet = inlineformset_factory(BrandsDict, BrandDictSup, fields=(
-        'ang_brand',), labels={'ang_brand': ''}, extra=1)
+    BrandInlineFormSet = inlineformset_factory(
+        BrandsDict,
+        BrandDictSup,
+        fields=("ang_brand",),
+        labels={"ang_brand": "БРЕНДЫ ПОСТАВЩИКОВ"},
+        extra=1,
+    )
+
+    another_form = None
+
     if request.method == "POST":
         formset = BrandInlineFormSet(request.POST, instance=brand)
+        another_form = BrandForm(request.POST, instance=brand)
+        if another_form.is_valid():
+            another_form.save()
+            if request.POST.get("submit") == "stay":
+                return HttpResponseRedirect(
+                    reverse("detailfunc-view", kwargs={"pk": pk, "page": page})
+                )
+            else:
+                return redirect(reverse("main-view") + f"?page={page}")
+        else:
+            pass
+
         if formset.is_valid():
             formset.save()
             # Do something. Should generally end with a redirect. For example:
-            if request.POST.get('submit') == 'stay':
-                return HttpResponseRedirect(reverse('detailfunc-view', kwargs={'pk': pk, 'page': page}))
+            if request.POST.get("submit") == "stay":
+                return HttpResponseRedirect(
+                    reverse("detailfunc-view", kwargs={"pk": pk, "page": page})
+                )
             else:
-                return redirect(reverse('main-view') + f'?page={page}')
+                return redirect(reverse("main-view") + f"?page={page}")
 
     else:
         formset = BrandInlineFormSet(instance=brand)
-    return render(request, 'brand/brand_detail.html', {'formset': formset})
+        another_form = BrandForm(instance=brand)
+    return render(
+        request,
+        "brand/brand_detail.html",
+        {"formset": formset, "another_form": another_form},
+    )
 
 
 # Listing suppliers
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class SuppliersList(ListView):
-    template_name = 'brand/suppliers_main.html'
+    template_name = "brand/suppliers_main.html"
     model = AngSuppliers
     paginate_by = 20
 
     def get_queryset(self):
-        sups = AngSuppliers.objects.filter(enabled=1).order_by('-weight')
+        sups = AngSuppliers.objects.filter(enabled=1).order_by("-weight")
         return sups
 
+
 # Supplier detail View
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class SupplierDetail(ListView):
     model = AngPricesAll
-    template_name = 'brand/supplier_detail.html'
+    template_name = "brand/supplier_detail.html"
     paginate_by = 50
 
     def my_custom_sql(self, pk):
-        raw_q = f'''
-        SELECT DISTINCT(a.brand) as sup_brand, c.id as id, c.brand FROM ang_prices_all as a LEFT OUTER JOIN brands_branddictsup as b ON a.brand = b.ang_brand LEFT JOIN brands_dict as c ON b.brand_name_id = c.id WHERE supplier = {pk}'''
+        raw_q = f"""
+        SELECT DISTINCT(a.brand) as sup_brand, c.id as id, c.brand FROM ang_prices_all as a LEFT OUTER JOIN brands_branddictsup as b ON a.brand = b.ang_brand LEFT JOIN brands_dict as c ON b.brand_name_id = c.id WHERE supplier = {pk}"""
         with connection.cursor() as cursor:
             cursor.execute(raw_q)
             return cursor.fetchall()
@@ -152,46 +178,47 @@ class SupplierDetail(ListView):
     #     return query
 
     def get_queryset(self):
-        pk = self.kwargs.get('pk')
-        lst = self.model.objects.filter(supplier=pk).values_list(
-            'brand', flat=True).distinct()
+        pk = self.kwargs.get("pk")
+        lst = (
+            self.model.objects.filter(supplier=pk)
+            .values_list("brand", flat=True)
+            .distinct()
+        )
 
-        qs = BrandDictSup.objects.select_related(
-            'brand_name').filter(ang_brand__in=lst)
+        qs = BrandDictSup.objects.select_related("brand_name").filter(ang_brand__in=lst)
 
-        exist_list = qs.values_list('ang_brand', flat=True)
+        exist_list = qs.values_list("ang_brand", flat=True)
         not_exist_list = lst.exclude(brand__in=exist_list)
 
         return not_exist_list
 
 
-ChildFormset = inlineformset_factory(
-    BrandsDict, BrandDictSup, fields=('ang_brand',)
-)
+ChildFormset = inlineformset_factory(BrandsDict, BrandDictSup, fields=("ang_brand",))
 
 # Trying set formset for parent and child together
 # Seems to working variant
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator(login_required, name="dispatch")
 class ParentCreateView(CreateView):
     model = BrandsDict
     fields = ["brand"]
-    #template_name = 'brand/create_alltogether.html'
-    template_name = 'brand/supplier_detail.html'
+    # template_name = 'brand/create_alltogether.html'
+    template_name = "brand/supplier_detail.html"
     paginate_by = 50
 
     def get_data(self):
-        pk = self.kwargs.get('pk')
-        lst = AngPricesAll.objects.filter(supplier=pk).values_list(
-            'brand', flat=True).distinct()
+        pk = self.kwargs.get("pk")
+        lst = (
+            AngPricesAll.objects.filter(supplier=pk)
+            .values_list("brand", flat=True)
+            .distinct()
+        )
 
-        qs = BrandDictSup.objects.select_related(
-            'brand_name').filter(ang_brand__in=lst)
+        qs = BrandDictSup.objects.select_related("brand_name").filter(ang_brand__in=lst)
 
-        exist_list = qs.values_list('ang_brand', flat=True)
-        not_exist_list = lst.exclude(
-            brand__in=exist_list).distinct().order_by('name')
+        exist_list = qs.values_list("ang_brand", flat=True)
+        not_exist_list = lst.exclude(brand__in=exist_list).distinct().order_by("name")
 
         return not_exist_list
 
@@ -199,7 +226,7 @@ class ParentCreateView(CreateView):
         # we need to overwrite get_context_data
         # to make sure that our formset is rendered
         data = super().get_context_data(**kwargs)
-        data['object_list'] = self.get_data()
+        data["object_list"] = self.get_data()
         if self.request.POST:
             data["children"] = ChildFormset(self.request.POST)
         else:
@@ -216,48 +243,56 @@ class ParentCreateView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        pk = self.kwargs.get('pk')
-        return redirect(reverse_lazy("supplier-detail", kwargs={'pk': 1}))
+        pk = self.kwargs.get("pk")
+        return redirect(reverse_lazy("supplier-detail", kwargs={"pk": 1}))
 
 
 ################################################################
 # Adding upload brand list feature #
 ###############################################################
 
-@method_decorator(login_required, name='dispatch')
+
+@method_decorator(login_required, name="dispatch")
 class UploadBrandList(View):
-    template_name = 'brand/add_brand_list.html'
+    template_name = "brand/add_brand_list.html"
     form_class = UploadFileForm
-    initial = {'title': 'angara.csv'}
-    table_name = 'brands_suppliersbrands'
+    initial = {"title": "angara.csv"}
+    table_name = "brands_suppliersbrands"
 
-
-# Function for inserting csv file to Brnads for checking angara
+    # Function for inserting csv file to Brnads for checking angara
 
     def insert_data(self, request):
-        path = os.path.join(settings.MEDIA_ROOT, 'brands')
+        path = os.path.join(settings.MEDIA_ROOT, "brands")
         f = os.path.join(path, os.listdir(path)[0])
 
-        with open(f, encoding='utf-8') as csvfile:
-            angara = csv.reader(csvfile, delimiter=';')
-            bulk = [SuppliersBrands(
-                **{'brand': i[0].strip(), 'supplier': AngSuppliers.objects.get(id=1000)}) for i in angara if i]
+        with open(f, encoding="utf-8") as csvfile:
+            angara = csv.reader(csvfile, delimiter=";")
+            bulk = [
+                SuppliersBrands(
+                    **{
+                        "brand": i[0].strip(),
+                        "supplier": AngSuppliers.objects.get(id=1000),
+                    }
+                )
+                for i in angara
+                if i
+            ]
             if SuppliersBrands.objects.bulk_create(bulk):
                 os.remove(f)
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
         # self.insert_data(request)
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST,  request.FILES)
+        form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             # <process form cleaned data>
-            uploaded_file = request.FILES['file']
-            fs = FileSystemStorage(location='media/brands/')
+            uploaded_file = request.FILES["file"]
+            fs = FileSystemStorage(location="media/brands/")
             name = fs.save(uploaded_file.name, uploaded_file)
             self.insert_data(request)
-            return HttpResponseRedirect(reverse('class-upload-file'))
+            return HttpResponseRedirect(reverse("class-upload-file"))
 
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {"form": form})

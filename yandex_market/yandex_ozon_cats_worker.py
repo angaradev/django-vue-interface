@@ -18,7 +18,7 @@ def yand_cats_insert_update():
     with open(file_path, "r") as r_file:
         reader = csv.reader(r_file, delimiter=",")
         for row in reader:
-            yand_name = row[2].split("/")[-1]
+            yand_name = row[5].split("/")[-1]
             try:
                 shop_cat_id = row[1]
                 cat = all_cats.get(id=shop_cat_id)
@@ -44,9 +44,9 @@ def ozon_cats_insert_update():
     with open(file_path, "r") as r_file:
         reader = csv.reader(r_file, delimiter=";")
         for row in reader:
-            ozon_name = row[3]
-            ozon_cat_id = row[4]
-            ozon_type = row[5]
+            ozon_name = row[2]
+            ozon_cat_id = row[3]
+            ozon_type = row[4]
             try:
                 shop_cat_id = row[1]
                 cat = all_cats.get(id=shop_cat_id)
