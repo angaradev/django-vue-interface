@@ -92,7 +92,6 @@ def make_product(product):
         raise ValueError("probably not found category for this product")
 
     description = clear_description(product)
-    print(description)
     payload = None
     image_group_id = product.one_c_id or ""
 
@@ -244,9 +243,9 @@ def makeJsonChunks(makeItems):
     chunks = chunkGenerator(10)
     success = 0
     fail = 0
-    result = []
 
     for i, chunk in enumerate(chunks):
+        result = []
         for product in chunk:
             try:
                 result.append(makeItems(product))
@@ -259,10 +258,55 @@ def makeJsonChunks(makeItems):
             f"{i}-{method_name}-chunk.json",
             "ozon",
         )
-        yield json.dumps({"items": result})
+        yield {"items": result}
 
     print("Success:", success, "Fail:", fail)
 
 
 def test():
     res = next(makeJsonChunks(make_product))
+
+
+def updateProducts(chunk):
+    url = f"https://api-seller.ozon.ru/v2/product/import"
+
+    headers = {
+        "Client-Id": str(OZON_ID),
+        "Api-Key": str(OAUTH_OZON),
+        "Content-Type": "application/json",
+    }
+
+    r = requests.post(url, data=json.dumps(chunk), headers=headers)
+    return r.status_code, r.json()
+
+
+def do_all_update_products(production=False, iterations=2):
+    """
+    production=False  -- Pass True for real request to server
+    iterations=2 -- if set 0 do till the end
+    send request to server but printing results in BASE_DIR/logs/ozon/
+    """
+    chunkGen = makeJsonChunks(make_product)
+    all_responses = []
+    for i, chunk in enumerate(chunkGen):
+        print("Chunk Size is:", len(chunk["items"]))
+        if not iterations == 0:
+            if i == iterations:
+                break
+        if production:
+            status_code, response = updateProducts(chunk)
+            all_responses.append(f"{response}")
+            print(f"{i} chunk here", response)
+        time.sleep(5)
+    try:
+        send_mail(
+            "Товары на OZONe обновились",
+            f"Скрипт, angara77.ru django/products/syncronizators/yandex_market_update.py который обновляет или добавляет товары обновился статус коды\
+            и количество чанков {json.dumps(all_responses)}",
+            settings.FROM_EMAIL_ADMIN,
+            settings.EMAIL_ADMINS,
+            fail_silently=False,
+        )
+    except Exception as e:
+        print(e)
+    print(all_responses)
