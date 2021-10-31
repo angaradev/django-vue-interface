@@ -9,33 +9,20 @@ from django.conf import settings
 import requests, json, time
 from django.core.mail import send_mail
 from quora.common_lib.get_parent_category import parent_category
+from product.models import CategoryOzon
 
 
 def make_product(product):
-    def search(array, needle):
-        lst = [x for x in array if x["id"] == needle]
-        if len(lst):
-            return lst[0]
-        return None
-
-    def get_cat(product):
-        "Creating vendor cateory"
-        ret_cats = []
-        for cat in product.category.all():
-            for inn_cat in cat.get_ancestors(include_self=False):
-
-                cat_name = inn_cat.ozon_category.name
-                cat_id = inn_cat.ozon_category.cat_id
-                ret_cats.append(
-                    {"id": inn_cat.id, "cat_id": cat_id, "cat_name": cat_name}
-                )
-        ids = [x["id"] for x in ret_cats]
-        m = max(ids)
-        my_cat = search(ret_cats, m)
-
-        if my_cat:
-            return my_cat["cat_id"], my_cat["cat_name"]
-        return None, None
+    def get_cat_two(product):
+        cats = product.category.all()
+        tmp = []
+        for cat in cats:
+            for inn_cat in cat.get_ancestors(include_self=True):
+                tmp.append(inn_cat.id)
+        cts = CategoryOzon.objects.filter(shop_cat__in=tmp)
+        ret = max([x.shop_cat.id for x in cts])
+        final = cts.get(shop_cat=ret)
+        return final.cat_id, final.name, final.ozon_type
 
     name = ""
     car_make = ""
@@ -68,6 +55,7 @@ def make_product(product):
     try:
 
         brand = product.brand.brand.capitalize()
+        brand = re.sub(r"[\-\/]", " ", brand)
         if not brand or brand == "оригинал":
             brand = "original"
         if brand.lower() == "mobis".lower():
@@ -97,7 +85,7 @@ def make_product(product):
     # If we dont have category of ozon continue
 
     try:
-        category_id, category_name = get_cat(product)
+        category_id, category_name, ozon_type = get_cat_two(product)
         if category_name:
             category_name = category_name.strip()
     except Exception as e:
@@ -177,7 +165,7 @@ def make_product(product):
                     "values": [
                         {
                             "dictionary_value_id": 0,
-                            "value": category_name,
+                            "value": ozon_type,
                         }
                     ],
                 },
