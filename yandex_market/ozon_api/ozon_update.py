@@ -145,6 +145,11 @@ def make_product(product):
                 },
                 {
                     "complex_id": 0,
+                    "id": 8205,
+                    "values": [{"dictionary_value_id": 0, "value": 1825}],
+                },
+                {
+                    "complex_id": 0,
                     "id": 9048,
                     "values": [{"dictionary_value_id": 0, "value": name}],
                 },
