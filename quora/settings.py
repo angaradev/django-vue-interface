@@ -17,6 +17,9 @@ FROM_EMAIL_ADMIN = f"PartsHub Admin <mikohan1@gmail.com>"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
+
+PRODUCT_DESCRIPTION = "Материлы изготовления: сталь, алюминий, резина, стекло, пластик. Произведена на высокоточном оборудовании, с соблюдением всех допусков."
+
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "192.168.0.107",
