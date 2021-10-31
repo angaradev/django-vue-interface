@@ -13,6 +13,9 @@ from product.models import CategoryOzon
 from quora.common_lib.get_or_make_description import clear_description
 
 
+chunk_size = 100
+
+
 def make_product(product):
     def get_cat_two(product):
         cats = product.category.all()
@@ -245,7 +248,7 @@ def chunkGenerator(chunk_size):
 def makeJsonChunks(makeItems):
 
     method_name = makeItems.__name__
-    chunks = chunkGenerator(10)
+    chunks = chunkGenerator(chunk_size)
     success = 0
     fail = 0
 
