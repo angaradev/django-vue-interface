@@ -31,6 +31,8 @@ def make_product(product):
     image_group_id = None
     imgUrl = "https://angara77.ru"  # settings.SITE_URL
     siteUrl = "https://partshub.ru"  # settings.SITE_URL
+    car_make = ""
+    car_model = ""
     try:
         car_make = product.car_model.first().carmake.name.upper()
         car_model = product.car_model.first().name.upper()
