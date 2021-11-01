@@ -176,11 +176,12 @@ def make_product(product):
                     "id": 4074,
                     "values": [{"dictionary_value_id": 0, "value": youtube_id}],
                 },
-                {
-                    "complex_id": 0,
-                    "id": 11254,
-                    "values": [{"dictionary_value_id": 0, "value": description}],
-                },
+                # Rich content
+                # {
+                #     "complex_id": 0,
+                #     "id": 11254,
+                #     "values": [{"dictionary_value_id": 0, "value": description}],
+                # },
                 {
                     "complex_id": 0,
                     "id": 4191,
