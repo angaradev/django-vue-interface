@@ -28,9 +28,6 @@ def make_product(product):
         final = cts.get(shop_cat=ret)
         return final.cat_id, final.name, final.ozon_type
 
-    name = ""
-    car_make = ""
-    car_model = ""
     image_group_id = None
     imgUrl = "https://angara77.ru"  # settings.SITE_URL
     siteUrl = "https://partshub.ru"  # settings.SITE_URL
@@ -41,18 +38,8 @@ def make_product(product):
         # print("No name in product", product)
         # print(e)
         pass
-    try:
-        name = f"{product.name.capitalize()} {car_make} {car_model} {product.name2 if product.name2 else ''}".strip()
-        pattern = r"(\(.+\))|(\s\w+\/\w+)"
-        chk = re.search(pattern, name)
-        if chk:
-            logger(
-                f"{name}, {product.one_c_id} \n", "fucked_products.log", "yandex_market"
-            )
-        name = re.sub(pattern, "", name)
-    except:
-        pass
-    #         print("Name is fucks up")
+
+    name = product.make_name
 
     brand = "original"
     try:
