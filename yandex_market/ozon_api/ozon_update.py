@@ -34,8 +34,10 @@ def make_product(product):
     car_make = ""
     car_model = ""
     try:
-        car_make = product.car_model.first().carmake.name.upper()
-        car_model = product.car_model.first().name.upper()
+        car_make = product.car_model.first().carmake.name.lower()
+        car_model = product.car_model.first().name.lower()
+        if car_make == "хендай":
+            car_make = "hyundai"
     except Exception as e:
         # print("No name in product", product)
         # print(e)
@@ -44,6 +46,7 @@ def make_product(product):
     name = product.make_name
 
     brand = "original"
+
     try:
 
         brand = product.brand.brand.capitalize()
