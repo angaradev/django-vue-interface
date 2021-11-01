@@ -23,6 +23,7 @@ from product.models.models_vehicle import CarModel
 from product.models.models_images import ProductImage
 from product.models.models_productfields import ProductBages, ProductVideos
 import random
+from quora.common_lib.logger import logger
 
 
 class Category(MPTTModel):  # MPTT model here for now
@@ -173,6 +174,29 @@ class Product(models.Model):  # Main table product
 
     def __str__(self):
         return f"{self.name}-one-c={self.one_c_id}-id={self.id}"
+
+    @property
+    def make_name(self):
+        car_make = ""
+        car_model = ""
+        name2 = self.name2 or ""
+        try:
+            car_model = self.car_model.first()
+            car_make = car_model.carmake
+            name = self.name.title()
+            # if любая марка или любая модель
+            if car_model.id == 26 or car_make.id == 8:
+                return f"{name} {name2.title()}"
+
+            return f"{name} для {car_make.name.title()} {car_model.name.title()} {name2.title()}"
+
+        except:
+            logger(
+                f"{self.name}, {self.one_c_id} \n",
+                "fucked_products.log",
+                "product_logs",
+            )
+            return f"{self.name.title()} {name2.title()}"
 
     @property
     def bages(self):
