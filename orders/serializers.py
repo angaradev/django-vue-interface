@@ -22,6 +22,8 @@ class OrderProductsSerializer(serializers.ModelSerializer):
             "product_brand",
             "product_image",
             "product_slug",
+            "product_one_c_id",
+            "product_cat_number",
             "qty",
         ]
         extra_kwargs = {
@@ -58,11 +60,13 @@ class OrderSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
+        print(validated_data)
+
         def send_order_email(validated_data, products_data):
             subject = f"{settings.COMPANY_INFO['website']} {validated_data.get('number')} принят"
             emailSender = settings.EMAIL_HOST
             emailsTo = [*settings.EMAIL_MANAGERS]
-            print(type(emailsTo), emailsTo, validated_data.get("email"))
+            # print(type(emailsTo), emailsTo, validated_data.get("email"))
             # settings.EMAIL_MANAGERS.append(validated_data.get("email"))
             emailsTo.append(validated_data.get("email"))
             products = [
@@ -72,6 +76,8 @@ class OrderSerializer(serializers.ModelSerializer):
                     "price": x["product_price"],
                     "image": x["product_image"],
                     "brand": x["product_brand"].upper(),
+                    "one_c_id": x["product_one_c_id"],
+                    "cat_number": x["product_cat_number"],
                     "total": x["product_price"] * x["qty"],
                 }
                 for x in products_data
@@ -123,7 +129,6 @@ class OrderSerializer(serializers.ModelSerializer):
         autouser = validated_data.pop("autouser")
         qs = AutoUser.objects.get(userId=autouser)
         validated_data["autouser"] = qs
-        # print(products_data)
         # print(products_data)
         # print(validated_data)
         # send_mail(
