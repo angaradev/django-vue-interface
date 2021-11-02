@@ -140,6 +140,8 @@
               <th class="tg-0lax">#</th>
               <th class="tg-0lax">Название</th>
               <th class="tg-0lax">Бренд</th>
+              <th class="tg-0lax">Каталог</th>
+              <th class="tg-0lax">ONECID</th>
               <th class="tg-0lax">Количество</th>
               <th class="tg-0lax">Цена</th>
               <th class="tg-0lax">Сумма</th>
@@ -151,6 +153,8 @@
               <td class="tg-hmp3">{{ forloop.counter }}</td>
               <td class="tg-hmp3">{{ product.name }}</td>
               <td class="tg-hmp3">{{ product.brand }}</td>
+              <td class="tg-hmp3">{{ product.cat_number }}</td>
+              <td class="tg-hmp3">{{ product.one_c_id }}</td>
               <td class="tg-hmp3">{{ product.quantity }}</td>
               <td class="tg-hmp3">{{ product.price }}</td>
               <td class="tg-hmp3">{{ product.total }}</td>
@@ -173,3 +177,4 @@
     </body>
   </head>
 </html>
+

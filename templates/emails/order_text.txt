@@ -1,4 +1,4 @@
-Заказ номер{{ data.number }}
+Заказ номер {{ data.number }}
 На сумму {{ data.total }}
 
 ==================================================
@@ -6,7 +6,7 @@
 Детали заказа:
 
 {% for product in products %}
-{{ product.name }} цена {{ product.price }}
+{{ product.name }} {{ product.one_c_id }} цена {{ product.price }}
 {% endfor %}
 
 
