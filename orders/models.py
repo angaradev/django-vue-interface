@@ -76,6 +76,8 @@ class OrderProducts(models.Model):
     product_name = models.CharField(max_length=555)
     product_car = models.CharField(max_length=255)
     product_brand = models.CharField(max_length=255)
+    product_one_c_id = models.CharField(max_length=40, null=True, blank=True)
+    product_cat_number = models.CharField(max_length=40, null=True, blank=True)
     product_image = models.CharField(max_length=500, blank=True, null=True)
     product_slug = models.SlugField(max_length=500)
     qty = models.IntegerField()

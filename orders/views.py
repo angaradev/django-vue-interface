@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from users.models import AutoUser, CustomUser
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
 
 
 class OrderAPIView(viewsets.ModelViewSet):
@@ -42,6 +43,8 @@ class OrderAPIView(viewsets.ModelViewSet):
                 queryset = self.queryset.filter(
                     autouser=AutoUser.objects.get(id=autouser)
                 )
+            else:
+                return Response("You must be authorized", status.HTTP_401_UNAUTHORIZED)
 
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
