@@ -61,16 +61,16 @@ def sync_products():
     i = 0
     for product in csv_list:
         try:
-            csv_ids.append(int(product[2]))
+            csv_ids.append(int(product[1]))
             csv_dict.append(
                 {
                     "name": product[0],
-                    "one_c_id": int(product[2]),
-                    "brand": product[10] if product[9] else "origin",
-                    "car_model": product[8].lower(),
-                    "cat_number": product[3],
-                    "price": float(product[7]) if product[7] else 0,
-                    "quantity": int(product[1]) if product[1] else 0,
+                    "one_c_id": int(product[1]),
+                    "brand": product[6] if product[6] else "origin",
+                    "car_model": product[3].lower(),
+                    "cat_number": product[4],
+                    "price": float(product[5]) if product[5] else 0,
+                    "quantity": int(product[8]) if product[8] else 0,
                     "availability_days": 0,
                 }
             )
@@ -147,5 +147,5 @@ def sync_products():
 
     end = datetime.now()
     print(f"Sync script ended up in:", end - start)
-    print(f"Products updated:", j)
+    print(f"Products updated:", j, "Products fucked up", i)
     # Comment for git
