@@ -41,10 +41,10 @@ class Price(models.Model):
     )
 
     retail_price = models.DecimalField(
-        max_digits=20, decimal_places=2, null=True, blank=True
+        max_digits=20, decimal_places=2, null=True, blank=True, default=None
     )
     purchase_price = models.DecimalField(
-        max_digits=20, decimal_places=2, null=True, blank=True
+        max_digits=20, decimal_places=2, null=True, blank=True, default=None
     )
 
     class Meta:
@@ -72,10 +72,10 @@ class PriceHistory(models.Model):
         Product, on_delete=models.CASCADE, related_name="product_price_history"
     )
     retail_price = models.DecimalField(
-        max_digits=20, decimal_places=2, null=True, blank=True
+        max_digits=20, decimal_places=2, null=True, blank=True, default=None
     )
     purchase_price = models.DecimalField(
-        max_digits=20, decimal_places=2, null=True, blank=True
+        max_digits=20, decimal_places=2, null=True, blank=True, default=None
     )
     dollar_rate = models.FloatField()
     date = models.DateField(auto_now_add=True)
