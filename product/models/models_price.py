@@ -36,6 +36,17 @@ class Price(models.Model):
     Class handling product prices
     """
 
+    product = models.OneToOneField(
+        "Product", on_delete=models.CASCADE, related_name="product_prices"
+    )
+
+    retail_price = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True
+    )
+    purchase_price = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True
+    )
+
     class Meta:
         verbose_name = "Цена"
         verbose_name_plural = "Цены"
@@ -43,17 +54,11 @@ class Price(models.Model):
     def __str__(self):
         return self.product.full_name
 
-    value = models.DecimalField(
-        max_digits=20,
-        decimal_places=2,
-        null=True,
-        blank=True,
-    )
-
 
 class PriceHistory(models.Model):
     """
     Class handling product price history
+    Needs to implement logic and add it ot crontab later on
     """
 
     class Meta:
@@ -63,12 +68,17 @@ class PriceHistory(models.Model):
     def __str__(self):
         return self.product.full_name
 
-    product = models.OneToOneField(
+    product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="product_price_history"
     )
-    value = models.DecimalField(max_digits=20, decimal_places=2, null=True, blank=True)
+    retail_price = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True
+    )
+    purchase_price = models.DecimalField(
+        max_digits=20, decimal_places=2, null=True, blank=True
+    )
     dollar_rate = models.FloatField()
-    price_date = models.DateTimeField(auto_now_add=True)
+    date = models.DateField(auto_now_add=True)
 
 
 class Stock(models.Model):
