@@ -43,6 +43,12 @@ class Price(models.Model):
     def __str__(self):
         return self.product.full_name
 
+    product = models.ForeignKey(
+        "Product", on_delete=models.CASCADE, related_name="product_prices"
+    )
+
+    name = models.CharField(max_length=50)
+
     value = models.DecimalField(
         max_digits=20,
         decimal_places=2,
