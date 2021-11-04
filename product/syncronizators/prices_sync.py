@@ -20,6 +20,8 @@ def update_prices():
     reader_ret = csv.reader(ret_csv, delimiter=";")
     purch_list = [{"one_c_id": int(x[1]), "purchase_price": x[5]} for x in reader_purch]
     ret_list = [{"one_c_id": int(x[1]), "retail_price": x[5]} for x in reader_ret]
+    purch_csv.close()
+    ret_csv.close()
 
     for l in (ret_list, purch_list):
         for elem in l:
