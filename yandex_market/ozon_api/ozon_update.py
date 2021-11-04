@@ -291,7 +291,7 @@ def do_all_update_products(production=False, iterations=2):
         time.sleep(5)
     try:
         send_mail(
-            "Товары на OZONe обновились",
+            "Товары на OZON обновились",
             f"Скрипт, angara77.ru django/products/syncronizators/yandex_market_update.py который обновляет или добавляет товары обновился статус коды\
             и количество чанков {json.dumps(all_responses)}",
             settings.FROM_EMAIL_ADMIN,
