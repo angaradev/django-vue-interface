@@ -11,6 +11,7 @@ node_modules
 elastic_stuff.sh
 wsgi.py
 all.csv
+purchase_price.csv
 el_log.txt
 
 
