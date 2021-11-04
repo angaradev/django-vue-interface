@@ -99,6 +99,7 @@ def make_product(product):
         price = math.ceil(premium_price + premium_price * 0.1)
     except Exception as e:
         pass
+    # Here we skip products wit price less than 200 rubles
     #         print('Shit in price', e)
     cat_number = ""
     try:
@@ -214,10 +215,12 @@ def chunkGenerator(chunk_size):
     """
     # Chunk size
     n = chunk_size
-    # Select products with images and prices
+    # Select products with images and prices, and price must be over 200 rubels
+    # Pay attention here is the mimimum price set up
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
         .filter(product_stock__quantity__gt=0)
+        .filter(product_stock__price__gt=300)
         .distinct()
     )
     print("Products selected:", products.count())
