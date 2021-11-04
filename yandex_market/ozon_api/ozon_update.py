@@ -13,7 +13,7 @@ from product.models import CategoryOzon
 from quora.common_lib.get_or_make_description import clear_description
 
 
-chunk_size = 100
+chunk_size = 10
 
 
 def make_product(product):
@@ -114,6 +114,75 @@ def make_product(product):
     #         print('No Youtube id', e)
 
     try:
+        attributes = [
+            {
+                "complex_id": 0,
+                "id": 85,
+                "values": [{"dictionary_value_id": 0, "value": brand}],
+            },
+            {
+                "complex_id": 0,
+                "id": 8205,
+                "values": [{"dictionary_value_id": 0, "value": "1825"}],
+            },
+            {
+                "complex_id": 0,
+                "id": 9048,
+                "values": [{"dictionary_value_id": 0, "value": name}],
+            },
+            {
+                "complex_id": 0,
+                "id": 7236,
+                "values": [{"dictionary_value_id": 0, "value": cat_number}],
+            },
+            {
+                "complex_id": 0,
+                "id": 8229,
+                "values": [
+                    {
+                        "dictionary_value_id": ozon_type,
+                    }
+                ],
+            },
+            {
+                "complex_id": 0,
+                "id": 4074,
+                "values": [{"dictionary_value_id": 0, "value": youtube_id}],
+            },
+            {
+                "complex_id": 0,
+                "id": 4191,
+                "values": [
+                    {
+                        "dictionary_value_id": 0,
+                        "value": description,
+                    }
+                ],
+            },
+            {
+                "complex_id": 0,
+                "id": 9024,
+                "values": [{"dictionary_value_id": 0, "value": str(product.one_c_id)}],
+            },
+            {
+                "complex_id": 0,
+                "id": 10289,
+                "values": [{"value": str(product.one_c_id)}],
+            },
+        ]
+        if (
+            name.lower().find("гермет") != -1
+            or name.lower().find("масло ") != -1
+            or name.lower().find("смаз") != -1
+        ):
+            attributes.append(
+                {
+                    "complex_id": 0,
+                    "id": 9782,
+                    "values": [{"value": str(3)}],
+                }
+            )
+
         payload = {
             "category_id": category_id,
             #                     "color_image": "string",
@@ -132,89 +201,7 @@ def make_product(product):
             "weight": 2,
             "weight_unit": "kg",
             "width": 20,
-            "attributes": [
-                {
-                    "complex_id": 0,
-                    "id": 85,
-                    "values": [{"dictionary_value_id": 0, "value": brand}],
-                },
-                {
-                    "complex_id": 0,
-                    "id": 8205,
-                    "values": [{"dictionary_value_id": 0, "value": "1825"}],
-                },
-                {
-                    "complex_id": 0,
-                    "id": 9048,
-                    "values": [{"dictionary_value_id": 0, "value": name}],
-                },
-                {
-                    "complex_id": 0,
-                    "id": 7236,
-                    "values": [{"dictionary_value_id": 0, "value": cat_number}],
-                },
-                {
-                    "complex_id": 0,
-                    "id": 8229,
-                    "values": [
-                        {
-                            "dictionary_value_id": 0,
-                            "value": ozon_type,
-                        }
-                    ],
-                },
-                {
-                    "complex_id": 0,
-                    "id": 4074,
-                    "values": [{"dictionary_value_id": 0, "value": youtube_id}],
-                },
-                # Rich content
-                # {
-                #     "complex_id": 0,
-                #     "id": 11254,
-                #     "values": [{"dictionary_value_id": 0, "value": description}],
-                # },
-                {
-                    "complex_id": 0,
-                    "id": 4191,
-                    "values": [
-                        {
-                            "dictionary_value_id": 0,
-                            "value": description,
-                        }
-                    ],
-                },
-                {
-                    "complex_id": 0,
-                    "id": 7204,
-                    "values": [
-                        {
-                            "dictionary_value_id": 0,
-                            "value": car_make,
-                        }
-                    ],
-                },
-                {
-                    "complex_id": 0,
-                    "id": 7212,
-                    "values": [
-                        {
-                            "dictionary_value_id": 0,
-                            "value": car_model,
-                        }
-                    ],
-                },
-                {
-                    "complex_id": 0,
-                    "id": 9782,
-                    "values": [
-                        {
-                            "dictionary_value_id": 0,
-                            "value": "Не опасен",
-                        }
-                    ],
-                },
-            ],
+            "attributes": attributes,
         }
     except Exception as e:
         print("Crap happened in main exception", e)
@@ -311,3 +298,34 @@ def do_all_update_products(production=False, iterations=2):
     except Exception as e:
         print(e)
     print(all_responses)
+
+    # {
+    # "complex_id": 0,
+    # "id": 7204,
+    # "values": [
+    #     {
+    #         "dictionary_value_id": 0,
+    #         "value": car_make,
+    #     }
+    # ],
+    # },
+    # # {
+    # #     "complex_id": 0,
+    # #     "id": 7212,
+    # #     "values": [
+    # #         {
+    # #             "dictionary_value_id": 0,
+    # #             "value": car_model,
+    # #         }
+    # #     ],
+    # # },
+    # {
+    # "complex_id": 0,
+    # "id": 9782,
+    # "values": [
+    #     {
+    #         "dictionary_value_id": 0,
+    #         "value": "Не опасен",
+    #     }
+    # ],
+    # },
