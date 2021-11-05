@@ -14,7 +14,7 @@ from quora.common_lib.get_or_make_description import clear_description
 from yandex_market.common.utils import danger_class_definder, make_brand
 
 
-chunk_size = 100
+chunk_size = 10
 
 
 def make_product(product):
@@ -165,7 +165,7 @@ def make_product(product):
                 {
                     "complex_id": 0,
                     "id": 9782,
-                    "values": [{"value": str(dang)}],
+                    "values": [{"dictionary_value_id": dang}],
                 }
             )
         if youtube_id:
