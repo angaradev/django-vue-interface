@@ -14,7 +14,7 @@ from quora.common_lib.get_or_make_description import clear_description
 from yandex_market.common.utils import danger_class_definder, make_brand
 
 
-chunk_size = 10
+chunk_size = 100
 
 
 def make_product(product):
@@ -46,6 +46,9 @@ def make_product(product):
 
     name = product.make_name
 
+    # Making brand in utils
+    # If brand not exists or
+    # it is not in ozon list return No brand
     brand = make_brand(product)
 
     default_country = "Южная Корея"
