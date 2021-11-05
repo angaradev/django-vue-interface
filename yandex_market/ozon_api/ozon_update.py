@@ -14,7 +14,7 @@ from quora.common_lib.get_or_make_description import clear_description
 from yandex_market.common.utils import danger_class_definder, make_brand
 
 
-chunk_size = 10
+chunk_size = 100
 
 
 def make_product(product):
