@@ -13,6 +13,8 @@ from product.models import CategoryOzon
 from quora.common_lib.get_or_make_description import clear_description
 from yandex_market.common.utils import danger_class_definder, make_brand
 
+OZON_WAREHOUSE_ID = 22190110499000
+
 
 chunk_size = 100
 
@@ -242,7 +244,10 @@ def makeJsonChunks(makeItems):
             f"{i}-{method_name}-chunk.json",
             "ozon",
         )
-        yield {"items": result}
+        if method_name == "make_product":
+            yield {"items": result}
+        elif method_name == "make_stock":
+            yield {"stock": result}
 
     print("Success:", success, "Fail:", fail)
 
@@ -295,33 +300,52 @@ def do_all_update_products(production=False, iterations=2):
         print(e)
     print(all_responses)
 
-    # {
-    # "complex_id": 0,
-    # "id": 7204,
-    # "values": [
-    #     {
-    #         "dictionary_value_id": 0,
-    #         "value": car_make,
-    #     }
-    # ],
-    # },
-    # # {
-    # #     "complex_id": 0,
-    # #     "id": 7212,
-    # #     "values": [
-    # #         {
-    # #             "dictionary_value_id": 0,
-    # #             "value": car_model,
-    # #         }
-    # #     ],
-    # # },
-    # {
-    # "complex_id": 0,
-    # "id": 9782,
-    # "values": [
-    #     {
-    #         "dictionary_value_id": 0,
-    #         "value": "Не опасен",
-    #     }
-    # ],
-    # },
+
+def make_stock(product):
+    stock = 0
+    try:
+        stock = product.product_stock.first().quantity
+    except:
+        stock = 0
+    one_c_id = str(product.one_c_id)
+
+    stock = {"offer_id": one_c_id, "stock": stock, "warehouse_id": OZON_WAREHOUSE_ID}
+    return stock
+
+
+def stock_request_perform(chunk):
+    url = f"https://api-seller.ozon.ru/v2/products/stocks"
+
+    headers = {
+        "Client-Id": str(OZON_ID),
+        "Api-Key": str(OAUTH_OZON),
+        "Content-Type": "application/json",
+    }
+
+    r = requests.post(url, data=json.dumps(chunk), headers=headers)
+    return r.status_code, r.json()
+
+
+def stocks_update(production=False):
+
+    chunkGen = makeJsonChunks(make_stock)
+    all_responses = []
+    for i, chunk in enumerate(chunkGen):
+        print("Chunk Size is:", chunk_size)
+        if production:
+            status_code, response = stock_request_perform(chunk)
+            all_responses.append(f"{response}")
+            print(f"{i} chunk here", response)
+        time.sleep(5)
+    try:
+        send_mail(
+            "Остатки на OZON обновились",
+            f"Скрипт, angara77.ru django/products/syncronizators/yandex_market_update.py который обновляет или добавляет товары обновился статус коды\
+            и количество чанков {json.dumps(all_responses)}",
+            settings.FROM_EMAIL_ADMIN,
+            settings.EMAIL_ADMINS,
+            fail_silently=False,
+        )
+    except Exception as e:
+        print(e)
+    print(all_responses)
