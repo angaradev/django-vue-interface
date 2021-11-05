@@ -226,9 +226,6 @@ def chunkGenerator(chunk_size):
 def makeJsonChunks(makeItems):
 
     method_name = makeItems.__name__
-    print(method_name)
-    if method_name == "make_stock":
-        print("Yes it is working")
     chunks = chunkGenerator(chunk_size)
     success = 0
     fail = 0
