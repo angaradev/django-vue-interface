@@ -11,6 +11,7 @@ from django.core.mail import send_mail
 from quora.common_lib.get_parent_category import parent_category
 from product.models import CategoryOzon
 from quora.common_lib.get_or_make_description import clear_description
+from yandex_market.common.utils import danger_class_definder
 
 
 chunk_size = 10
@@ -147,11 +148,6 @@ def make_product(product):
             },
             {
                 "complex_id": 0,
-                "id": 4074,
-                "values": [{"dictionary_value_id": 0, "value": youtube_id}],
-            },
-            {
-                "complex_id": 0,
                 "id": 4191,
                 "values": [
                     {
@@ -171,17 +167,23 @@ def make_product(product):
                 "values": [{"value": str(product.one_c_id)}],
             },
         ]
-        if (
-            name.lower().find("гермет") != -1
-            or name.lower().find("масло ") != -1
-            or name.lower().find("смаз") != -1
-        ):
+
+        dang = danger_class_definder(name)
+        if dang:
             attributes.append(
                 {
                     "complex_id": 0,
                     "id": 9782,
-                    "values": [{"value": str(3)}],
+                    "values": [{"value": str(dang)}],
                 }
+            )
+        if youtube_id:
+            attributes.append(
+                {
+                    "complex_id": 0,
+                    "id": 4074,
+                    "values": [{"dictionary_value_id": 0, "value": youtube_id}],
+                },
             )
 
         payload = {
