@@ -226,6 +226,9 @@ def chunkGenerator(chunk_size):
 def makeJsonChunks(makeItems):
 
     method_name = makeItems.__name__
+    print(method_name)
+    if method_name == "make_stock":
+        print("Yes it is working")
     chunks = chunkGenerator(chunk_size)
     success = 0
     fail = 0
@@ -238,16 +241,22 @@ def makeJsonChunks(makeItems):
                 success += 1
             except Exception as e:
                 fail += 1
-
-        logger(
-            json.dumps({"items": result}, indent=2),
-            f"{i}-{method_name}-chunk.json",
-            "ozon",
-        )
+        if method_name == "make_product":
+            logger(
+                json.dumps({"items": result}, indent=2),
+                f"{i}-{method_name}-chunk.json",
+                "ozon",
+            )
+        elif method_name == "make_stock":
+            logger(
+                json.dumps({"stocks": result}, indent=2),
+                f"{i}-{method_name}-chunk.json",
+                "ozon",
+            )
         if method_name == "make_product":
             yield {"items": result}
         elif method_name == "make_stock":
-            yield {"stock": result}
+            yield {"stocks": result}
 
     print("Success:", success, "Fail:", fail)
 
@@ -326,12 +335,15 @@ def stock_request_perform(chunk):
     return r.status_code, r.json()
 
 
-def stocks_update(production=False):
+def stocks_update(production=False, iterations=2):
 
     chunkGen = makeJsonChunks(make_stock)
     all_responses = []
     for i, chunk in enumerate(chunkGen):
         print("Chunk Size is:", chunk_size)
+        if not iterations == 0:
+            if i == iterations:
+                break
         if production:
             status_code, response = stock_request_perform(chunk)
             all_responses.append(f"{response}")
