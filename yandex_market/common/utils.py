@@ -116,8 +116,7 @@ def make_brand(product):
         "15413",
         "1791",
     ]
-    no_brands_ids = []
-    no_brands_ids.append(no_brands_ids_one)
+    no_brands_ids = [*no_brands_ids_one]
 
     brand = "original"
 
