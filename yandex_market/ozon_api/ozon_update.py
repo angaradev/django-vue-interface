@@ -11,7 +11,7 @@ from django.core.mail import send_mail
 from quora.common_lib.get_parent_category import parent_category
 from product.models import CategoryOzon
 from quora.common_lib.get_or_make_description import clear_description
-from yandex_market.common.utils import danger_class_definder
+from yandex_market.common.utils import danger_class_definder, make_brand
 
 
 chunk_size = 10
@@ -46,19 +46,7 @@ def make_product(product):
 
     name = product.make_name
 
-    brand = "original"
-
-    try:
-
-        brand = product.brand.brand.capitalize()
-        brand = re.sub(r"[\-\/]", " ", brand)
-        if not brand or brand == "оригинал":
-            brand = "original"
-        if brand.lower() == "mobis".lower():
-            brand = "original"
-    except Exception as e:
-        # print("No brand found")
-        pass
+    brand = make_brand(product)
 
     default_country = "Южная Корея"
     country = None
