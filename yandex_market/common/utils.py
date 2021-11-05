@@ -15,6 +15,7 @@ def danger_class_definder(name):
 
 def make_brand(product):
     no_brands_ids_one = [
+        "25404",
         "24721",
         "24429",
         "24628",
