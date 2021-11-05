@@ -122,7 +122,6 @@ def make_brand(product):
     brand = "original"
 
     try:
-
         brand = product.brand.brand.capitalize()
         brand = re.sub(r"[\-\/]", " ", brand)
         if not brand or brand == "оригинал":
@@ -130,8 +129,7 @@ def make_brand(product):
         if brand.lower() == "mobis".lower():
             brand = "original"
     except Exception as e:
-        # print("No brand found")
-        pass
+        brand = "Нет бренда"
 
     if str(product.one_c_id) in no_brands_ids:
         return "Нет бренда"
