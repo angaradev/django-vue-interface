@@ -343,8 +343,8 @@ def stocks_update(production=False, iterations=2):
                 break
         if production:
             status_code, response = stock_request_perform(chunk)
-            all_responses.append(f"{response}")
-            print(f"{i} chunk here", response)
+            all_responses.append("Dumny change it later")
+            print(f"{i} chunk here")
         time.sleep(5)
     try:
         send_mail(
