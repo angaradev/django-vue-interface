@@ -27,13 +27,13 @@ def chunkGenerator(chunk_size):
     # Chunk size
     n = chunk_size
     # Select products with images and prices
-    oils = Product.objects.filter(one_c_id__in=maslo_ids).distinct()
-    products_tmp = (
+    # oils = Product.objects.filter(one_c_id__in=maslo_ids).distinct()
+    products = (
         Product.objects.filter(product_image__img150__isnull=False)
         .filter(product_stock__quantity__gt=0)
         .distinct()
     )
-    products = oils | products_tmp
+    # products = oils | products_tmp
     print("Products selected:", products.count())
     for i in range(0, products.count(), n):
         yield products[i : i + n]
