@@ -184,6 +184,7 @@ class Product(models.Model):  # Main table product
             car_model = self.car_model.first()
             car_make = car_model.carmake
             name = self.name.title()
+            print(car_make.id, car_model.id)
             # if любая марка или любая модель
             if car_model.id == 26 or car_make.id == 8:
                 return f"{name} {name2.title()}"
