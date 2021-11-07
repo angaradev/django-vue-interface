@@ -220,16 +220,17 @@ def do_all_update_products(production=False, iterations=0):
 
 
 def do_all_update_prices(production=False):
-    chunkGen = createJsonChunks(makePrices)
     all_responses = []
     for key, value in YM_CREDENTIALS.items():
+        chunkGen = createJsonChunks(makePrices)
+        print(f"Doing {key}")
+
         for i, chunk in enumerate(chunkGen):
-            time.sleep(60)
-            print("Chunk length is:", len(chunk["offers"]))
+            chunk_length = len(chunk["offers"])
+            print("Chunk length is:", chunk_length)
             conn = 1
-            while conn <= 5:
-                if production:
-                    print(f"Doing {key}")
+            if production:
+                while conn <= 5:
                     try:
                         status_code, response = updatePrices(chunk, value)
                         all_responses.append(f"{response}")
@@ -237,12 +238,17 @@ def do_all_update_prices(production=False):
                         if status_code == 200:
                             break
                         conn += 1
-                        time.sleep(65)
+                        # time.sleep(65)
                     except:
                         print("Attempt #", conn)
                         continue
+            else:
+                print("In test mode")
+                print(f"Shop is: {key}, chunk lenght is: {chunk_length}")
 
-        time.sleep(65)
+            time.sleep(60)
+
+        # time.sleep(65)
     try:
         send_mail(
             "Цены Товаров на маркете обновились",
