@@ -29,7 +29,7 @@ def update_prices():
     res_list = list(d.values())
     # print(res_list)[:5]
 
-    with progressbar.ProgressBar(max_value=len(ret_list)) as bar:
+    with progressbar.ProgressBar(max_value=len(res_list)) as bar:
         for i, row in enumerate(res_list):
             #         print(row)
             try:
@@ -40,16 +40,19 @@ def update_prices():
                 purchase_price = (
                     Decimal(row["purchase_price"]) if row["purchase_price"] else None
                 )
-                Price.objects.update_or_create(
-                    product=product,
-                    retail_price=retail_price,
-                    purchase_price=purchase_price,
-                    defaults={
-                        "product": product,
-                        "purchase_price": purchase_price,
-                        "retail_price": retail_price,
-                    },
-                )
+                try:
+                    price = Price.objects.get(product=product)
+                    price.retail_price = retail_price
+                    price.purchase_price = purchase_price
+                    price.save()
+                except:
+                    price = Price(
+                        product=product,
+                        retail_price=retail_price,
+                        purchase_price=purchase_price,
+                    )
+                    price.save()
+
             except Exception as e:
                 cnt += 1
                 fucked_products.append(e)
