@@ -41,5 +41,5 @@ def do_insert():
         settings.EMAIL_ADMINS,
         headers=headers,
     )
-    email.send(fail_silently=False)
+    # email.send(fail_silently=False)
     print(all_res)
