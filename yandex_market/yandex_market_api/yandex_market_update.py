@@ -3,7 +3,7 @@ from quora.common_lib.logger import logger
 import re
 import pathlib
 from bs4 import BeautifulSoup
-from quora.local_settings import OAUTH_YANDEX_MARKET
+from quora.local_settings import YM_CREDENTIALS
 from product.models import Product
 from django.conf import settings
 import requests, json, time
@@ -117,11 +117,14 @@ def makeProduct(product):
     return testProduct
 
 
-def updatePrices(prices):
-    url = f"https://api.partner.market.yandex.ru/v2/campaigns/{settings.CAMPAIGN_ID}/offer-prices/updates.json"
+def updatePrices(prices, credentials):
+    campaign_id = credentials["CAMPAIGN_ID"]
+    oauth = credentials["OAUTH"]
+
+    url = f"https://api.partner.market.yandex.ru/v2/campaigns/{campaign_id}/offer-prices/updates.json"
 
     headers = {
-        "Authorization": settings.OAUTH_YANDEX_MARKET,
+        "Authorization": oauth,
         "Content-Type": "application/json",
     }
 
@@ -129,10 +132,12 @@ def updatePrices(prices):
     return r.status_code, r.json()
 
 
-def updateProducts(product):
-    url = f"https://api.partner.market.yandex.ru/v2/campaigns/{settings.CAMPAIGN_ID}/offer-mapping-entries/updates.json"
+def updateProducts(product, credentials):
+    campaign_id = credentials["CAMPAIGN_ID"]
+    oauth = credentials["OAUTH"]
+    url = f"https://api.partner.market.yandex.ru/v2/campaigns/{campaign_id}/offer-mapping-entries/updates.json"
 
-    headers = {"Authorization": OAUTH_YANDEX_MARKET, "Content-Type": "application/json"}
+    headers = {"Authorization": oauth, "Content-Type": "application/json"}
 
     r = requests.post(url, data=json.dumps(product), headers=headers)
     return r.status_code, r.json()
@@ -191,7 +196,12 @@ def do_all_update_products(production=False):
     for i, chunk in enumerate(chunkGen):
         print("Chunk Size is:", len(chunk["offerMappingEntries"]))
         if production:
-            status_code, response = updateProducts(chunk)
+            # Update on angara
+            status_code, response = updateProducts(chunk, YM_CREDENTIALS["ANGARA"])
+            all_responses.append(f"{response}")
+            print(f"{i} chunk here", response)
+            # Update on partshub
+            status_code, response = updateProducts(chunk, YM_CREDENTIALS["PARTSHUB"])
             all_responses.append(f"{response}")
             print(f"{i} chunk here", response)
         time.sleep(5)
