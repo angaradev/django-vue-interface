@@ -190,20 +190,19 @@ def makePrices(product):
     return item
 
 
-def do_all_update_products(production=False):
+def do_all_update_products(production=False, iterations=0):
     chunkGen = createJsonChunks(makeProduct)
     all_responses = []
     for i, chunk in enumerate(chunkGen):
         print("Chunk Size is:", len(chunk["offerMappingEntries"]))
+        if iterations != 0 and iterations == i:
+            break
         if production:
             # Update on angara
-            status_code, response = updateProducts(chunk, YM_CREDENTIALS["ANGARA"])
-            all_responses.append(f"{response}")
-            print(f"{i} chunk here", response)
-            # Update on partshub
-            status_code, response = updateProducts(chunk, YM_CREDENTIALS["PARTSHUB"])
-            all_responses.append(f"{response}")
-            print(f"{i} chunk here", response)
+            for key, value in YM_CREDENTIALS.items():
+                status_code, response = updateProducts(chunk, value)
+                all_responses.append(f"{response}")
+                print(f"{i} chunk here", response)
         time.sleep(5)
     try:
         send_mail(
