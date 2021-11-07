@@ -146,7 +146,7 @@ def updateProducts(product, credentials):
 def createJsonChunks(makeItems):
     method_name = makeItems.__name__
 
-    chunk_size = 40
+    chunk_size = 50
     if method_name == "makeProduct":
         chunk_size = 100
 
@@ -224,6 +224,7 @@ def do_all_update_prices(production=False):
     all_responses = []
     for key, value in YM_CREDENTIALS.items():
         for i, chunk in enumerate(chunkGen):
+            time.sleep(60)
             print("Chunk length is:", len(chunk["offers"]))
             conn = 1
             while conn <= 5:
