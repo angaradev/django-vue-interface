@@ -146,7 +146,7 @@ def updateProducts(product, credentials):
 def createJsonChunks(makeItems):
     method_name = makeItems.__name__
 
-    chunk_size = 50
+    chunk_size = 40
     if method_name == "makeProduct":
         chunk_size = 100
 
