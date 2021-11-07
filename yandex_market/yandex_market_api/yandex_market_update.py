@@ -200,6 +200,7 @@ def do_all_update_products(production=False, iterations=0):
         if production:
             # Update on angara
             for key, value in YM_CREDENTIALS.items():
+                print(f"Doing {key}")
                 status_code, response = updateProducts(chunk, value)
                 all_responses.append(f"{response}")
                 print(f"{i} chunk here", response)
@@ -226,17 +227,19 @@ def do_all_update_prices(production=False):
         conn = 1
         while conn <= 5:
             if production:
-                try:
-                    status_code, response = updatePrices(chunk)
-                    all_responses.append(f"{response}")
-                    print(f"{i} chunk here || Attempt number-{conn}", response)
-                    if status_code == 200:
-                        break
-                    conn += 1
-                    time.sleep(65)
-                except:
-                    print("Attempt #", conn)
-                    continue
+                for key, value in YM_CREDENTIALS.items():
+                    print(f"Doing {key}")
+                    try:
+                        status_code, response = updatePrices(chunk, value)
+                        all_responses.append(f"{response}")
+                        print(f"{i} chunk here || Attempt number-{conn}", response)
+                        if status_code == 200:
+                            break
+                        conn += 1
+                        time.sleep(65)
+                    except:
+                        print("Attempt #", conn)
+                        continue
 
         time.sleep(65)
     try:
