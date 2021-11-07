@@ -222,12 +222,12 @@ def do_all_update_products(production=False, iterations=0):
 def do_all_update_prices(production=False):
     chunkGen = createJsonChunks(makePrices)
     all_responses = []
-    for i, chunk in enumerate(chunkGen):
-        print("Chunk length is:", len(chunk["offers"]))
-        conn = 1
-        while conn <= 5:
-            if production:
-                for key, value in YM_CREDENTIALS.items():
+    for key, value in YM_CREDENTIALS.items():
+        for i, chunk in enumerate(chunkGen):
+            print("Chunk length is:", len(chunk["offers"]))
+            conn = 1
+            while conn <= 5:
+                if production:
                     print(f"Doing {key}")
                     try:
                         status_code, response = updatePrices(chunk, value)
