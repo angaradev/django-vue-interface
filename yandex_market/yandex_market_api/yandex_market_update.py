@@ -12,7 +12,7 @@ from quora.common_lib.get_parent_category import parent_category
 from quora.common_lib.get_or_make_description import clear_description
 
 
-maslo_ids = [3226, 25489, 25484, 23704, 25485, 23781]
+maslo_ids = [23847]
 
 
 def get_cat(product):
@@ -27,13 +27,13 @@ def chunkGenerator(chunk_size):
     # Chunk size
     n = chunk_size
     # Select products with images and prices
-    # oils = Product.objects.filter(one_c_id__in=maslo_ids).distinct()
+    oils = Product.objects.filter(one_c_id__in=maslo_ids).distinct()
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
         .filter(product_stock__quantity__gt=0)
         .distinct()
     )
-    # products = oils | products_tmp
+    products = oils | products
     print("Products selected:", products.count())
     for i in range(0, products.count(), n):
         yield products[i : i + n]
