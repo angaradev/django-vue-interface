@@ -1,0 +1,7 @@
+{
+  "stubPath": [
+    "~/Projects/quora/venv/lib/python3.8/site-packages/django-stubs"
+  ],
+  "venvPath": "/home/manhee/Projects/quora/",
+  "venv": "venv"
+}

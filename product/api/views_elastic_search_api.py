@@ -1,8 +1,9 @@
+from django.db.models.query import QuerySet
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse
 from product.models import Product, Category
 import json, requests
-import pprint, re, os
+import pprint, re, os, time
 from django.conf import settings
 
 pp = pprint.PrettyPrinter(indent=2)
@@ -202,6 +203,7 @@ def checFilters(filters, get):
 
 def send_json(request):
     aggs_size = 2000
+    data = None
     if request.method == "GET":
         """
         Check if search by make slug exists
@@ -214,7 +216,6 @@ def send_json(request):
         cat = request.GET.get("category")
         model = request.GET.get("model")
         make = request.GET.get("make")
-        data = None
         q_list = [x[0] for x in request.GET.items()]
         filters_chk = checFilters(filters_params, q_list)
 
@@ -236,7 +237,6 @@ def send_json(request):
         categories = response["aggregations"]["categories"]["buckets"]
         rebuilt_cats = []
         for category in categories:
-            new_cat = None
             try:
                 new_cat = Category.objects.get(id=category["key"])
             except Exception as e:
@@ -258,10 +258,12 @@ def send_json(request):
 
     data = response
 
+    # time.sleep(4) #mock time delay for testing
     return JsonResponse(data, safe=False)
 
 
 def autocomplete(request):
+    query = None
     if request.method == "GET":
         """
         Check if search by make slug exists
@@ -328,11 +330,13 @@ def findNumbers(request):
         Check if search by make slug exists
         """
         q = request.GET.get("q")
+        if not q:
+            q = "Dummy"
 
         # If query has car model and slug
         # query = {"size": "20", "query": {"prefix": {"full_name": {"value": q}}}}
     query = {
-        "query": {"match": {"cat_number": {"query": q, "analyzer": "standard"}}},
+        "query": {"match": {"cat_number": {"query": q, "analyzer": "standard"}}},  # type: ignore
     }
 
     r = requests.get(
