@@ -5,6 +5,7 @@ from brands.models import BrandsDict
 import csv
 from product.syncronizators.prices_sync import update_prices
 from test_category.elastic_insert import do_all_two
+from test_category.elastic_stuff2 import do_insert as elastic_insert
 
 
 def sync_products():
@@ -156,4 +157,5 @@ def sync_products():
 def do_all_sync_products():
     sync_products()
     do_all_two()
+    elastic_insert()
     update_prices()
