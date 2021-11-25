@@ -3,6 +3,8 @@ from django.conf import settings
 from product.models import Product, CarModel, Stock, Store
 from brands.models import BrandsDict
 import csv
+from product.syncronizators.prices_sync import update_prices 
+from test_category.elastic_insert import  do_all_two
 
 
 def sync_products():
@@ -149,3 +151,11 @@ def sync_products():
     print(f"Sync script ended up in:", end - start)
     print(f"Products updated:", j, "Products fucked up", i)
     # Comment for git
+
+
+ def do_all_sync_products():
+    sync_products()
+    do_all_two()
+    update_prices()
+
+
