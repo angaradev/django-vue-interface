@@ -17,6 +17,7 @@ from product.api.views_elastic_search_api import (
     findNumbers,
     send_json as search_api,
 )
+from product.api.views_elastic_for_angara import send_json as jsontest_angara
 from product.api.views_elastic_v2 import send_json as send_json2
 from product.api.views_elastic_related_api import similar, latest, byTag, byCarCount
 
@@ -154,6 +155,7 @@ urlpatterns = [
     ),
     path("jsontest", send_json, name="send_json"),
     path("jsontest_v2", send_json2, name="send_json2"),
+    path("jsontest-angara77", jsontest_angara, name="send_json_angara77"),
     path("searchapi", search_api, name="searchapi"),
     path("autocomplete", autocomplete, name="autocomplete"),
     path("findnumber", findNumbers, name="findNumbers"),

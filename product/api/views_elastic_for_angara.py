@@ -1,7 +1,8 @@
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse
 from product.models import Product, Category
-import json, requests
+import json
+import requests
 import pprint
 from django.conf import settings
 
@@ -43,49 +44,50 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     priceMax = 10000000
     sort_price = request.GET.get("sort_price") or "desc"
 
-    print(request.GET.getlist('brand'))
+    for key, values in request.GET.lists():
+        print(key, values)
 
     if price:
         spl = price.split("-")
         priceMin = spl[0]
         priceMax = spl[1]
 
-    for item in request.GET.items():
-        
-        if str(item[0]) == "page_from" or str(item[0]) == "page_size":
+    for key, values in request.GET.lists():
+
+        if str(key) == "page_from" or str(key) == "page_size":
             continue
-        if item[0] == "sort_price":
+        if key == "sort_price":
             continue
         # must here
-        
-        second = item[1].split(",")
-        if item[0] == "model" or item[0] == "category" and category:
+        second = values
+        if key == "model" or key == "category" and category:
             query.append(
-                {"term": {f"{item[0]}.slug.keyword": second[0]}},
+                {"term": {f"{key}.slug.keyword": second[0]}},
             )
 
         inside = []  # var for collecting inner filter values
-        if str(item[0]) != "category" and str(item[0]) != "model":
+        if str(key) != "category" and str(key) != "model":
+
             for filVal in second:
-                if str(item[0]) == "price":
+                if str(key) == "price":
                     # adding range here
                     lst = {
                         "range": {"stocks.price": {"gte": priceMin, "lte": priceMax}}
                     }
 
-                elif item[0] == "bages" or item[0] == "condition":
-                    lst = {"term": {f"{item[0]}.keyword": filVal}}
-                elif item[0] == "has_photo":
+                elif key == "bages" or key == "condition":
+                    lst = {"term": {f"{key}.keyword": filVal}}
+                elif key == "has_photo":
                     phot = "false"
                     if filVal == "0":
                         phot = "false"
                     else:
                         phot = "true"
                     lst = {"term": {"has_photo": phot}}
-                elif item[0] == "car_models":
+                elif key == "car_models":
                     lst = {"term": {"model.name.keyword": filVal}}
                 else:
-                    lst = {"term": {f"{item[0]}.name.keyword": filVal}}
+                    lst = {"term": {f"{key}.name.keyword": filVal}}
                 inside.append(lst)
             # pp.pprint(inside)
 
@@ -148,13 +150,13 @@ def send_json(request):
 
         if model and not make and filters_chk:
             print("IN make models and filters")
-            data = make_query(request, aggs, aggs_size, True, page_from, page_size)
+            data = make_query(request, aggs, aggs_size,
+                              True, page_from, page_size)
 
-        # Below is condition for category only and filters for autoparts page
         elif cat and not make and not model and filters_chk:
             print("IN cat and not make not model and filters")
-            data = make_query(request, aggs, aggs_size, True, page_from, page_size)
-
+            data = make_query(request, aggs, aggs_size,
+                              True, page_from, page_size)
         # If query has car model and slug
         elif model and cat and not make:
             print("In model and cat NOT filters")
@@ -241,182 +243,23 @@ def send_json(request):
                 }
             )
         # if query has q == all and cat slug
+    # Code to write elastic query to file for test in Kibana
+    # with open("/home/manhee/tmp/query.json", "w") as outfile:
+    #     try:
+    #         outfile.write(data)
+    #         print("Data written to file")
+    #     except:
+    #         print("File not writes")
 
     r = requests.get(
         f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=data,
     )
+
     if r.status_code != 200:
-        raise ValueError(f"Request cannot be proceeded Status code is: {r.status_code}")
-    response = r.json()
-
-    # Cheking if aggregation exist in the query
-    if "aggregations" in response:
-        categories = response["aggregations"]["categories"]["buckets"]
-        rebuilt_cats = []
-        for category in categories:
-            new_cat = None
-            try:
-                new_cat = Category.objects.get(id=category["key"])
-            except Exception as e:
-                print("Error in replace categories in elasticsearc", e)
-                print("key does not exists: ", category["key"])
-            rebuilt_cats.append(
-                {
-                    "id": category["key"],
-                    "count": category["doc_count"],
-                    "id": new_cat.id,
-                    "name": new_cat.name,
-                    "parent": new_cat.parent_id,
-                    "layout": new_cat.layout,
-                    "type": new_cat.type,
-                    "slug": new_cat.slug,
-                }
-            )
-        response["aggregations"]["categories"]["buckets"] = rebuilt_cats
-
-    data = response
-
-    return JsonResponse(data, safe=False)
-
-
-def send_json_filters(request):
-    aggs_size = 2000
-    data = None
-    product_sizes = 200
-    cat_slug = None
-    query = None
-    makeSlug = None
-    if request.method == "GET":
-        """
-        Check if search by make slug exists
-        """
-        if request.GET.get("makeSlug"):
-
-            makeSlug = request.GET.get("makeSlug")
-            makeSlug = makeSlug.lower()
-            data = json.dumps(
-                {
-                    "size": product_sizes,
-                    "query": {"term": {"model.make.slug.keyword": makeSlug}},
-                    "aggs": {
-                        "unique_ids": {"terms": {"field": "id"}},
-                        "categories": {
-                            "terms": {"field": "category.id", "size": aggs_size}
-                        },
-                        "brands": {"terms": {"field": "brand.name.keyword"}},
-                        "engines": {"terms": {"field": "engine.name.keyword"}},
-                        "car_models": {"terms": {"field": "model.name.keyword"}},
-                        "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                    },
-                }
-            )
-
-        else:
-            """
-            Here starts parts if no query by makeSlug search
-            """
-            if request.method == "GET":
-                if request.GET.get("q") == "all":
-                    print(
-                        "\033[93m",
-                        "Attention ALL PRODUCTS REQUEST PERFORMED!",
-                        request.GET,
-                    )
-                if "q" in request.GET:
-                    query = request.GET["q"].lower()
-                if "cat" in request.GET:
-                    cat_slug = request.GET["cat"].lower()
-
-            data = json.dumps(
-                {
-                    "size": product_sizes,
-                    "query": {"match_all": {}},
-                    "aggs": {
-                        "unique_ids": {"terms": {"field": "id"}},
-                        "categories": {
-                            "terms": {"field": "category.id", "size": aggs_size}
-                        },
-                        "brands": {"terms": {"field": "brand.name.keyword"}},
-                        "engines": {"terms": {"field": "engine.name.keyword"}},
-                        "car_models": {"terms": {"field": "model.name.keyword"}},
-                        "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                    },
-                }
-            )
-
-            # If query has query and car model
-            if query and not cat_slug:
-                data = json.dumps(
-                    {
-                        "size": product_sizes,
-                        "query": {"term": {"model.slug.keyword": query}},
-                        "aggs": {
-                            "unique_ids": {"terms": {"field": "id"}},
-                            "categories": {
-                                "terms": {"field": "category.id", "size": aggs_size}
-                            },
-                            "brands": {"terms": {"field": "brand.name.keyword"}},
-                            "engines": {"terms": {"field": "engine.name.keyword"}},
-                            "car_models": {"terms": {"field": "model.name.keyword"}},
-                            "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                        },
-                    }
-                )
-            # If query has car model and slug
-            if query and cat_slug:
-                data = json.dumps(
-                    {
-                        "size": product_sizes,
-                        "query": {
-                            "bool": {
-                                "must": [
-                                    {"term": {"model.slug.keyword": query}},
-                                    {"term": {"category.slug.keyword": cat_slug}},
-                                ]
-                            }
-                        },
-                        "aggs": {
-                            "unique_ids": {"terms": {"field": "id"}},
-                            "categories": {
-                                "terms": {"field": "category.id", "size": aggs_size}
-                            },
-                            "brands": {"terms": {"field": "brand.name.keyword"}},
-                            "engines": {"terms": {"field": "engine.name.keyword"}},
-                            "car_models": {"terms": {"field": "model.name.keyword"}},
-                            "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                        },
-                    }
-                )
-
-            # if query has q == 'all'
-            if query == "all" and not cat_slug:
-                data = json.dumps(
-                    {
-                        "size": product_sizes,
-                        "query": {"match_all": {}},
-                        "aggs": {
-                            "unique_ids": {"terms": {"field": "id"}},
-                            "categories": {
-                                "terms": {"field": "category.id", "size": 2000}
-                            },
-                            "brands": {"terms": {"field": "brand.name.keyword"}},
-                            "engines": {"terms": {"field": "engine.name.keyword"}},
-                            "car_models": {"terms": {"field": "model.name.keyword"}},
-                            "bages": {"terms": {"field": "bages.keyword", "size": 5}},
-                        },
-                    }
-                )
-            # if query has q == all and cat slug
-
-    r = requests.get(
-        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
-        headers={"Content-Type": "application/json"},
-        data=data,
-    )
-    if r.status_code != 200:
-        raise ValueError(f"Request cannot be proceeded Status code is: {r.status_code}")
+        raise ValueError(
+            f"Request cannot be proceeded Status code is: {r.status_code}")
     response = r.json()
 
     # Cheking if aggregation exist in the query
