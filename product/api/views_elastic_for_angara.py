@@ -39,7 +39,8 @@ def aggs(size):
 def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=200):
     query = []
     boolShould = []
-    price = request.GET.get("price")
+    min_price = request.GET.get("min_price")
+    max_price = request.GET.get("max_price")
     priceMin = 1
     priceMax = 10000000
     sort_price = request.GET.get("sort_price") or "desc"
@@ -47,10 +48,10 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
     for key, values in request.GET.lists():
         print(key, values)
 
-    if price:
-        spl = price.split("-")
-        priceMin = spl[0]
-        priceMax = spl[1]
+    if min_price:
+        priceMin = int(min_price)
+    if max_price:
+        priceMax = int(max_price)
 
     for key, values in request.GET.lists():
 
@@ -150,13 +151,11 @@ def send_json(request):
 
         if model and not make and filters_chk:
             print("IN make models and filters")
-            data = make_query(request, aggs, aggs_size,
-                              True, page_from, page_size)
+            data = make_query(request, aggs, aggs_size, True, page_from, page_size)
 
         elif cat and not make and not model and filters_chk:
             print("IN cat and not make not model and filters")
-            data = make_query(request, aggs, aggs_size,
-                              True, page_from, page_size)
+            data = make_query(request, aggs, aggs_size, True, page_from, page_size)
         # If query has car model and slug
         elif model and cat and not make:
             print("In model and cat NOT filters")
@@ -258,8 +257,7 @@ def send_json(request):
     )
 
     if r.status_code != 200:
-        raise ValueError(
-            f"Request cannot be proceeded Status code is: {r.status_code}")
+        raise ValueError(f"Request cannot be proceeded Status code is: {r.status_code}")
     response = r.json()
 
     # Cheking if aggregation exist in the query
