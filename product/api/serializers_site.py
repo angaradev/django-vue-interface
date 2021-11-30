@@ -21,6 +21,14 @@ from product.models import (
 )
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    """Serializer for all categories in flat mode"""
+
+    class Meta:
+        model = Category
+        fields = ("id", "name", "slug", "cat_image", "level", "parent")
+
+
 class RecursiveField(serializers.Serializer):
     def to_representation(self, value):
         serializer = self.parent.parent.__class__(value, context=self.context)

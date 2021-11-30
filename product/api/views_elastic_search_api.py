@@ -96,6 +96,14 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                                                     }
                                                 }
                                             },
+                                            {
+                                                "match": {
+                                                    "one_c_id": {
+                                                        "query": search,
+                                                        "analyzer": "standard",
+                                                    }
+                                                }
+                                            },
                                         ]
                                     }
                                 }
@@ -105,30 +113,22 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                 )
 
             else:
-                query.append(
-                    {
-                        "match": {
-                            # "full_name_ngrams": {
-                            "full_name": {
-                                "query": second[0],
-                                "operator": "and",
-                                "analyzer": "rebuilt_russian",
-                                "fuzziness": fuzziness,
-                            }
-                        }
-                    }
-                )
                 # query.append(
                 #     {
                 #         "match": {
+                #             # "full_name_ngrams": {
                 #             "full_name": {
                 #                 "query": second[0],
                 #                 "operator": "and",
-                #                 "fuzziness": "auto",
+                #                 "analyzer": "rebuilt_russian",
+                #                 "fuzziness": fuzziness,
                 #             }
                 #         }
-                #     },
+                #     }
                 # )
+                query.append(
+                    {"match_phrase_prefix": {"full_name": {"query": second[0]}}},
+                )
 
         inside = []  # var for collecting inner filter values
         if str(item[0]) != "search":

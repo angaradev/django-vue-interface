@@ -1,10 +1,13 @@
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse
-from product.models import Product, Category
-import json
+from product.models import Product, Category, CarEngine
+import json, time
 import requests
 import pprint
 from django.conf import settings
+from brands.models import BrandsDict
+from product.models.models_vehicle import CarModel
+
 
 pp = pprint.PrettyPrinter(indent=2)
 
@@ -275,12 +278,12 @@ def send_json(request):
                 {
                     "id": category["key"],
                     "count": category["doc_count"],
-                    "id": new_cat.id,
-                    "name": new_cat.name,
-                    "parent": new_cat.parent_id,
-                    "layout": new_cat.layout,
-                    "type": new_cat.type,
-                    "slug": new_cat.slug,
+                    "id": new_cat.id,  # type: ignore
+                    "name": new_cat.name,  # type: ignore
+                    "parent": new_cat.parent_id,  # type: ignore
+                    "layout": new_cat.layout,  # type: ignore
+                    "type": new_cat.type,  # type: ignore
+                    "slug": new_cat.slug,  # type: ignore
                 }
             )
         response["aggregations"]["categories"]["buckets"] = rebuilt_cats
@@ -288,3 +291,137 @@ def send_json(request):
     data = response
 
     return JsonResponse(data, safe=False)
+
+
+def get_all_cars(request):
+
+    query = {
+        "size": "0",
+        "query": {"match_all": {}},
+        "aggs": {
+            "car": {
+                "terms": {"field": "model.model_id", "size": 100},
+                "aggs": {
+                    "categories": {"terms": {"field": "category.id", "size": 2000}},
+                    "brands": {"terms": {"field": "brand.id", "size": 20}},
+                    "engines": {"terms": {"field": "engine.id"}},
+                    "has_photo": {"terms": {"field": "has_photo"}},
+                },
+            }
+        },
+    }
+
+    r = requests.get(
+        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        headers={"Content-Type": "application/json"},
+        data=json.dumps(query),
+    )
+
+    if r.status_code != 200:
+        raise ValueError(f"Request cannot be proceeded Status code is: {r.status_code}")
+
+    response = r.json()
+    start = time.time()
+
+    new_cars = []
+
+    for cars in response["aggregations"]["car"]["buckets"]:
+        brands = []
+        engines = []
+        categories = []
+        has_photo = []
+        car = CarModel.objects.get(id=cars["key"])
+
+        cat_ids = [
+            {"id": x["key"], "doc_count": x["doc_count"]}
+            for x in cars["categories"]["buckets"]
+        ]
+
+        # New categories
+        for cat_id in cat_ids:
+            cat = Category.objects.get(id=cat_id["id"])
+            categories.append(
+                {
+                    "id": cat.id,
+                    "doc_count": cat_id["doc_count"],
+                    "name": cat.name,
+                    "slug": cat.slug,
+                    "cat_image": cat.image.url if cat.cat_image else None,
+                    "level": cat.level,
+                    "parent": cat.parent.id if cat.parent else None,
+                }
+            )
+
+        # New brands
+        brand_ids = [
+            {"id": x["key"], "doc_count": x["doc_count"]}
+            for x in cars["brands"]["buckets"]
+        ]
+        for brand_id in brand_ids:
+            brand = BrandsDict.objects.get(id=brand_id["id"])
+            brands.append(
+                {
+                    "id": brand_id["id"],
+                    "name": brand.brand,
+                    "slug": brand.slug,
+                    "country": brand.country,
+                }
+            )
+
+        # Engine stuff
+        engines_ids = [
+            {"id": x["key"], "doc_count": x["doc_count"]}
+            for x in cars["engines"]["buckets"]
+        ]
+        for engine_id in engines_ids:
+            engine = CarEngine.objects.get(id=engine_id["id"])
+            engines.append(
+                {"id": engine_id["id"], "name": engine.name, "slug": engine.slug}
+            )
+        # has_photo
+        has_photo_ids = [
+            {"key": x["key"], "doc_count": x["doc_count"]}
+            for x in cars["has_photo"]["buckets"]
+        ]
+        for has_photo_id in has_photo_ids:
+            has_photo.append(
+                {"key": has_photo_id["key"], "doc_count": has_photo_id["doc_count"]}
+            )
+
+        # Creating new cars for return
+        carmake = {
+            "id": car.carmake.id,
+            "name": car.carmake.name,
+            "country": car.carmake.country.country,
+            "rusname": car.carmake.rusname,
+            "priority": car.carmake.priority,
+            "image": car.carmake.image.url if car.carmake.image else None,
+            "slug": car.carmake.slug,
+        }
+        new_cars.append(
+            {
+                "id": car.id,
+                "name": car.name,
+                "slug": car.slug,
+                "priority": car.priority,
+                "weight": car.weight,
+                "year_from": car.year_from,
+                "year_to": car.year_to,
+                "active": car.active,
+                "image": car.image.url if car.image else None,
+                "model_hostory": car.model_history,
+                "model_liquids": car.model_liquids,
+                "model_to": car.model_to,
+                "make": carmake,
+                "doc_count": cars["doc_count"],
+                "categories": categories,
+                "brands": brands,
+                "engines": engines,
+                "has_photo": has_photo,
+            }
+        )
+    # print(cars)
+    end = time.time()
+    print("Ecexution time is", end - start)
+
+    return JsonResponse(new_cars, safe=False)

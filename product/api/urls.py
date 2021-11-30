@@ -17,7 +17,10 @@ from product.api.views_elastic_search_api import (
     findNumbers,
     send_json as search_api,
 )
-from product.api.views_elastic_for_angara import send_json as jsontest_angara
+from product.api.views_elastic_for_angara import (
+    send_json as jsontest_angara,
+    get_all_cars,
+)
 from product.api.views_elastic_v2 import send_json as send_json2
 from product.api.views_elastic_related_api import similar, latest, byTag, byCarCount
 
@@ -32,6 +35,11 @@ urlpatterns = [
     # path('', TemplateView.as_view(template_name='index1.html')),
     # Prefix in browser api/product/
     path("", include(router.urls)),
+    path(
+        "get-all-categories-flat/",
+        sitetApiViews.GetAllCategoriesFlat.as_view(),
+        name="get-all-categories-flat",
+    ),
     path(
         "detail/<int:pk>/",
         productApiViews.DetailGet.as_view(),
@@ -156,6 +164,7 @@ urlpatterns = [
     path("jsontest", send_json, name="send_json"),
     path("jsontest_v2", send_json2, name="send_json2"),
     path("jsontest-angara77", jsontest_angara, name="send_json_angara77"),
+    path("jsontest-angara77-all-cars", get_all_cars, name="get_all_cars"),
     path("searchapi", search_api, name="searchapi"),
     path("autocomplete", autocomplete, name="autocomplete"),
     path("findnumber", findNumbers, name="findNumbers"),
