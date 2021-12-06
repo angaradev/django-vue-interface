@@ -592,7 +592,6 @@ class ProductA77Serializer(serializers.ModelSerializer):
             "product_image",
             "model",
             "name2",
-            "analogs",
             "product_video",
             "cat_number",
             "oem_number",
@@ -603,6 +602,9 @@ class ProductA77Serializer(serializers.ModelSerializer):
             "active",
             "engine",
             "product_cross",
+            "product_attribute",
             "related",
+            "analogs",
+
         ]
         depth = 1
