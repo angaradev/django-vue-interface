@@ -528,6 +528,13 @@ class AnalogProductA77Serializer(serializers.ModelSerializer):
     """
 
     images = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
+    
+    def get_price(self, object):
+        price = 0
+        if len(object.product_stock.all()):
+            price = object.product_stock.first().price
+        return price
 
     def get_images(self, object):
         imgs = object.product_image.all()
@@ -537,6 +544,7 @@ class AnalogProductA77Serializer(serializers.ModelSerializer):
         model = Product
         fields = [
             "slug",
+            "price",
             "images",
             "name",
             "name2",
