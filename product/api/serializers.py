@@ -564,6 +564,13 @@ class ProductA77Serializer(serializers.ModelSerializer):
     related = serializers.SerializerMethodField()
     analogs = serializers.SerializerMethodField()
     model = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
+
+    def get_price(self, object):
+        price = 0
+        if len(object.product_stock.all()):
+            price = object.product_stock.first().price
+        return price
 
     def get_model(self, object):
         models = object.car_model.all()
@@ -589,6 +596,7 @@ class ProductA77Serializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "price",
             "product_image",
             "model",
             "name2",
@@ -605,6 +613,5 @@ class ProductA77Serializer(serializers.ModelSerializer):
             "product_attribute",
             "related",
             "analogs",
-
         ]
         depth = 1
