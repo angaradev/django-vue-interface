@@ -2,6 +2,8 @@ from collections import defaultdict
 from rest_framework.decorators import action
 from rest_framework import generics, viewsets
 from rest_framework.views import APIView
+from product.api.serializers import ProductSerializer, ProductA77Serializer
+from rest_framework import mixins
 from product.api.serializers_a77 import (
     CategoriesSerializerfFlat,
 )
@@ -27,7 +29,7 @@ class CategoriesView(generics.ListAPIView):
     )
 
     serializer_class = CategoriesSerializerfFlat  # CategoriesSerializer
-    paginator = None
+    paginator = None  # type: ignore
     permission_classes = [AllowAny]
 
     def get_queryset(self):
@@ -41,11 +43,23 @@ class CategoriesView(generics.ListAPIView):
             return self.queryset.all()
 
 
-class SingleCategorySlugView(generics.RetrieveAPIView):
+class SingleCategorySlugView(generics.RetrieveAPIView, mixins.RetrieveModelMixin):
 
-    queryset = Category.objects.add_related_count(
+    queryset = Category.objects.add_related_count(  # type: ignore
         Category.objects.all(), Product, "category", "count", cumulative=True
     )
     lookup_field = "slug"
     serializer_class = CategoriesSerializer
+    permission_classes = [AllowAny]
+    model = Product
+
+
+class GetProductBySlugView(generics.RetrieveAPIView):
+    """
+    Class retreive single product by slug
+    """
+
+    queryset = Product.objects.all()
+    lookup_field = "slug"
+    serializer_class = ProductA77Serializer
     permission_classes = [AllowAny]

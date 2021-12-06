@@ -6,23 +6,32 @@ from product.models import Category
 class PartCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('id', 'name')
+        fields = ("id", "name")
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class BlogCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
-        fields = ('id', 'name')
+        fields = ("id", "name")
 
 
 class BlogPostSerializer(serializers.ModelSerializer):
 
-    categories = CategorySerializer(many=True, read_only=True)
+    categories = BlogCategorySerializer(many=True, read_only=True)
 
     parts_category = PartCategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ('id', 'title', 'text', 'image', 'date',
-                  'slug', 'author', 'categories', 'parts_category')
+        fields = (
+            "id",
+            "title",
+            "text",
+            "image",
+            "date",
+            "slug",
+            "author",
+            "categories",
+            "parts_category",
+        )
         depth = 1

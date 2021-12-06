@@ -403,7 +403,7 @@ def get_all_cars(request):
                 "id": car.id,
                 "name": car.name,
                 "slug": car.slug,
-                "priority": car.priority,
+                "priority": car.priority if car.priority else 0,
                 "weight": car.weight,
                 "year_from": car.year_from,
                 "year_to": car.year_to,
