@@ -113,6 +113,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                 )
 
             else:
+                # Full text search
                 # query.append(
                 #     {
                 #         "match": {
@@ -126,6 +127,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                 #         }
                 #     }
                 # )
+                # Search by prefixes
                 query.append(
                     {"match_phrase_prefix": {"full_name": {"query": second[0]}}},
                 )

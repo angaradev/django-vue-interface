@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
+from django.db.models import Q
 
 from rest_framework_recursive.fields import RecursiveField
 from product.models import Cross
@@ -480,3 +481,128 @@ class MerchangSerializer(serializers.ModelSerializer):
             "created_date",
             "updated_date",
         ]
+
+
+#################################################################
+# Serializers for single product get by slug######
+#################################################################
+
+
+class ProductA77ImageSerializer(serializers.ModelSerializer):
+    """Trying to make fill url"""
+
+    img245 = serializers.SerializerMethodField()
+    img800 = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+
+    def get_img245(self, object):
+        return settings.SITE_URL + object.img245.url
+
+    def get_img800(self, object):
+        return settings.SITE_URL + object.img800.url
+
+    def get_image(self, object):
+        return settings.SITE_URL + object.image.url
+
+    class Meta:
+        model = ProductImage
+        fields = ("img245", "img800", "image")
+
+
+class CarModelA77Serializer(serializers.ModelSerializer):
+    """Class for getting some fields from car model and eluminate some big long text html fields"""
+
+    make = serializers.SerializerMethodField()
+
+    def get_make(self, object):
+        return object.carmake.name
+
+    class Meta:
+        model = CarModel
+        fields = ("id", "name", "rusname", "slug", "image", "make")
+
+
+class AnalogProductA77Serializer(serializers.ModelSerializer):
+    """
+    Serialzier for getting analog and related products
+    """
+
+    images = serializers.SerializerMethodField()
+
+    def get_images(self, object):
+        imgs = object.product_image.all()
+        return ProductA77ImageSerializer(imgs, many=True).data
+
+    class Meta:
+        model = Product
+        fields = [
+            "slug",
+            "images",
+            "name",
+            "name2",
+            "cat_number",
+            "brand",
+            "car_model",
+            "one_c_id",
+        ]
+        depth = 1
+
+    car_model = serializers.SerializerMethodField()
+
+    def get_car_model(self, object):
+        car_models = object.car_model.all()
+        return CarModelA77Serializer(car_models, many=True).data
+
+
+class ProductA77Serializer(serializers.ModelSerializer):
+    """
+    Serialzier for a77 api get product by slug REST
+
+
+    """
+
+    related = serializers.SerializerMethodField()
+    analogs = serializers.SerializerMethodField()
+    model = serializers.SerializerMethodField()
+
+    def get_model(self, object):
+        models = object.car_model.all()
+        return CarModelA77Serializer(models, many=True).data
+
+    def get_analogs(self, object):
+        qs = Product.objects.filter(
+            Q(cat_number=object.cat_number) | Q(oem_number=object.cat_number)
+        )
+        return AnalogProductA77Serializer(qs, many=True).data
+
+    def get_related(self, object):
+        pattern = object.name.split()
+        car_model = object.car_model.first()
+
+        qs = Product.objects.filter(car_model=car_model).filter(
+            Q(name__icontains=pattern[0]) | Q(name__icontains=pattern[0])
+        )
+        return AnalogProductA77Serializer(qs, many=True).data
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "product_image",
+            "model",
+            "name2",
+            "analogs",
+            "product_video",
+            "cat_number",
+            "oem_number",
+            "category",
+            "slug",
+            "brand",
+            "one_c_id",
+            "active",
+            "engine",
+            "product_cross",
+            "related",
+        ]
+        depth = 1

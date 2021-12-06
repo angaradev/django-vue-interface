@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny
 from django.db.models import Q
 
 from .models import Categories, Post
-from .serializers import BlogPostSerializer, CategorySerializer
+from .serializers import BlogPostSerializer, BlogCategorySerializer
 
 
 class BlogViewSet(viewsets.ReadOnlyModelViewSet):
@@ -26,7 +26,7 @@ class BlogViewSet(viewsets.ReadOnlyModelViewSet):
 
 class BlogCategoryView(ListAPIView):
     queryset = Categories.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = BlogCategorySerializer
     permission_classes = [AllowAny]
 
 
