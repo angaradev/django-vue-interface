@@ -1,19 +1,21 @@
 {
   "from": "0",
   "size": "20",
+  "sort": [
+    {
+      "has_photo": {
+        "order": "desc"
+      }
+    },
+    {
+      "stocks.price": {
+        "order": "desc"
+      }
+    }
+  ],
   "query": {
     "bool": {
       "must": [
-        {
-          "match": {
-            "full_name": {
-              "query": "\u0444\u0438\u043b\u044c\u0442\u0440 \u0442\u043e\u043f\u043b\u0438\u0432\u043d\u044b\u0439",
-              "operator": "and",
-              "analyzer": "rebuilt_russian",
-              "fuzziness": "auto"
-            }
-          }
-        },
         {
           "bool": {
             "must": [
@@ -21,14 +23,38 @@
                 "bool": {
                   "should": [
                     {
-                      "term": {
-                        "model.name.keyword": "hd78"
+                      "match": {
+                        "cat_number": {
+                          "query": "545324b000",
+                          "analyzer": "standard"
+                        }
+                      }
+                    },
+                    {
+                      "match": {
+                        "oem_number": {
+                          "query": "545324b000",
+                          "analyzer": "standard"
+                        }
+                      }
+                    },
+                    {
+                      "match": {
+                        "one_c_id": {
+                          "query": "545324b000",
+                          "analyzer": "standard"
+                        }
                       }
                     }
                   ]
                 }
               }
             ]
+          }
+        },
+        {
+          "bool": {
+            "must": []
           }
         }
       ]

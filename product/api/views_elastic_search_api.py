@@ -60,7 +60,7 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
         if item[0] == "search":
             # If search is a number
             if re.match(r"^\d+", str(search)):
-                # print(search)
+                search = str(search)
 
                 # query.append(
                 #     {
@@ -73,44 +73,80 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                 #     }
                 # )
                 # Else search is a text
-                query.append(
-                    {
-                        "bool": {
-                            "must": [
-                                {
-                                    "bool": {
-                                        "should": [
-                                            {
-                                                "match": {
-                                                    "cat_number": {
-                                                        "query": search,
-                                                        "analyzer": "standard",
+                # Checking if it contains letters
+                if bool(re.search(r"[a-zA-Z]", search)):
+                    """Checking if letter in number so it cat number otherwise it migth be a one c id"""
+                    print("Match letter")
+                    query.append(
+                        {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "bool": {
+                                            "should": [
+                                                {
+                                                    "match": {
+                                                        "cat_number": {
+                                                            "query": search,
+                                                            "analyzer": "standard",
+                                                        }
                                                     }
-                                                }
-                                            },
-                                            {
-                                                "match": {
-                                                    "oem_number": {
-                                                        "query": search,
-                                                        "analyzer": "standard",
+                                                },
+                                                {
+                                                    "match": {
+                                                        "oem_number": {
+                                                            "query": search,
+                                                            "analyzer": "standard",
+                                                        }
                                                     }
-                                                }
-                                            },
-                                            {
-                                                "match": {
-                                                    "one_c_id": {
-                                                        "query": search,
-                                                        "analyzer": "standard",
-                                                    }
-                                                }
-                                            },
-                                        ]
+                                                },
+                                            ]
+                                        }
                                     }
-                                }
-                            ]
+                                ]
+                            }
                         }
-                    }
-                )
+                    )
+                else:
+                    """Here is if search not cntains a letter in string so it can be one c id"""
+                    query.append(
+                        {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "bool": {
+                                            "should": [
+                                                {
+                                                    "match": {
+                                                        "cat_number": {
+                                                            "query": search,
+                                                            "analyzer": "standard",
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "match": {
+                                                        "oem_number": {
+                                                            "query": search,
+                                                            "analyzer": "standard",
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "match": {
+                                                        "one_c_id": {
+                                                            "query": search,
+                                                            "analyzer": "standard",
+                                                        }
+                                                    }
+                                                },
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    )
 
             else:
                 # Full text search
