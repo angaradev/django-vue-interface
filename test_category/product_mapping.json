@@ -53,6 +53,10 @@
         "type": "text",
         "analyzer": "ngram_analyzer"
       },
+      "oem_number": {
+        "type": "text",
+        "analyzer": "ngram_analyzer"
+      },
       "full_name_ngrams": {
         "type": "text",
         "analyzer": "ngram_analyzer"
