@@ -513,13 +513,17 @@ class CarModelA77Serializer(serializers.ModelSerializer):
     """Class for getting some fields from car model and eluminate some big long text html fields"""
 
     make = serializers.SerializerMethodField()
+    make_slug = serializers.SerializerMethodField()
 
     def get_make(self, object):
         return object.carmake.name
 
+    def get_make_slug(self, object):
+        return object.carmake.slug
+
     class Meta:
         model = CarModel
-        fields = ("id", "name", "rusname", "slug", "image", "make")
+        fields = ("id", "name", "rusname", "slug", "image", "make", "make_slug")
 
 
 class AnalogProductA77Serializer(serializers.ModelSerializer):
@@ -605,6 +609,7 @@ class ProductA77Serializer(serializers.ModelSerializer):
             "id",
             "name",
             "price",
+            "product_description",
             "product_image",
             "model",
             "name2",
@@ -621,5 +626,6 @@ class ProductA77Serializer(serializers.ModelSerializer):
             "product_attribute",
             "related",
             "analogs",
+            "product_cross"
         ]
         depth = 1
