@@ -7,7 +7,7 @@ from django.http import JsonResponse, HttpResponse
 from product.forms import KeyWordForm
 import operator
 import json
-from django.core import serializers
+from django.core import serializers  # type: ignore
 from functools import reduce
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
@@ -161,6 +161,7 @@ class CategorizerSingleProduct(APIView):
         categories_qs = Category.objects.all().filter(id__gt=2000)
         string = string.lower()
         ready = list()
+        find = None
 
         for cat in categories_qs:
             minus = [x.minus.strip() for x in cat.to_category_minus.all()]
@@ -357,10 +358,10 @@ class SetSession(APIView):
 
         if serializer.is_valid():
             qs = CarModel.objects.get(
-                id=serializer.validated_data.get("car_model")["id"]
+                id=serializer.validated_data.get("car_model")["id"]  # type: ignore
             )
             e_qs = CarEngine.objects.get(
-                id=serializer.validated_data.get("car_engine")["id"]
+                id=serializer.validated_data.get("car_engine")["id"]  # type: ignore
             )
             request.session["car_model"] = qs.id
             request.session["car_engine"] = e_qs.id

@@ -282,14 +282,14 @@ def send_json(request):
                 print("key does not exists: ", category["key"])
             rebuilt_cats.append(
                 {
-                    "id": category["key"],
-                    "count": category["doc_count"],
-                    "id": new_cat.id,
-                    "name": new_cat.name,
-                    "parent": new_cat.parent_id,
-                    "layout": new_cat.layout,
-                    "type": new_cat.type,
-                    "slug": new_cat.slug,
+                    "id": category["key"], #type: ignore
+                    "count": category["doc_count"], #type: ignore
+                    "id": new_cat.id, #type: ignore
+                    "name": new_cat.name, #type: ignore
+                    "parent": new_cat.parent_id, #type: ignore
+                    "layout": new_cat.layout, #type: ignore
+                    "type": new_cat.type, #type: ignore
+                    "slug": new_cat.slug, #type: ignore
                 }
             )
         response["aggregations"]["categories"]["buckets"] = rebuilt_cats
