@@ -1,8 +1,10 @@
 from collections import defaultdict
 from rest_framework.decorators import action
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, status
+from rest_framework.response import Response
 from rest_framework.views import APIView
-from product.api.serializers import ProductSerializer, ProductA77Serializer
+from product.api.serializers import ProductSerializer
+from product.api.serializers_a77 import ProductA77Serializer
 from rest_framework import mixins
 from product.api.serializers_a77 import (
     CategoriesSerializerfFlat,
@@ -24,7 +26,7 @@ class CategoriesView(generics.ListAPIView):
     """
 
     # queryset = Categories.objects.all()
-    queryset = Category.objects.add_related_count(
+    queryset = Category.objects.add_related_count(  # type: ignore
         Category.objects.filter(parent=1), Product, "category", "count", cumulative=True
     )
 
@@ -63,3 +65,16 @@ class GetProductBySlugView(generics.RetrieveAPIView):
     lookup_field = "slug"
     serializer_class = ProductA77Serializer
     permission_classes = [AllowAny]
+
+
+class GetProductsByCatNumbers(APIView):
+    """Get all parts by array of cat numbers"""
+
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+        """Getting array and serilizing qyeryset"""
+        numbers = request.GET.getlist("numbers")
+        qs = Product.objects.filter(cat_number__in=numbers)
+        serializer = ProductA77Serializer(qs, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
