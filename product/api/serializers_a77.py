@@ -38,9 +38,13 @@ class CategoriesSerializerfFlat(serializers.ModelSerializer):
 class ProductA77ImageSerializer(serializers.ModelSerializer):
     """Trying to make fill url"""
 
+    img150 = serializers.SerializerMethodField()
     img245 = serializers.SerializerMethodField()
     img800 = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
+
+    def get_img150(self, object):
+        return settings.SITE_URL + object.img150.url
 
     def get_img245(self, object):
         return settings.SITE_URL + object.img245.url
@@ -53,7 +57,7 @@ class ProductA77ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductImage
-        fields = ("img245", "img800", "image")
+        fields = ("img150", "img245", "img800", "image")
 
 
 class CarModelA77Serializer(serializers.ModelSerializer):
@@ -124,6 +128,21 @@ class ProductA77Serializer(serializers.ModelSerializer):
     analogs = serializers.SerializerMethodField()
     model = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()
+    product_image = serializers.SerializerMethodField()
+    tmb = serializers.SerializerMethodField()
+
+    def get_tmb(self, object):
+        tmb = None
+        try:
+            img = object.product_image.first()
+            tmb = settings.SITE_URL + img.img150.url
+        except:
+            tmb = None
+        return tmb
+
+    def get_product_image(self, object):
+        imgs = object.product_image.all()
+        return ProductA77ImageSerializer(imgs, many=True).data
 
     def get_price(self, object):
         price = 0
@@ -156,6 +175,7 @@ class ProductA77Serializer(serializers.ModelSerializer):
             "id",
             "name",
             "price",
+            "tmb",
             "product_description",
             "product_image",
             "model",
