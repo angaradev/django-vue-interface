@@ -75,6 +75,9 @@ class GetProductsByCatNumbers(APIView):
     def get(self, request, format=None):
         """Getting array and serilizing qyeryset"""
         numbers = request.GET.getlist("numbers")
+        numbers = set([x for x in numbers if x])
+        print(numbers)
+
         qs = Product.objects.filter(cat_number__in=numbers).distinct()
         serializer = ProductA77Serializer(qs, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
