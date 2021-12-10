@@ -289,6 +289,7 @@ class Product(models.Model):  # Main table product
     class Meta:
         verbose_name = "Товар"
         verbose_name_plural = "Товары"
+        indexes = [models.Index(fields=["cat_number", "name", "slug"])]
 
 
 class AngaraOld(models.Model):
