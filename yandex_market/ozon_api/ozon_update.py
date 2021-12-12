@@ -214,7 +214,7 @@ def chunkGenerator(chunk_size):
     # Pay attention here is the mimimum price set up
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
-        .filter(product_stock__quantity__gt=0)
+        # .filter(product_stock__quantity__gt=0)
         .filter(product_stock__price__gt=300)
         .distinct()
     )
