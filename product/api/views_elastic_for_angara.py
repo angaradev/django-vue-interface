@@ -408,7 +408,7 @@ def get_all_cars(request):
                 "year_from": car.year_from,
                 "year_to": car.year_to,
                 "active": car.active,
-                "image": car.image.url if car.image else None,
+                "image": settings.SITE_URL +  car.image.url if car.image else None,
                 "model_hostory": car.model_history,
                 "model_liquids": car.model_liquids,
                 "model_to": car.model_to,
