@@ -65,6 +65,10 @@ class CarModelA77Serializer(serializers.ModelSerializer):
 
     make = serializers.SerializerMethodField()
     make_slug = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+
+    def get_image(self, object):
+        return settings.SITE_URL + object.image.url
 
     def get_make(self, object):
         return object.carmake.name
