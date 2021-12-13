@@ -215,8 +215,7 @@ def chunkGenerator(chunk_size):
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
         # .filter(product_stock__quantity__gt=0)
-        .filter(product_stock__price__gt=300)
-        .distinct()
+        .filter(product_stock__price__gt=300).distinct()
     )
     print("Products selected:", products.count())
     for i in range(0, products.count(), n):

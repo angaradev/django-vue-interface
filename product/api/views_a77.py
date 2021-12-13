@@ -1,10 +1,12 @@
 from collections import defaultdict
+import datetime
+from django.db.models import Q
 from rest_framework.decorators import action
 from rest_framework import generics, viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from product.api.serializers import ProductSerializer
-from product.api.serializers_a77 import ProductA77Serializer
+from product.api.serializers_a77 import ProductA77Serializer, ProductA77SerializerBase
 from rest_framework import mixins
 from product.api.serializers_a77 import (
     CategoriesSerializerfFlat,
@@ -81,3 +83,82 @@ class GetProductsByCatNumbers(APIView):
         qs = Product.objects.filter(cat_number__in=numbers).distinct()
         serializer = ProductA77Serializer(qs, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
+
+
+class HomePageFeaturesView(generics.ListAPIView):
+    """
+    Endpoint for home page all stuff
+    """
+
+    serializer_class_product = ProductA77SerializerBase
+    # serializer_class_blog = BlogA77Serializer
+    queryset = Product.objects.all()
+    permission_classes = [AllowAny]
+    last_year = datetime.datetime.now() - datetime.timedelta(days=365)
+
+    def get_queryset_latest_arrival(self):
+        qs = (
+            self.queryset.filter(product_image__isnull=False)
+            .distinct()
+            .order_by("-created_date")[:8]
+        )
+        print([x.one_c_id for x in qs])
+        return qs
+
+    def get_queryset_sale(self):
+        return (
+            self.queryset.filter(
+                Q(product_image__isnull=False)
+                & Q(product_stock__price__gt=1000)
+                & Q(created_date__gt=self.last_year)
+            )
+            .distinct()
+            .order_by("?")[:24]
+        )
+
+    def get_queryset_top_rated(self):
+        return self.queryset.filter(
+            Q(product_image__isnull=False)
+            & Q(product_stock__price__gt=1000)
+            & Q(created_date__gt=self.last_year)
+        ).order_by("?")[:3]
+
+    def get_queryset_special_offers(self):
+        return self.queryset.filter(
+            Q(product_image__isnull=False)
+            & Q(product_stock__price__gt=1000)
+            & Q(created_date__gt=self.last_year)
+        ).order_by("?")[:3]
+
+    def get_queryset_best_sellers(self):
+        return self.queryset.filter(
+            Q(product_image__isnull=False)
+            & Q(product_stock__price__gt=1000)
+            & Q(created_date__gt=self.last_year)
+        ).order_by("?")[:3]
+
+    def list(self, request, *args, **kwargs):
+        latest_serializer = self.serializer_class_product(
+            self.get_queryset_latest_arrival(), many=True
+        )
+        sale_serializer = self.serializer_class_product(
+            self.get_queryset_sale(), many=True
+        )
+        top_serializer = self.serializer_class_product(
+            self.get_queryset_top_rated(), many=True
+        )
+        special_serializer = self.serializer_class_product(
+            self.get_queryset_special_offers(), many=True
+        )
+        best_serializer = self.serializer_class_product(
+            self.get_queryset_best_sellers(), many=True
+        )
+        return Response(
+            {
+                "latest": latest_serializer.data,
+                "sale": sale_serializer.data,
+                "top": top_serializer.data,
+                "special": special_serializer.data,
+                "best": best_serializer.data,
+            }
+        )
