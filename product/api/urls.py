@@ -35,6 +35,11 @@ urlpatterns = [
     # path('', TemplateView.as_view(template_name='index1.html')),
     # Prefix in browser api/product/
     path(
+        "get-home-page-features/",
+        views_a77.HomePageFeaturesView.as_view(),
+        name="get-home-page-features",
+    ),
+    path(
         "get-products-by-numbers/",
         views_a77.GetProductsByCatNumbers.as_view(),
         name="get-products-by-numbers",

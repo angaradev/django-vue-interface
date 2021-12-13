@@ -31,6 +31,7 @@ def chunkGenerator(chunk_size):
     products = (
         Product.objects.filter(product_image__img150__isnull=False)
         .filter(product_stock__quantity__gt=0)
+        .filter(product_stock__price__gt=120)
         .distinct()
     )
     products = oils | products

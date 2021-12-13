@@ -173,7 +173,7 @@ class Product(models.Model):  # Main table product
     )
 
     def __str__(self):
-        return f"{self.name}-one-c={self.one_c_id}-id={self.id}"
+        return f"{self.name}-one-c={self.one_c_id}-id={self.id}"  # type: ignore
 
     @property
     def make_name(self):

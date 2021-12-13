@@ -68,7 +68,7 @@ class CarModelA77Serializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
 
     def get_image(self, object):
-        return settings.SITE_URL + object.image.url
+        return settings.SITE_URL + object.image.url if object.image else None
 
     def get_make(self, object):
         return object.carmake.name
@@ -119,6 +119,68 @@ class AnalogProductA77Serializer(serializers.ModelSerializer):
     def get_car_model(self, object):
         car_models = object.car_model.all()
         return CarModelA77Serializer(car_models, many=True).data
+
+
+class ProductA77SerializerBase(serializers.ModelSerializer):
+    """
+    Serialzier for a77 api get product by slug REST
+
+
+    """
+
+    model = serializers.SerializerMethodField()
+    price = serializers.SerializerMethodField()
+    product_image = serializers.SerializerMethodField()
+    tmb = serializers.SerializerMethodField()
+
+    def get_tmb(self, object):
+        tmb = None
+        try:
+            img = object.product_image.first()
+            tmb = settings.SITE_URL + img.img150.url
+        except:
+            tmb = None
+        return tmb
+
+    def get_product_image(self, object):
+        imgs = object.product_image.all()
+        return ProductA77ImageSerializer(imgs, many=True).data
+
+    def get_price(self, object):
+        price = 0
+        if len(object.product_stock.all()):
+            price = object.product_stock.first().price
+        return price
+
+    def get_model(self, object):
+        models = object.car_model.all()
+        return CarModelA77Serializer(models, many=True).data
+
+    class Meta:
+        model = Product
+        fields = [
+            "id",
+            "name",
+            "price",
+            "tmb",
+            "product_description",
+            "product_image",
+            "model",
+            "name2",
+            "product_video",
+            "cat_number",
+            "oem_number",
+            "category",
+            "slug",
+            "brand",
+            "one_c_id",
+            "active",
+            "engine",
+            "product_cross",
+            "product_attribute",
+            "product_cross",
+        ]
+        depth = 1
 
 
 class ProductA77Serializer(serializers.ModelSerializer):
@@ -200,3 +262,9 @@ class ProductA77Serializer(serializers.ModelSerializer):
             "product_cross",
         ]
         depth = 1
+
+
+class BlogA77Serializer(serializers.ModelSerializer):
+    """
+    Serialization for blog but fuck me it is not from here but from local db!!!
+    """
