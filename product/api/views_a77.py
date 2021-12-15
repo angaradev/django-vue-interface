@@ -95,47 +95,66 @@ class HomePageFeaturesView(generics.ListAPIView):
     queryset = Product.objects.all()
     permission_classes = [AllowAny]
     last_year = datetime.datetime.now() - datetime.timedelta(days=365)
+    # lookup_field = "car_model__slug"
 
     def get_queryset_latest_arrival(self):
+        slug = self.kwargs.get("slug")
         qs = (
             self.queryset.filter(product_image__isnull=False)
             .distinct()
-            .order_by("-created_date")[:8]
+            .order_by("-created_date")
         )
-        print([x.one_c_id for x in qs])
-        return qs
+        if slug and slug != "home":
+            qs = qs.filter(car_model__slug=slug)
+        return qs[:8]
 
     def get_queryset_sale(self):
-        return (
+        slug = self.kwargs.get("slug")
+        qs = (
             self.queryset.filter(
                 Q(product_image__isnull=False)
                 & Q(product_stock__price__gt=1000)
                 & Q(created_date__gt=self.last_year)
             )
             .distinct()
-            .order_by("?")[:24]
+            .order_by("?")
         )
+        if slug and slug != "home":
+            qs = qs.filter(car_model__slug=slug)
+        return qs[:24]
 
     def get_queryset_top_rated(self):
-        return self.queryset.filter(
+        slug = self.kwargs.get("slug")
+        qs = self.queryset.filter(
             Q(product_image__isnull=False)
             & Q(product_stock__price__gt=1000)
             & Q(created_date__gt=self.last_year)
-        ).order_by("?")[:3]
+        ).order_by("?")
+        if slug and slug != "home":
+            qs = qs.filter(car_model__slug=slug)
+        return qs[:3]
 
     def get_queryset_special_offers(self):
-        return self.queryset.filter(
+        slug = self.kwargs.get("slug")
+        qs = self.queryset.filter(
             Q(product_image__isnull=False)
             & Q(product_stock__price__gt=1000)
             & Q(created_date__gt=self.last_year)
-        ).order_by("?")[:3]
+        ).order_by("?")
+        if slug and slug != "home":
+            qs = qs.filter(car_model__slug=slug)
+        return qs[:3]
 
     def get_queryset_best_sellers(self):
-        return self.queryset.filter(
+        slug = self.kwargs.get("slug")
+        qs = self.queryset.filter(
             Q(product_image__isnull=False)
             & Q(product_stock__price__gt=1000)
             & Q(created_date__gt=self.last_year)
-        ).order_by("?")[:3]
+        ).order_by("?")
+        if slug and slug != "home":
+            qs = qs.filter(car_model__slug=slug)
+        return qs[:3]
 
     def list(self, request, *args, **kwargs):
         latest_serializer = self.serializer_class_product(
