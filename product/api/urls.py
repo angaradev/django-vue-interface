@@ -35,7 +35,7 @@ urlpatterns = [
     # path('', TemplateView.as_view(template_name='index1.html')),
     # Prefix in browser api/product/
     path(
-        "get-home-page-features/",
+        "get-home-page-features/<str:slug>/",
         views_a77.HomePageFeaturesView.as_view(),
         name="get-home-page-features",
     ),
