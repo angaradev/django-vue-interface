@@ -410,6 +410,9 @@ def do_all_two():
                             "img500": domain + chk_img(x.img500),
                             "img800": domain + chk_img(x.img800),
                             "image": domain + chk_img(x.image),
+                            "img245x245": domain + chk_img(x.img245),
+                            "img500x500": domain + chk_img(x.img500),
+                            "img800x800": domain + chk_img(x.img800),
                         }
                         for x in prod.old_images.all()
                     ]
