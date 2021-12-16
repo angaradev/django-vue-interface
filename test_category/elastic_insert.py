@@ -384,7 +384,7 @@ def do_all_two():
                 related = [x.id for x in prod.related.all()]
 
                 # Image stuff
-                images = None
+                images = []
                 if prod.product_image.all().exists():
                     images = [
                         {
@@ -393,6 +393,7 @@ def do_all_two():
                             "img245": domain + chk_img(x.img245),
                             "img500": domain + chk_img(x.img500),
                             "img800": domain + chk_img(x.img800),
+                            "image": domain + chk_img(x.image),
                             "img245x245": domain + chk_img(x.img245x245),
                             "img500x500": domain + chk_img(x.img500x500),
                             "img800x800": domain + chk_img(x.img800x800),
@@ -408,8 +409,9 @@ def do_all_two():
                             "img245": domain + chk_img(x.img245),
                             "img500": domain + chk_img(x.img500),
                             "img800": domain + chk_img(x.img800),
+                            "image": domain + chk_img(x.image),
                         }
-                        for x in prod.images
+                        for x in prod.old_images.all()
                     ]
 
                 video = [x.url for x in prod.product_video.all()]
