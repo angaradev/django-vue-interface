@@ -3,6 +3,7 @@ from PIL import Image, ImageOps
 import os
 import io
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.images import ImageFile
 
 
 # Custom path to upload images
@@ -25,6 +26,127 @@ def img_path_tmb(instance, filename, *args, **kwargs):
         filename,
     )
     return path
+
+
+def img_path_old(instance, filename, *args, **kwargs):
+    path = os.path.join("old_parts", str(instance.product.one_c_id), filename)
+    return path
+
+
+class OldProductImage(models.Model):
+    """Class keep old images by one c id"""
+
+    image = models.ImageField(upload_to=img_path_old, null=True, blank=True)
+    img150 = models.ImageField(upload_to=img_path_old, null=True, blank=True)
+    img245 = models.ImageField(upload_to=img_path_old, null=True, blank=True)
+    img500 = models.ImageField(upload_to=img_path_old, null=True, blank=True)
+    img800 = models.ImageField(upload_to=img_path_old, null=True, blank=True)
+    one_c_id = models.IntegerField(null=True, blank=True)
+
+    product = models.ForeignKey(
+        "Product",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="product_image",
+    )
+
+    class Meta:
+        verbose_name = "Старые Фото"
+        verbose_name_plural = "Старые Фото"
+
+    def __str__(self):
+        return str(self.product.one_c_id)
+
+    def save(self, *args, **kwargs):
+
+        method = Image.ANTIALIAS
+
+        im = Image.open(io.BytesIO(self.image.read()))
+        # Checking image size
+
+        imw, imh = im.size
+
+        img_big = ImageOps.fit(
+            im, (1920, 1280), method=method, bleed=0.0, centering=(0.5, 0.5)
+        )
+        output = io.BytesIO()
+        img_big.save(output, format="JPEG", optimize=True, quality=70)
+        output.seek(0)
+        self.image = InMemoryUploadedFile(
+            output,
+            "ImageField",
+            f"{self.image.name}",
+            "image/jpeg",
+            output.getbuffer().nbytes,
+            "utf-8",
+            None,
+        )
+
+        img150 = ImageOps.fit(
+            im, (150, 100), method=method, bleed=0.0, centering=(0.5, 0.4)
+        )
+        output = io.BytesIO()
+        img150.save(output, format="JPEG", optimize=True, quality=70)
+        output.seek(0)
+        self.img150 = InMemoryUploadedFile(
+            output,
+            "ImageField",
+            f"{self.image.name}",
+            "image/jpeg",
+            output.getbuffer().nbytes,
+            "utf-8",
+            None,
+        )
+
+        # 245
+        img245 = ImageOps.fit(
+            im, (245, 134), method=method, bleed=0.0, centering=(0.5, 0.4)
+        )
+        output = io.BytesIO()
+        img245.save(output, format="JPEG", optimize=True, quality=70)
+        output.seek(0)
+        self.img245 = InMemoryUploadedFile(
+            output,
+            "ImageField",
+            f"{self.image.name}",
+            "image/jpeg",
+            output.getbuffer().nbytes,
+            "utf-8",
+            None,
+        )
+        # 245
+        img500 = ImageOps.fit(
+            im, (500, 334), method=method, bleed=0.0, centering=(0.5, 0.4)
+        )
+        output = io.BytesIO()
+        img500.save(output, format="JPEG", optimize=True, quality=70)
+        output.seek(0)
+        self.img500 = InMemoryUploadedFile(
+            output,
+            "ImageField",
+            f"{self.image.name}",
+            "image/jpeg",
+            output.getbuffer().nbytes,
+            "utf-8",
+            None,
+        )
+        img800 = ImageOps.fit(
+            im, (900, 600), method=method, bleed=0.0, centering=(0.5, 0.4)
+        )
+        output = io.BytesIO()
+        img800.save(output, format="JPEG", optimize=True, quality=70)
+        output.seek(0)
+        self.img800 = InMemoryUploadedFile(
+            output,
+            "ImageField",
+            f"{self.image.name}",
+            "image/jpeg",
+            output.getbuffer().nbytes,
+            "utf-8",
+            None,
+        )
+        return super().save(*args, **kwargs)
 
 
 ###############################################################################
@@ -63,7 +185,7 @@ class ProductImage(models.Model):
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_name="product_image",
+        related_name="old_images",
     )
 
     class Meta:
