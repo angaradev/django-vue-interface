@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from product.models import Category, Product, ProductImage, CarModel
+from product.models import Category, Product, ProductImage, CarModel, OldProductImage
 from rest_framework.reverse import reverse
 from django.db.models import Q
 from django.conf import settings
@@ -35,11 +35,12 @@ class CategoriesSerializerfFlat(serializers.ModelSerializer):
 #################################################################
 
 
-class ProductA77ImageSerializer(serializers.ModelSerializer):
+class ProductA77OldImageSerializer(serializers.ModelSerializer):
     """Trying to make fill url"""
 
     img150 = serializers.SerializerMethodField()
     img245 = serializers.SerializerMethodField()
+    img500 = serializers.SerializerMethodField()
     img800 = serializers.SerializerMethodField()
     image = serializers.SerializerMethodField()
 
@@ -49,6 +50,38 @@ class ProductA77ImageSerializer(serializers.ModelSerializer):
     def get_img245(self, object):
         return settings.SITE_URL + object.img245.url
 
+    def get_img500(self, object):
+        return settings.SITE_URL + object.img500.url
+
+    def get_img800(self, object):
+        return settings.SITE_URL + object.img800.url
+
+    def get_image(self, object):
+        return settings.SITE_URL + object.image.url
+
+    class Meta:
+        model = OldProductImage
+        fields = ("img150", "img245", "img500", "img800", "image")
+
+
+class ProductA77ImageSerializer(serializers.ModelSerializer):
+    """Trying to make fill url"""
+
+    img150 = serializers.SerializerMethodField()
+    img245 = serializers.SerializerMethodField()
+    img500 = serializers.SerializerMethodField()
+    img800 = serializers.SerializerMethodField()
+    image = serializers.SerializerMethodField()
+
+    def get_img150(self, object):
+        return settings.SITE_URL + object.img150.url
+
+    def get_img245(self, object):
+        return settings.SITE_URL + object.img245.url
+
+    def get_img500(self, object):
+        return settings.SITE_URL + object.img500.url
+
     def get_img800(self, object):
         return settings.SITE_URL + object.img800.url
 
@@ -57,7 +90,7 @@ class ProductA77ImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductImage
-        fields = ("img150", "img245", "img800", "image")
+        fields = ("img150", "img245", "img500", "img800", "image")
 
 
 class CarModelA77Serializer(serializers.ModelSerializer):
@@ -143,7 +176,11 @@ class ProductA77SerializerBase(serializers.ModelSerializer):
         return tmb
 
     def get_product_image(self, object):
-        imgs = object.product_image.all()
+        imgs = None
+        if object.product_image.all().exists():
+            imgs = object.product_image.all()
+        elif object.old_images.all().exists():
+            imgs = object.old_images.all()
         return ProductA77ImageSerializer(imgs, many=True).data
 
     def get_price(self, object):
@@ -200,14 +237,23 @@ class ProductA77Serializer(serializers.ModelSerializer):
     def get_tmb(self, object):
         tmb = None
         try:
+
             img = object.product_image.first()
             tmb = settings.SITE_URL + img.img150.url
         except:
+            img = object.old_images.first()
+            tmb = settings.SITE_URL + img.img150.url
+        else:
             tmb = None
+
         return tmb
 
     def get_product_image(self, object):
-        imgs = object.product_image.all()
+        imgs = None
+        if object.product_image.all().exists():
+            imgs = object.product_image.all()
+        elif object.old_images.all().exists():
+            imgs = object.old_images.all()
         return ProductA77ImageSerializer(imgs, many=True).data
 
     def get_price(self, object):
