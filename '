@@ -240,11 +240,11 @@ class Product(models.Model):  # Main table product
 
     @property
     def images(self):
-        return self.product_image.all()  # type: ignore
+        return self.product_image.all()
 
     @property
     def old_imgs(self):
-        return self.old_images.all()  # type: ignore
+        return self.old_images.all()
 
     """
     Below properties needs to be refactored

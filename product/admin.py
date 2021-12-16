@@ -1,6 +1,6 @@
 from django_mptt_admin.admin import DjangoMpttAdmin
 from mptt.admin import MPTTModelAdmin
-from django.contrib import admin
+from django.contrib import admin  # type: ignore
 from product.models import (
     Price,
     PriceHistory,

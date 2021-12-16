@@ -48,7 +48,7 @@ class OldProductImage(models.Model):
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_name="product_image",
+        related_name="old_images",
     )
 
     class Meta:
@@ -146,7 +146,7 @@ class OldProductImage(models.Model):
             "utf-8",
             None,
         )
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 
 ###############################################################################
@@ -185,7 +185,7 @@ class ProductImage(models.Model):
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_name="old_images",
+        related_name="product_image",
     )
 
     class Meta:
