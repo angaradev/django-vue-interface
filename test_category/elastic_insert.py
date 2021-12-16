@@ -382,20 +382,36 @@ def do_all_two():
                 ]
 
                 related = [x.id for x in prod.related.all()]
-                images = [
-                    {
-                        "id": x.id,
-                        "img150": domain + chk_img(x.img150),
-                        "img245": domain + chk_img(x.img245),
-                        "img500": domain + chk_img(x.img500),
-                        "img800": domain + chk_img(x.img800),
-                        "img245x245": domain + chk_img(x.img245x245),
-                        "img500x500": domain + chk_img(x.img500x500),
-                        "img800x800": domain + chk_img(x.img800x800),
-                        "main": x.main,
-                    }
-                    for x in prod.images
-                ]
+
+                # Image stuff
+                images = None
+                if prod.product_image.all().exists():
+                    images = [
+                        {
+                            "id": x.id,
+                            "img150": domain + chk_img(x.img150),
+                            "img245": domain + chk_img(x.img245),
+                            "img500": domain + chk_img(x.img500),
+                            "img800": domain + chk_img(x.img800),
+                            "img245x245": domain + chk_img(x.img245x245),
+                            "img500x500": domain + chk_img(x.img500x500),
+                            "img800x800": domain + chk_img(x.img800x800),
+                            "main": x.main,
+                        }
+                        for x in prod.images
+                    ]
+                elif prod.old_images.all().exists():
+                    images = [
+                        {
+                            "id": x.id,
+                            "img150": domain + chk_img(x.img150),
+                            "img245": domain + chk_img(x.img245),
+                            "img500": domain + chk_img(x.img500),
+                            "img800": domain + chk_img(x.img800),
+                        }
+                        for x in prod.images
+                    ]
+
                 video = [x.url for x in prod.product_video.all()]
                 attributes = [
                     {"name": x.attribute_name.name.lower(), "value": x.attribute_value}
