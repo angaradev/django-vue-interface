@@ -237,9 +237,15 @@ class ProductA77Serializer(serializers.ModelSerializer):
     def get_tmb(self, object):
         tmb = None
         try:
+            if object.product_image.all().exists():
+                img = object.product_image.first()
+                tmb = settings.SITE_URL + img.img150.url
+            elif object.old_images.all().exists():
+                img = object.old_images.first()
+                tmb = settings.SITE_URL + img.img150.url
+            else:
+                tmb = None
 
-            img = object.product_image.first()
-            tmb = settings.SITE_URL + img.img150.url
         except:
             tmb = None
             # img = object.old_images.first()
