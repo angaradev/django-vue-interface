@@ -150,7 +150,7 @@ def sync_products():
 
     end = datetime.now()
     print(f"Sync script ended up in:", end - start)
-    print(f"Products updated:", j, "Products fucked up", i)
+    print(f"Products updated:", j, "Products the same: ", i)
     # Comment for git
 
 
