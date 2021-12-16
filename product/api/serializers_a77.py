@@ -241,10 +241,9 @@ class ProductA77Serializer(serializers.ModelSerializer):
             img = object.product_image.first()
             tmb = settings.SITE_URL + img.img150.url
         except:
-            img = object.old_images.first()
-            tmb = settings.SITE_URL + img.img150.url
-        else:
             tmb = None
+            # img = object.old_images.first()
+            # tmb = settings.SITE_URL + img.img150.url
 
         return tmb
 
