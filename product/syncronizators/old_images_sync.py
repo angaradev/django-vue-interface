@@ -19,7 +19,7 @@ def imgProcess(image_path, product):
 
 
 def doOldImages():
-    src = "/home/manhee/Disk/tmp/parts/"
+    src = "/home/manhee/tmp/"
     p = pathlib.Path(src)
 
     l = sum(1 for dummy in p.iterdir())
