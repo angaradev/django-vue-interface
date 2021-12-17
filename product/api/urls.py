@@ -40,6 +40,16 @@ urlpatterns = [
         name="get-home-page-features",
     ),
     path(
+        "get-redirect-product-by-one-c-id/<int:one_c_id>/",
+        views_a77.GetProductByOneCId.as_view(),
+        name="get-redirect-product-by-one-c-id",
+    ),
+    path(
+        "get-redirect-product-by-cat-number/<str:cat_number>/",
+        views_a77.GetProductByCatNumber.as_view(),
+        name="get-redirect-product-by-cat-number",
+    ),
+    path(
         "get-products-by-numbers/",
         views_a77.GetProductsByCatNumbers.as_view(),
         name="get-products-by-numbers",
