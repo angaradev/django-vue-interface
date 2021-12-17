@@ -291,6 +291,7 @@ class ProductA77Serializer(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
+            "brand",
             "price",
             "tmb",
             "product_description",
@@ -302,7 +303,6 @@ class ProductA77Serializer(serializers.ModelSerializer):
             "oem_number",
             "category",
             "slug",
-            "brand",
             "one_c_id",
             "active",
             "engine",
@@ -312,7 +312,7 @@ class ProductA77Serializer(serializers.ModelSerializer):
             "analogs",
             "product_cross",
         ]
-        depth = 1
+        depth = 2
 
 
 class BlogA77Serializer(serializers.ModelSerializer):
