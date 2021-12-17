@@ -1,7 +1,7 @@
 from collections import defaultdict
 import datetime
 from django.db.models import Q
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework import generics, viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -83,6 +83,24 @@ class GetProductsByCatNumbers(APIView):
         qs = Product.objects.filter(cat_number__in=numbers).distinct()
         serializer = ProductA77Serializer(qs, many=True)
         return Response(serializer.data, status.HTTP_200_OK)
+
+
+class GetProductByCatNumber(generics.RetrieveAPIView):
+    """Getting product for cat number for redirect"""
+
+    permission_classes = [AllowAny]
+    model = Product
+    lookup_field = "cat_number"
+    serializer_class = ProductA77SerializerBase
+
+
+class GetProductByOneCId(generics.RetrieveAPIView):
+    """Get product by one c id for redirect"""
+
+    permission_classes = [AllowAny]
+    model = Product
+    lookup_field = "one_c_id"
+    serializer_class = ProductA77SerializerBase
 
 
 class HomePageFeaturesView(generics.ListAPIView):
