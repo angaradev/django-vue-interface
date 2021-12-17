@@ -90,6 +90,7 @@ class GetProductByCatNumber(generics.RetrieveAPIView):
 
     permission_classes = [AllowAny]
     model = Product
+    queryset = Product.objects.all()
     lookup_field = "cat_number"
     serializer_class = ProductA77SerializerBase
 
@@ -99,6 +100,7 @@ class GetProductByOneCId(generics.RetrieveAPIView):
 
     permission_classes = [AllowAny]
     model = Product
+    queryset = Product.objects.all()
     lookup_field = "one_c_id"
     serializer_class = ProductA77SerializerBase
 
