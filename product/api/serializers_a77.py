@@ -129,7 +129,12 @@ class AnalogProductA77Serializer(serializers.ModelSerializer):
         return price
 
     def get_images(self, object):
-        imgs = object.product_image.all()
+
+        imgs = None
+        if object.product_image.all().exists():
+            imgs = object.product_image.all()
+        elif object.old_images.all().exists():
+            imgs = object.old_images.all()
         return ProductA77ImageSerializer(imgs, many=True).data
 
     class Meta:
