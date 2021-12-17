@@ -85,14 +85,17 @@ class GetProductsByCatNumbers(APIView):
         return Response(serializer.data, status.HTTP_200_OK)
 
 
-class GetProductByCatNumber(generics.RetrieveAPIView):
+class GetProductByCatNumber(APIView):
     """Getting product for cat number for redirect"""
 
     permission_classes = [AllowAny]
-    model = Product
-    queryset = Product.objects.all()
-    lookup_field = "cat_number"
     serializer_class = ProductA77SerializerBase
+
+    def get(self, request, *args, **kwargs):
+        cat_number = self.kwargs.get("cat_number")
+        qs = Product.objects.filter(cat_number=cat_number).first()
+        serializer = self.serializer_class(qs)
+        return Response(serializer.data, status.HTTP_200_OK)
 
 
 class GetProductByOneCId(generics.RetrieveAPIView):
