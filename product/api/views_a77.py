@@ -6,7 +6,11 @@ from rest_framework import generics, viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from product.api.serializers import ProductSerializer
-from product.api.serializers_a77 import ProductA77Serializer, ProductA77SerializerBase
+from product.api.serializers_a77 import (
+    ProductA77Serializer,
+    ProductA77SerializerBase,
+    ProductSiteMapSerializer,
+)
 from rest_framework import mixins
 from product.api.serializers_a77 import (
     CategoriesSerializerfFlat,
@@ -19,6 +23,18 @@ from test_category.api.serializers import (
     DepthOneCategorySerializer,
     CategoriesSerializer,
 )
+
+
+class ProductSitemapView(generics.ListAPIView):
+    """
+    Return only slug of all products
+
+    """
+
+    permission_classes = [AllowAny]
+    queryset = Product.objects.all()
+    paginator = None  # type: ignore
+    serializer_class = ProductSiteMapSerializer
 
 
 class CategoriesView(generics.ListAPIView):

@@ -320,7 +320,11 @@ class ProductA77Serializer(serializers.ModelSerializer):
         depth = 2
 
 
-class BlogA77Serializer(serializers.ModelSerializer):
+class ProductSiteMapSerializer(serializers.ModelSerializer):
     """
-    Serialization for blog but fuck me it is not from here but from local db!!!
+    Returns only slugs for products
     """
+
+    class Meta:
+        model = Product
+        fields = ("slug",)
