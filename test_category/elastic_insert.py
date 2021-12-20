@@ -430,6 +430,7 @@ def do_all_two():
                     prod
                 )  # !!! It is for real life bottom will be fake data
                 # stocks = get_fake_stock(prod)
+                price =float (prod.product_stock.first().price) if prod.product_stock.exists() else None 
                 name_sug = []
                 name2_sug = []
                 if prod.name2:
@@ -471,6 +472,7 @@ def do_all_two():
                         "description": description,
                         "rating": ratingAvg(prod.id),
                         "has_photo": prod.have_photo,
+                        "has_photo_or_old": True if len(images) else False,
                         "images": images,
                         "video": video,
                         "attributes": attributes,
@@ -482,6 +484,7 @@ def do_all_two():
                         "full_name_ngrams": prod.full_name,
                         "createdDate": str(prod.created_date),
                         "updatedDate": str(prod.updated_date),
+                        "price": price
                     }
                 )
                 product = f"{product_json}\n"
