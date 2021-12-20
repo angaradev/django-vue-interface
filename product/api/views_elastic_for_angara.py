@@ -425,3 +425,28 @@ def get_all_cars(request):
     print("Ecexution time is", end - start)
 
     return JsonResponse(new_cars, safe=False)
+
+
+
+def get_products_for_yandex_market_xml(request):
+
+    data = json.dumps(
+        {
+            "size": 10000,
+            "sort": [
+                {"stocks.price": {"order": "desc"}},
+            ],
+            "query": {"match_all": {}},
+        }
+    )
+
+    r = requests.get(
+        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        headers={"Content-Type": "application/json"},
+        data=data,
+    )
+
+    if r.status_code != 200:
+        raise ValueError(f"Request cannot be proceeded Status code is: {r.status_code}")
+    response = r.json()
+    return JsonResponse(response, safe=False)
