@@ -430,14 +430,39 @@ def get_all_cars(request):
 
 def get_products_for_yandex_market_xml(request):
 
-    data = json.dumps(
-        {
-            "size": 10000,
-            "sort": [
-                {"stocks.price": {"order": "desc"}},
-            ],
-            "query": {"match_all": {}},
-        }
+    data = json.dumps({
+                "size": 10000,
+              "_source": [
+                "cat_number",
+                "name",
+                "name2",
+                "has_photo_or_old",
+                "price",
+                "category.name", 
+                "category.id", 
+                "category.parent",
+                "images.image",
+                "brand.name",
+                "cat_number",
+                "description"
+              ],
+              "query": {
+                "bool": {
+                  "must": [
+                    {
+                      "match": {
+                        "has_photo_or_old": "true"
+                      }
+                    },
+                    {
+                      "exists": {
+                        "field": "price"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
     )
 
     r = requests.get(

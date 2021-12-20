@@ -18,6 +18,7 @@ from product.api.views_elastic_search_api import (
     send_json as search_api,
 )
 from product.api.views_elastic_for_angara import (
+    get_products_for_yandex_market_xml,
     send_json as jsontest_angara,
     get_all_cars,
 )
@@ -190,6 +191,11 @@ urlpatterns = [
         "merchant/",
         productApiViews.SelectAllProductsVasyaView.as_view(),
         name="merchant-api",
+    ),
+    path(
+        "jsontest-a77-yandex-markety-xml",
+        get_products_for_yandex_market_xml,
+        name="send_json",
     ),
     path("jsontest", send_json, name="send_json"),
     path("jsontest_v2", send_json2, name="send_json2"),
