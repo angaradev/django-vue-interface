@@ -433,6 +433,7 @@ def get_products_for_yandex_market_xml(request):
     data = json.dumps({
                 "size": 10000,
               "_source": [
+                  "one_c_id",
                 "cat_number",
                 "name",
                 "name2",
