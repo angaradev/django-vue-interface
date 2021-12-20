@@ -435,6 +435,7 @@ def get_products_for_yandex_market_xml(request):
               "_source": [
                   "one_c_id",
                 "cat_number",
+                  "slug",
                 "name",
                 "name2",
                   "model.name",
