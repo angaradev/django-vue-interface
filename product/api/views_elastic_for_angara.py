@@ -436,6 +436,8 @@ def get_products_for_yandex_market_xml(request):
                 "cat_number",
                 "name",
                 "name2",
+                  "model.name",
+                  "model.make.name",
                 "has_photo_or_old",
                 "price",
                 "category.name", 
