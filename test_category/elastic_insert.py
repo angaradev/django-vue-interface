@@ -443,12 +443,15 @@ def do_all_two():
                 categories = categories_work(prod)
 
                 description = ""
-                if hasattr(prod, "product_description"):
-                    soup = BeautifulSoup(prod.product_description.text, "lxml")
-                    description = soup.get_text()
-                    description = re.sub(
-                        "&nbsp;", " ", description, flags=re.IGNORECASE
-                    )
+                try:
+                    if hasattr(prod, "product_description"):
+                        soup = BeautifulSoup(prod.product_description.text, "lxml")
+                        description = soup.get_text()
+                        description = re.sub(
+                            "&nbsp;", " ", description, flags=re.IGNORECASE
+                        )
+                except Exception as e:
+                    pass
 
                 product_json = json.dumps(
                     {
