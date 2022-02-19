@@ -7,6 +7,8 @@ from product.syncronizators.prices_sync import update_prices
 from test_category.elastic_insert import do_all_two
 from test_category.elastic_stuff2 import do_insert as elastic_insert
 
+# comment for testing git
+
 
 def sync_products():
     start = datetime.now()
