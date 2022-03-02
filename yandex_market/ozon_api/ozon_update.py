@@ -309,7 +309,7 @@ def do_all_update_products(production=False, iterations=2):
 def make_stock(product):
     stock = 0
     try:
-        stock = product.product_stock.first().quantity
+        stock = 0  # product.product_stock.first().quantity
     except:
         stock = 0
     one_c_id = str(product.one_c_id)
