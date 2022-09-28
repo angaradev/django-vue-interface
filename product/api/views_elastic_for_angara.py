@@ -448,7 +448,8 @@ def get_products_for_yandex_market_xml(request):
                 "images.image",
                 "brand.name",
                 "cat_number",
-                "description"
+                "description",
+                "stocks"
               ],
               "query": {
                 "bool": {
