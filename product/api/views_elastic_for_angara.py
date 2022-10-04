@@ -138,7 +138,7 @@ def send_json(request):
         """
         Check if search by make slug exists
         """
-        page_size = request.GET.get("page_size") or 200
+        page_size = request.GET.get("page_size") or 100 
 
         page_from = request.GET.get("page_from") or 0
         search = request.GET.get("search") or None
@@ -149,6 +149,7 @@ def send_json(request):
         model = request.GET.get("model")
         make = request.GET.get("make")
         data = None
+        print("Heres me ", page_size)
         q_list = [x[0] for x in request.GET.items()]
         filters_chk = checFilters(filters_params, q_list)
 
@@ -217,7 +218,8 @@ def send_json(request):
             )
         # If cat and not models
         elif cat and not model and not make:
-            print("In CATEGORY statement")
+            print("In CATEGORY statement", page_from, page_size)
+            
             data = json.dumps(
                 {
                     "from": page_from,
@@ -235,7 +237,8 @@ def send_json(request):
             print("In all statement")
             data = json.dumps(
                 {
-                    "size": 10000,
+                    "from": page_from,
+                    "size": page_size,
                     "sort": [
                         {"has_photo": {"order": sort_price}},
                         {"stocks.price": {"order": "desc"}},
@@ -253,7 +256,7 @@ def send_json(request):
     #     except:
     #         print("File not writes")
 
-    r = requests.get(
+    r = requests.post(
         f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=data,
