@@ -39,7 +39,7 @@ def aggs(size):
     return aggs
 
 
-def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=200):
+def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=100):
     query = []
     boolShould = []
     min_price = request.GET.get("min_price")
