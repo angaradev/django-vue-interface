@@ -4,6 +4,11 @@ import csv
 from django.db.models import Avg, Count
 from product.models import Stock
 from product.models import Product
+import os
+
+
+
+home_directory = os.path.expanduser( '~' )
 
 
 
@@ -22,7 +27,7 @@ def make_list_for_anton():
             ret = ''
         return ret
             
-    with open('list.csv', 'w', newline='') as csvfile:
+    with open(os.path.join(home_directory, 'tmp', 'list.csv'), 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=';', quotechar='"')
 
         for stock in stocks:
