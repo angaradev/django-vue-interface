@@ -1,7 +1,6 @@
 product_notebook.txt
 product_notebook2.txt
 logs
-tmp
 
 .DS_Store
 node_modules
