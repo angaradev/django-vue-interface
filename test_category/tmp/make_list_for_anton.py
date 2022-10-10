@@ -17,7 +17,7 @@ home_directory = os.path.expanduser( '~' )
 
 
 def make_list_for_anton():
-    stocks = Stock.objects.filter(quantity__gt=0)[:10]
+    stocks = Stock.objects.filter(quantity__gt=0)
     print(stocks.count())
     items = []
     def cats(cat):
