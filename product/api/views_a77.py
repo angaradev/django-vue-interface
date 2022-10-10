@@ -77,12 +77,19 @@ class SingleCategorySlugView(generics.RetrieveAPIView, mixins.RetrieveModelMixin
 class GetProductBySlugView(generics.RetrieveAPIView):
     """
     Class retreive single product by slug
-    """
 
-    queryset = Product.objects.all()
+
+    """
     lookup_field = "slug"
     serializer_class = ProductA77Serializer
     permission_classes = [AllowAny]
+    queryset = Product.objects.all()
+
+
+    def get_serializer_context(self):
+        car_model_slug = self.request.GET.get('car_model')
+        return {'car_model': car_model_slug}
+
 
 
 class GetProductsByCatNumbers(APIView):

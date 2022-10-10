@@ -283,13 +283,21 @@ class ProductA77Serializer(serializers.ModelSerializer):
         return AnalogProductA77Serializer(qs, many=True).data
 
     def get_related(self, object):
-        pattern = object.name.split()
-        car_model = object.car_model.first()
+        # pattern = object.name.split()
+        car_model_slug = self.context.get('car_model_slug')
 
-        qs = Product.objects.filter(car_model=car_model).filter(
-            Q(name__icontains=pattern[0]) | Q(name__icontains=pattern[0])
-        )
+        cat = object.category.first()
+        cats = cat.get_siblings(include_self=True)
+        cat_ids =[x.id for x in cats]
+        # print(self.context.get('request'))
+
+
+        # qs = Product.objects.filter(
+        #     Q(category__id__in=cat_ids) & Q(car_model=car_model)
+        # )
+        qs = Product.objects.filter(category__id__in=cat_ids, car_model__slug=car_model_slug).order_by('?')[:20]
         return AnalogProductA77Serializer(qs, many=True).data
+
 
     class Meta:
         model = Product
