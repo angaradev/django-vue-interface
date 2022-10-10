@@ -17,7 +17,7 @@ home_directory = os.path.expanduser( '~' )
 
 
 def make_list_for_anton():
-    stocks = Stock.objects.filter(quantity__gt=0)
+    stocks = Stock.objects.filter(quantity__gt=0)[:10]
     print(stocks.count())
     items = []
     def cats(cat):
@@ -28,7 +28,7 @@ def make_list_for_anton():
             ret = ''
         return ret
             
-    with open('list.csv', 'w', newline='') as csvfile:
+    with open(os.path.join(home_directory, 'tmp', 'list.csv'), 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=';', quotechar='"')
         writer.writerow(['one_c_id', 'name', 'make', 'model','category', 'brand', 'price', 'quantity', 'cat_number'])
 
@@ -44,3 +44,9 @@ def make_list_for_anton():
             #writer.writerow(item)
             items.append(item)
             writer.writerow(item)
+
+
+
+
+
+    # with open(os.path.join(home_directory, 'tmp', 'list.csv'), 'w', newline='') as csvfile:
