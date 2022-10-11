@@ -78,7 +78,6 @@ class GetProductBySlugView(generics.RetrieveAPIView):
     """
     Class retreive single product by slug
 
-
     """
     lookup_field = "slug"
     serializer_class = ProductA77Serializer
