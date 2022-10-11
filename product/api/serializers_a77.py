@@ -286,6 +286,7 @@ class ProductA77Serializer(serializers.ModelSerializer):
         # pattern = object.name.split()
         qs = None
         pattern = object.name.split()
+        print(pattern[0])
 
         try:
             car_model_ids = [x.id for x in  object.car_model.all()]
@@ -295,10 +296,11 @@ class ProductA77Serializer(serializers.ModelSerializer):
             cat_ids =[x.id for x in cats]
 
             qs = Product.objects.filter(category__id__in=cat_ids, car_model__id__in=car_model_ids).order_by('?')[:20]
-            if not qs.count():
-                qs = Product.objects.filter( Q(name__icontains=pattern[0]))
         except:
-            qs = Product.objects.none()
+            try:
+                qs = Product.objects.filter(name__icontains=pattern[0])
+            except:
+                qs = Product.objects.none()
 
         return AnalogProductA77Serializer(qs, many=True).data
 
