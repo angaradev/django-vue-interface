@@ -295,11 +295,11 @@ class ProductA77Serializer(serializers.ModelSerializer):
         # qs = Product.objects.filter(
         #     Q(category__id__in=cat_ids) & Q(car_model=car_model)
         # )
-        qs = Product.objects.all()
+        queryset = Product.objects.all()
         if car_model_slug:
-            qs = Product.objects.filter(category__id__in=cat_ids, car_model__slug=car_model_slug).order_by('?')[:20]
+            qs = queryset.filter(category__id__in=cat_ids, car_model__slug=car_model_slug).order_by('?')[:20]
         else:
-            qs = Product.objects.filter(category__id__in=cat_ids).order_by('?')[:20]
+            qs = queryset.filter(category__id__in=cat_ids).order_by('?')[:20]
 
         return AnalogProductA77Serializer(qs, many=True).data
 
