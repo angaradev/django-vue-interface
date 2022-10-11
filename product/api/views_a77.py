@@ -85,9 +85,6 @@ class GetProductBySlugView(generics.RetrieveAPIView):
     queryset = Product.objects.all()
 
 
-    def get_serializer_context(self):
-        car_model_slug = self.request.GET.get('car_model')
-        return {'car_model_slug': car_model_slug}
 
 
 
