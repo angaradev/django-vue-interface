@@ -369,7 +369,6 @@ class MerchantImagesSerilizer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         fields = ["images"]
-        depth = 1
 
     images = serializers.SerializerMethodField()
 
@@ -391,11 +390,20 @@ class MerchangSerializer(serializers.ModelSerializer):
     price = serializers.SerializerMethodField()
     stock = serializers.SerializerMethodField()
     category_id = serializers.SerializerMethodField()
+    category_name = serializers.SerializerMethodField()
     has_photo = serializers.SerializerMethodField()
     images = MerchantImagesSerilizer(many=True)
     car_model = serializers.SerializerMethodField()
     engine = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
+    brand = serializers.SerializerMethodField()
+
+
+    def get_brand(self, obj):
+
+        if obj.brand:
+            return obj.brand.brand
+
 
     def get_description(self, obj):
         if obj.description:
@@ -444,6 +452,13 @@ class MerchangSerializer(serializers.ModelSerializer):
         else:
             return None
 
+    def get_category_name(self, obj):
+        category = obj.category.all()
+        if category:
+            return category[0].name
+        else:
+            return None
+
     def get_has_photo(self, obj):
         return obj.have_photo
 
@@ -477,6 +492,7 @@ class MerchangSerializer(serializers.ModelSerializer):
             "price",
             "stock",
             "category_id",
+            "category_name",
             "engine",
             "has_photo",
             "created_date",

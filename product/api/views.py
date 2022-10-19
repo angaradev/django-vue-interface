@@ -405,7 +405,7 @@ class SelectAllProductsVasyaView(APIView, LimitOffsetPagination):
 
     def get(self, request):
         products = Product.objects.all()
-        filtered = products.filter(product_image__isnull=False).distinct()
+        filtered = products.filter(product_stock__quantity__gt=0).distinct()
 
         # filtered_stock = filtered.filter(product_stock__price__isnull=False)
         print("Products with photo:", filtered.count())
@@ -413,3 +413,12 @@ class SelectAllProductsVasyaView(APIView, LimitOffsetPagination):
         serializer = MerchangSerializer(filtered, many=True)
         self.check_permissions(request)
         return Response(serializer.data)
+
+
+
+
+
+
+
+
+
