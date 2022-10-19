@@ -369,6 +369,7 @@ class MerchantImagesSerilizer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         fields = ["images"]
+        depth = 1
 
     images = serializers.SerializerMethodField()
 
