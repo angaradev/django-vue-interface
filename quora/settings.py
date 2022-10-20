@@ -6,6 +6,13 @@ from datetime import timedelta
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+if os.environ.get('ELASTIC_HOST'):
+    ELASTIC_URL = os.environ.get('ELASTIC_HOST')
+else:
+    ELASTIC_URL = "http://localhost:9200"
+
+ELASTIC_INDEX = "prod_all"
+
 
 SECRET_KEY = SECRET_KEY
 VUE_DEV = VUE_DEV

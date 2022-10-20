@@ -1,7 +1,8 @@
 product_notebook.txt
 product_notebook2.txt
+media
 logs
-local_settings.py
+#local_settings.py
 my.py
 .DS_Store
 node_modules
