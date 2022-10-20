@@ -58,6 +58,7 @@ def sync_products():
     f = 0
     csv_ids = []
 
+
     with open(settings.ONE_C_PRICE, encoding="utf-8") as file:
         reader = csv.reader(file, delimiter=";")
         csv_list = list(reader)
