@@ -149,6 +149,10 @@ WSGI_APPLICATION = "quora.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+HOST = "127.0.0.1"
+if os.environ.get("MYSQL_HOST"):
+    HOST = os.environ.get("MYSQL_HOST")
+
 DATABASES = {
     #    'default': {
     #        'ENGINE': 'django.db.backends.sqlite3',
@@ -159,6 +163,7 @@ DATABASES = {
         "OPTIONS": {
             "read_default_file": os.path.join(BASE_DIR, "quora/my.cnf"),
             "sql_mode": "traditional",
+            "HOST": HOST
         },
     }
 }
