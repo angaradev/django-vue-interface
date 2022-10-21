@@ -262,7 +262,7 @@ def send_json(request):
         # If query has car model and slug
 
     r = requests.get(
-        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        f"http://{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=data,
     )
@@ -349,7 +349,7 @@ def autocomplete(request):
             }
 
     r = requests.get(
-        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        f"http://{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=json.dumps(query),
     )
@@ -378,7 +378,7 @@ def findNumbers(request):
     }
 
     r = requests.get(
-        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        f"http://{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=json.dumps(query),
     )

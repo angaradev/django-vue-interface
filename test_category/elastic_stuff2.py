@@ -16,14 +16,14 @@ def do_insert():
     with open(path_insert, "r", encoding="utf-8") as data_insert:
         data_insert = file_insert.read()
 
-    res_delete = requests.delete("http://localhost:9200/prod_all", headers=headers)
+    res_delete = requests.delete("http://{settings.ELASTIC_URL}/prod_all", headers=headers)
     res_mapping = requests.put(
-        "http://localhost:9200/prod_all",
+        "http://{settings.ELASTIC_URL}/prod_all",
         data=data_mapping.encode("utf-8"),
         headers=headers,
     )
     res_insert = requests.put(
-        "http://localhost:9200/_bulk",
+        "http://{settings.ELASTIC_URL}/_bulk",
         data=data_insert.encode("utf-8"),
         headers=headers,
     )
