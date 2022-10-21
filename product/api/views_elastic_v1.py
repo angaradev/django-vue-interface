@@ -243,7 +243,7 @@ def send_json(request):
         # if query has q == all and cat slug
 
     r = requests.get(
-        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        f"http://{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=data,
     )
@@ -411,7 +411,7 @@ def send_json_filters(request):
             # if query has q == all and cat slug
 
     r = requests.get(
-        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        f"http://{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=data,
     )

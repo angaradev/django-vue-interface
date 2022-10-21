@@ -161,4 +161,4 @@ def do_all_sync_products():
     sync_products()
     do_all_two()
     elastic_insert()
-    update_prices()
+    # update_prices()

@@ -15,7 +15,7 @@ def elastic_file_create(request):
         return HttpResponse(f"<h1>Somethin went wrong {e}</h1>")
 
 
-# curl -H 'Content-Type: application/x-ndjson' -XDELETE 'http://localhost:9200/prod_notebook';
-# curl -H 'Content-Type: application/x-ndjson' -XPUT 'http://localhost:9200/prod_notebook'
+# curl -H 'Content-Type: application/x-ndjson' -XDELETE 'http://{settings.ELASTIC_URL}/prod_notebook';
+# curl -H 'Content-Type: application/x-ndjson' -XPUT 'http://{settings.ELASTIC_URL}/prod_notebook'
 # --data-binary @/home/manhee/Projects/quora/quora/test_category/product_mapping.json;
-# curl -H 'Content-Type: application/x-ndjson' -XPUT 'http://localhost:9200/_bulk' --data-binary @/home/manhee/Projects/quora/quora/test_category/product_notebook.txt > el_log.txt;
+# curl -H 'Content-Type: application/x-ndjson' -XPUT 'http://{settings.ELASTIC_URL}/_bulk' --data-binary @/home/manhee/Projects/quora/quora/test_category/product_notebook.txt > el_log.txt;

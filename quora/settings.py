@@ -7,9 +7,9 @@ from datetime import timedelta
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 if os.environ.get('ELASTIC_HOST'):
-    ELASTIC_URL = os.environ.get('ELASTIC_HOST')
+    ELASTIC_URL = f"{os.environ.get('ELASTIC_HOST')}:9200"
 else:
-    ELASTIC_URL = "http://localhost:9200"
+    ELASTIC_URL = "localhost:9200"
 
 ELASTIC_INDEX = "prod_all"
 
@@ -149,9 +149,11 @@ WSGI_APPLICATION = "quora.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-HOST = "127.0.0.1"
 if os.environ.get("MYSQL_HOST"):
     HOST = os.environ.get("MYSQL_HOST")
+else:
+    HOST = "127.0.0.1"
+
 
 DATABASES = {
     #    'default': {
@@ -160,10 +162,10 @@ DATABASES = {
     #    },
     "default": {
         "ENGINE": "django.db.backends.mysql",
+        "HOST": HOST,
         "OPTIONS": {
             "read_default_file": os.path.join(BASE_DIR, "quora/my.cnf"),
             "sql_mode": "traditional",
-            "HOST": HOST
         },
     }
 }

@@ -245,7 +245,7 @@ def send_json(request):
     #         print("File not writes")
 
     r = requests.get(
-        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        f"http://{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=data,
     )

@@ -24,8 +24,8 @@ from .utils import stemmer
 from .schema_helpers import makeProduct
 
 
-# connections.create_connection(hosts=["localhost:9200"], timeout=20)
-# esh = Elasticsearch(["http://localhost:9200"])
+# connections.create_connection(hosts=["{settings.ELASTIC_URL}"], timeout=20)
+# esh = Elasticsearch(["http://{settings.ELASTIC_URL}"])
 class ratingAvgType(ObjectType):
     ratingAvg = Int()
 

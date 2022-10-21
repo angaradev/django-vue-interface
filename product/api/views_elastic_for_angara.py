@@ -257,7 +257,7 @@ def send_json(request):
     #         print("File not writes")
 
     r = requests.post(
-        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        f"http://{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=data,
     )
@@ -315,7 +315,7 @@ def get_all_cars(request):
     }
 
     r = requests.get(
-        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        f"http://{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=json.dumps(query),
     )
@@ -474,7 +474,7 @@ def get_products_for_yandex_market_xml(request):
     )
 
     r = requests.get(
-        f"http://localhost:9200/{settings.ELASTIC_INDEX}/_search",
+        f"http://{settings.ELASTIC_URL}/{settings.ELASTIC_INDEX}/_search",
         headers={"Content-Type": "application/json"},
         data=data,
     )
