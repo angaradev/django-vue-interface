@@ -5,7 +5,7 @@ logs
 #local_settings.py
 my.py
 .DS_Store
-node_modules
+#node_modules
 *.ipynb
 # local env files
 .env.local

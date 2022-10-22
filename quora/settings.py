@@ -1,10 +1,20 @@
 import os
 from .local_settings import *
 from datetime import timedelta
+import mimetypes
+mimetypes.add_type("text/css", ".css", True)
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+
+DEBUG = False 
+
+if os.environ.get('DJANGO_DEBUG') and os.environ.get('DJANGO_DEBUG') == 'True':
+    DEBUG = True
+
 
 if os.environ.get('ELASTIC_HOST'):
     ELASTIC_URL = f"{os.environ.get('ELASTIC_HOST')}:9200"
@@ -39,6 +49,7 @@ ALLOWED_HOSTS = [
     "angara77.ru",
     "0.0.0.0",
     "angara77.ml",
+    "django",
 ]
 
 
@@ -137,6 +148,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "product.context_processor.session_processor",
+                "quora.context_processor.main_host",
             ],
         },
     },
@@ -220,13 +232,14 @@ STATIC_URL = "/static/"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
     os.path.join(BASE_DIR, "front/dist"),
-    os.path.join(BASE_DIR, "media"),
+    # os.path.join(BASE_DIR, "media"),
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 MEDIA_URL = "/media/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+STATIC_ROOT = os.path.join(BASE_DIR, "static_collection")
+
 # CKEDITOR_BASEPATH = os.path.join(STATIC_ROOT, "ckeditor")
 CKEDITOR_UPLOAD_PATH = "ckeditor/uploads/"
 
