@@ -4,6 +4,7 @@
 Vue.use(VueToast);
 Vue.use(CKEditor);
 Vue.component('vue-multiselect', window.VueMultiselect.default);
+var ApplicationMainHost = main_host;
 
 const vsel = Vue.component('v-select', VueSelect.VueSelect);
 let il = {
@@ -311,7 +312,6 @@ const app = new Vue({
       product_id = this.part.id;
       for (let index = 0; index < elements.length; index++) {
         element = elements[index];
-        console.log(element);
         if (element.id) {
           endpoint = `${ApplicationMainHost}/api/product/attribute/${element.id}/`;
           data = {
@@ -401,7 +401,7 @@ const app = new Vue({
     },
     popFromArrayById(array, id) {
       let removeIndex = array
-        .map(function (item) {
+        .map(function(item) {
           return item.id;
         })
         .indexOf(id);
@@ -418,7 +418,7 @@ const app = new Vue({
       if (id) {
         const endpoint = `${ApplicationMainHost}/api/product/videos/${id}/`;
         let getIndex = this.productVideos
-          .map(function (item) {
+          .map(function(item) {
             return item.id;
           })
           .indexOf(id);
@@ -495,7 +495,7 @@ const app = new Vue({
         this.errorToast('Фото не удалилось!');
       }
       let removeIndex = this.productImages
-        .map(function (item) {
+        .map(function(item) {
           return item.id;
         })
         .indexOf(id);
@@ -635,5 +635,6 @@ const app = new Vue({
     this.getDescription(id);
     // commenmt
   },
-  mounted() {},
+  mounted() {
+  },
 });
