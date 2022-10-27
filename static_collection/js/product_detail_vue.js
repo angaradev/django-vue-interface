@@ -5,7 +5,6 @@ Vue.use(VueToast);
 Vue.use(CKEditor);
 Vue.component('vue-multiselect', window.VueMultiselect.default);
 var ApplicationMainHost = main_host;
-console.log(main_host);
 
 const vsel = Vue.component('v-select', VueSelect.VueSelect);
 let il = {
@@ -313,7 +312,6 @@ const app = new Vue({
       product_id = this.part.id;
       for (let index = 0; index < elements.length; index++) {
         element = elements[index];
-        console.log(element);
         if (element.id) {
           endpoint = `${ApplicationMainHost}/api/product/attribute/${element.id}/`;
           data = {
@@ -589,7 +587,6 @@ const app = new Vue({
     },
     async getPart(id, car_make_id) {
       const endpoint = `${ApplicationMainHost}/api/product/detail/${id}/`;
-      console.log(endpoint)
       // await this.getAttributeList();
       await this.getAttribute(id);
       const data = await apiService(endpoint);

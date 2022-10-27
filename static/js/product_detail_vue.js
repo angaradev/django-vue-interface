@@ -401,7 +401,7 @@ const app = new Vue({
     },
     popFromArrayById(array, id) {
       let removeIndex = array
-        .map(function(item) {
+        .map(function (item) {
           return item.id;
         })
         .indexOf(id);
@@ -418,7 +418,7 @@ const app = new Vue({
       if (id) {
         const endpoint = `${ApplicationMainHost}/api/product/videos/${id}/`;
         let getIndex = this.productVideos
-          .map(function(item) {
+          .map(function (item) {
             return item.id;
           })
           .indexOf(id);
@@ -459,7 +459,7 @@ const app = new Vue({
     async getImage(id) {
       const endpoint = `${ApplicationMainHost}/api/product/images/?product_id=${id}`;
       let response = await apiService(endpoint);
-      this.productImages = response.results;
+      this.productImages = await response.results;
     },
     async uploadImage() {
       this.imageLoading = true;
@@ -495,7 +495,7 @@ const app = new Vue({
         this.errorToast('Фото не удалилось!');
       }
       let removeIndex = this.productImages
-        .map(function(item) {
+        .map(function (item) {
           return item.id;
         })
         .indexOf(id);
@@ -596,8 +596,6 @@ const app = new Vue({
       await this.getSelectCarModelList(car_make_id); // Here need to implement selecting models by carmake
       // await this.getSelectCarEnginelList(this.part.car_model.id);
       await this.getImage(this.part.id);
-
-      // console.log(data);
     },
     async getSelectCarModelList(id) {
       const endpoint = `${ApplicationMainHost}/api/product/selectlistcarmodel/${id}/`;
@@ -635,6 +633,5 @@ const app = new Vue({
     this.getDescription(id);
     // commenmt
   },
-  mounted() {
-  },
+  mounted() {},
 });
