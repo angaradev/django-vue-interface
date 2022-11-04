@@ -145,8 +145,7 @@ class CarMakeSerializer(serializers.ModelSerializer):
 class CarModelSerializer(serializers.ModelSerializer):
     id = serializers.ModelField(model_field=CarModel()._meta.get_field("id"))
 
-    carmake = CarMakeSerializer(
-        instance=CarMake, required=False, read_only=True)
+    carmake = CarMakeSerializer(instance=CarMake, required=False, read_only=True)
 
     class Meta:
         model = CarModel
@@ -304,8 +303,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
         # Brand updating logic
         try:
-            brand_qs = BrandsDict.objects.get(
-                id=validated_data.get("brand").id)
+            brand_qs = BrandsDict.objects.get(id=validated_data.get("brand").id)
             instance.brand = brand_qs
         except:
             pass
@@ -318,16 +316,13 @@ class ProductSerializer(serializers.ModelSerializer):
         # Car Engine update logic
         car_engine_data = validated_data.pop("engine")
         car_engine_list = [_.id for _ in car_engine_data]
-        car_engine_qs = CarEngine.objects.filter(
-            car_related_engine=instance.id)
+        car_engine_qs = CarEngine.objects.filter(car_related_engine=instance.id)
 
         instance.brand = validated_data.get("brand", instance.brand)
         instance.name = validated_data.get("name", instance.name)
         instance.name2 = validated_data.get("name2", instance.name2)
-        instance.cat_number = validated_data.get(
-            "cat_number", instance.cat_number)
-        instance.oem_number = validated_data.get(
-            "oem_number", instance.oem_number)
+        instance.cat_number = validated_data.get("cat_number", instance.cat_number)
+        instance.oem_number = validated_data.get("oem_number", instance.oem_number)
         instance.slug = validated_data.get("slug", instance.slug)
         instance.one_c_id = validated_data.get("one_c_id", instance.one_c_id)
         instance.active = validated_data.get("active", instance.active)
@@ -424,7 +419,7 @@ class MerchangSerializer(serializers.ModelSerializer):
 
         title = obj.name + " " + car
         if obj.name2:
-            title = obj.name + " " + car + obj.name2
+            title = obj.name
         return title
 
     def get_video(self, obj):
