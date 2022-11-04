@@ -24,14 +24,6 @@
           "max_gram": 20
         }
       },
-      "tokenizer": {
-        "cat_number_tokinizer": {
-          "type": "edge_ngram",
-          "min_gram": 4,
-          "max_gram": 14,
-          "token_chars": ["letter", "digit"]
-        }
-      },
       "analyzer": {
         "rebuilt_russian": {
           "tokenizer": "standard",
@@ -44,8 +36,9 @@
           ]
         },
         "ngram_analyzer": {
-          "tokenizer": "cat_number_tokinizer",
-          "filter": ["lowercase", "russian_stop"]
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "russian_stop", "ngram_filter"]
         }
       }
     }
@@ -54,7 +47,7 @@
     "properties": {
       "name": {
         "type": "text",
-        "analyzer": "rebuilt_russian"
+        "analyzer": "ngram_analyzer"
       },
       "cat_number": {
         "type": "text",
