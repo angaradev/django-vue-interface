@@ -412,15 +412,7 @@ class MerchangSerializer(serializers.ModelSerializer):
             return ""
 
     def get_title(self, obj):
-        car_model = obj.car_model.all()
-        car = ""
-        if len(car_model):
-            car = car_model[0].carmake.name + " " + car_model[0].name
-
-        title = obj.name + " " + car
-        if obj.name2:
-            title = obj.name
-        return title
+        return obj.name
 
     def get_video(self, obj):
         videos = obj.product_video.all()
