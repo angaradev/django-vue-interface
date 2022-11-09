@@ -96,7 +96,6 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                                                     "match": {
                                                         "cat_number": {
                                                             "query": search,
-                                                            "analyzer": "standard",
                                                         }
                                                     }
                                                 },
@@ -104,7 +103,6 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                                                     "match": {
                                                         "oem_number": {
                                                             "query": search,
-                                                            "analyzer": "standard",
                                                         }
                                                     }
                                                 },
@@ -136,7 +134,6 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                                                     "match": {
                                                         "cat_number": {
                                                             "query": search,
-                                                            "analyzer": "standard",
                                                         }
                                                     }
                                                 },
@@ -144,7 +141,6 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                                                     "match": {
                                                         "oem_number": {
                                                             "query": search,
-                                                            "analyzer": "standard",
                                                         }
                                                     }
                                                 },
@@ -152,7 +148,6 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                                                     "match": {
                                                         "one_c_id": {
                                                             "query": search,
-                                                            "analyzer": "standard",
                                                         }
                                                     }
                                                 },
