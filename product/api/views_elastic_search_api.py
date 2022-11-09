@@ -85,6 +85,14 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                                         "bool": {
                                             "should": [
                                                 {
+                                                    "wildcard": {
+                                                        "cat_number": {
+                                                            "value": f"{search}*",
+                                                            "case_insensitive": "true",
+                                                        }
+                                                    }
+                                                },
+                                                {
                                                     "match": {
                                                         "cat_number": {
                                                             "query": search,
@@ -116,6 +124,14 @@ def make_query(request, aggs, aggs_size, category=False, page_from=1, page_size=
                                     {
                                         "bool": {
                                             "should": [
+                                                {
+                                                    "wildcard": {
+                                                        "cat_number": {
+                                                            "value": f"{search}*",
+                                                            "case_insensitive": "true",
+                                                        }
+                                                    }
+                                                },
                                                 {
                                                     "match": {
                                                         "cat_number": {
