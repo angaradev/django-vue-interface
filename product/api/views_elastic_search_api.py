@@ -327,7 +327,6 @@ def autocomplete(request):
                 "match": {
                     "name": {
                         "query": q,
-                        "analyzer": "rebuilt_russian",
                         "fuzziness": fuzziness,
                         "operator": "and",
                     }
@@ -347,7 +346,6 @@ def autocomplete(request):
                                 "match": {
                                     "name": {
                                         "query": "помпа портер насос",
-                                        "analyzer": "rebuilt_russian",
                                         "fuzziness": fuzziness,
                                         "operator": "and",
                                     }
